@@ -1,5 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
+  <ItemGroup>
+    <ProjectReference Include="..\UniAcademic.Application\UniAcademic.Application.csproj" />
+    <ProjectReference Include="..\UniAcademic.Infrastructure\UniAcademic.Infrastructure.csproj" />
+    <ProjectReference Include="..\UniAcademic.Contracts\UniAcademic.Contracts.csproj" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>

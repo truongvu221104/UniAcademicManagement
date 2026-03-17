@@ -1,6 +1,12 @@
+using UniAcademic.Application;
+using UniAcademic.Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddApplication();
+builder.Services.AddInfrastructure(builder.Configuration);
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
