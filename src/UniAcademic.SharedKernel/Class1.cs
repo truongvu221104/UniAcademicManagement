@@ -1,6 +1,6 @@
 ﻿namespace UniAcademic.SharedKernel;
 
-public class Class1
+public abstract class Entity
 {
-
+    public Guid Id { get; protected set; } = Guid.NewGuid();
 }

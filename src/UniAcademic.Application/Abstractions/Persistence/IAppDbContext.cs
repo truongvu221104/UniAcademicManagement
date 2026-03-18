@@ -1,0 +1,26 @@
+using UniAcademic.Domain.Entities.Academic;
+using UniAcademic.Domain.Entities.Identity;
+
+namespace UniAcademic.Application.Abstractions.Persistence;
+
+public interface IAppDbContext
+{
+    IQueryable<Faculty> Faculties { get; }
+
+    IQueryable<User> Users { get; }
+
+    IQueryable<Role> Roles { get; }
+
+    IQueryable<Permission> Permissions { get; }
+
+    IQueryable<RefreshToken> RefreshTokens { get; }
+
+    IQueryable<UserSession> UserSessions { get; }
+
+    IQueryable<AuditLog> AuditLogs { get; }
+
+    Task AddAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default)
+        where TEntity : class;
+
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+}

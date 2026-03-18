@@ -1,6 +1,5 @@
 ﻿namespace UniAcademic.Infrastructure;
 
-public class Class1
+public static class InfrastructureAssemblyMarker
 {
-
 }

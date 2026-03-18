@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <ProjectReference Include="..\UniAcademic.Domain\UniAcademic.Domain.csproj" />
     <ProjectReference Include="..\UniAcademic.SharedKernel\UniAcademic.SharedKernel.csproj" />
   </ItemGroup>
 

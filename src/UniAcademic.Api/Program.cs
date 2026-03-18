@@ -1,11 +1,17 @@
 using UniAcademic.Application;
+using UniAcademic.Contracts.Auth;
+using UniAcademic.Infrastructure.Extensions;
 using UniAcademic.Infrastructure;
+using UniAcademic.Infrastructure.Options;
+using UniAcademic.Infrastructure.Seed;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddJwtAuthentication(builder.Configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>() ?? new JwtOptions());
+builder.Services.AddPermissionAuthorization();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -23,8 +29,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+await app.Services.SeedAuthAsync();
 
 app.Run();

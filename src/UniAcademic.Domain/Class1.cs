@@ -1,6 +1,5 @@
 ﻿namespace UniAcademic.Domain;
 
-public class Class1
+public static class DomainAssemblyMarker
 {
-
 }

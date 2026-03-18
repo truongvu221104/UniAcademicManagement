@@ -1,0 +1,76 @@
+@using UniAcademic.Domain.Enums
+@using UniAcademic.Application.Models.Faculties
+@model IReadOnlyCollection<FacultyListItemModel>
+
+@{
+    ViewData["Title"] = "Faculties";
+    var keyword = ViewBag.Keyword as string;
+    var selectedStatus = ViewBag.Status as FacultyStatus?;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Faculties</h1>
+    <a asp-action="Create" class="btn btn-primary">Create Faculty</a>
+</div>
+
+@if (TempData["ErrorMessage"] is string errorMessage)
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+<form method="get" class="row g-3 mb-3">
+    <div class="col-md-5">
+        <input type="text" name="keyword" value="@keyword" class="form-control" placeholder="Search by code or name" />
+    </div>
+    <div class="col-md-3">
+        <select name="status" class="form-select">
+            <option value="">All statuses</option>
+            @foreach (var status in Enum.GetValues<FacultyStatus>())
+            {
+                <option value="@status" selected="@(selectedStatus == status)">@status</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-4">
+        <button type="submit" class="btn btn-outline-primary">Search</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Reset</a>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Code</th>
+            <th>Name</th>
+            <th>Status</th>
+            <th class="text-end">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @if (Model.Count == 0)
+    {
+        <tr>
+            <td colspan="4" class="text-center">No faculties found.</td>
+        </tr>
+    }
+    else
+    {
+        @foreach (var faculty in Model)
+        {
+            <tr>
+                <td>@faculty.Code</td>
+                <td>@faculty.Name</td>
+                <td>@faculty.Status</td>
+                <td class="text-end">
+                    <a asp-action="Details" asp-route-id="@faculty.Id" class="btn btn-sm btn-outline-secondary">Details</a>
+                    <a asp-action="Edit" asp-route-id="@faculty.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                    <form asp-action="Delete" asp-route-id="@faculty.Id" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this faculty?');">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    }
+    </tbody>
+</table>

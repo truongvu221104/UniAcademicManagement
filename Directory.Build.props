@@ -1,0 +1,21 @@
+<Project>
+  <PropertyGroup>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="**\.codexbuild\**\*.cs" />
+    <Compile Remove="**\obj\**\*.cs" />
+    <Compile Remove="**\obj2\**\*.cs" />
+    <EmbeddedResource Remove="**\.codexbuild\**\*" />
+    <EmbeddedResource Remove="**\obj\**\*" />
+    <EmbeddedResource Remove="**\obj2\**\*" />
+    <None Remove="**\.codexbuild\**\*" />
+    <None Remove="**\obj\**\*" />
+    <None Remove="**\obj2\**\*" />
+    <Content Remove="**\.codexbuild\**\*" />
+    <Content Remove="**\obj\**\*" />
+    <Content Remove="**\obj2\**\*" />
+  </ItemGroup>
+</Project>
