@@ -37,17 +37,17 @@ public partial class App : Application
 
         services.AddHttpClient<IAuthApiClient, AuthApiClient>(client =>
         {
-            client.BaseAddress = new Uri("https://localhost:7001/");
+            client.BaseAddress = new Uri("https://localhost:7271/");
         });
 
         services.AddHttpClient("ApiClient", client =>
         {
-            client.BaseAddress = new Uri("https://localhost:7001/");
+            client.BaseAddress = new Uri("https://localhost:7271/");
         }).AddHttpMessageHandler<BearerTokenHandler>();
 
         services.AddHttpClient<IFacultyApiClient, FacultyApiClient>(client =>
         {
-            client.BaseAddress = new Uri("https://localhost:7001/");
+            client.BaseAddress = new Uri("https://localhost:7271/");
         }).AddHttpMessageHandler<BearerTokenHandler>();
     }
 }
