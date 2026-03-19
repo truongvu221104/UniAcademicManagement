@@ -3,7 +3,7 @@ using UniAcademic.Contracts.Auth;
 using UniAcademic.Infrastructure.Extensions;
 using UniAcademic.Infrastructure;
 using UniAcademic.Infrastructure.Options;
-using UniAcademic.Infrastructure.Seed;
+using UniAcademic.Infrastructure.SeedData;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +34,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-await app.Services.SeedAuthAsync();
+await app.Services.RunInfrastructureBootstrapAsync();
 
 app.Run();

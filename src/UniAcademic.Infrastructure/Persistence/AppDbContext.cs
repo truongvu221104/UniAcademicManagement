@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using UniAcademic.Application.Abstractions.Persistence;
 using UniAcademic.Domain.Entities.Academic;
 using UniAcademic.Domain.Entities.Identity;
+using UniAcademic.Infrastructure.Persistence.SeedData;
 using UniAcademic.SharedKernel;
 
 namespace UniAcademic.Infrastructure.Persistence;
@@ -16,6 +17,8 @@ public sealed class AppDbContext : DbContext, IAppDbContext
     public DbSet<User> Users => Set<User>();
 
     public DbSet<Faculty> FacultiesSet => Set<Faculty>();
+
+    public DbSet<SeedDatasetState> SeedDatasetStates => Set<SeedDatasetState>();
 
     public DbSet<Role> Roles => Set<Role>();
 

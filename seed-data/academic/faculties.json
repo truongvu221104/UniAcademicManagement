@@ -1,0 +1,14 @@
+[
+  {
+    "code": "CNTT",
+    "name": "Công nghệ thông tin",
+    "description": "Khoa Công nghệ thông tin",
+    "status": "Active"
+  },
+  {
+    "code": "QTKD",
+    "name": "Quản trị kinh doanh",
+    "description": "Khoa Quản trị kinh doanh",
+    "status": "Active"
+  }
+]

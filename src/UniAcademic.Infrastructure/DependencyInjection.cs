@@ -9,6 +9,8 @@ using UniAcademic.Infrastructure.Options;
 using UniAcademic.Infrastructure.Persistence;
 using UniAcademic.Infrastructure.Security;
 using UniAcademic.Infrastructure.Seed;
+using UniAcademic.Infrastructure.SeedData;
+using UniAcademic.Infrastructure.SeedData.Services;
 using UniAcademic.Infrastructure.Services.Auth;
 using UniAcademic.Infrastructure.Services.Common;
 
@@ -20,11 +22,12 @@ public static class DependencyInjection
     {
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
         services.Configure<BootstrapAdminOptions>(configuration.GetSection(BootstrapAdminOptions.SectionName));
+        services.Configure<SeedDataOptions>(configuration.GetSection(SeedDataOptions.SectionName));
 
         services.AddHttpContextAccessor();
 
         services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+            options.UseSqlServer(configuration.GetConnectionString("DB")));
         services.AddScoped<IAppDbContext>(sp => sp.GetRequiredService<AppDbContext>());
 
         services.AddScoped<IPasswordHasher, PasswordHasher>();
@@ -37,6 +40,10 @@ public static class DependencyInjection
         services.AddScoped<ICurrentUser, CurrentUserAccessor>();
         services.AddScoped<IClientContextAccessor, ClientContextAccessor>();
         services.AddScoped<AuthSeedData>();
+        services.AddScoped<JsonSeedDataFileReader>();
+        services.AddSingleton<DatasetHashService>();
+        services.AddScoped<FacultyDatasetSynchronizer>();
+        services.AddScoped<SeedDataBootstrapService>();
 
         return services;
     }
