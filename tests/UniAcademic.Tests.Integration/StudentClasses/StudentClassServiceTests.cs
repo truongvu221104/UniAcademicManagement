@@ -108,7 +108,7 @@ public sealed class StudentClassServiceTests
             Status = StudentClassStatus.Active
         }));
 
-        Assert.Equal("Faculty is not available.", exception.Message);
+        Assert.Equal("Faculty was not found.", exception.Message);
         Assert.False(await dbContext.StudentClassesSet.IgnoreQueryFilters().AnyAsync());
     }
 
