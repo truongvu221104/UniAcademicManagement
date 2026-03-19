@@ -8,7 +8,7 @@
     var keyword = ViewBag.Keyword as string;
     var intakeYear = ViewBag.IntakeYear as int?;
     var selectedStatus = ViewBag.Status as StudentClassStatus?;
-    var facultyOptions = ViewBag.FacultyOptions as IReadOnlyCollection<SelectListItem> ?? [];
+    var facultyOptions = ViewBag.FacultyOptions as IReadOnlyCollection<SelectListItem> ?? Array.Empty<SelectListItem>();
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">

@@ -4,7 +4,7 @@
 
 @{
     ViewData["Title"] = "Create Course";
-    var facultyOptions = ViewBag.FacultyOptions as IReadOnlyCollection<SelectListItem> ?? [];
+    var facultyOptions = ViewBag.FacultyOptions as IReadOnlyCollection<SelectListItem> ?? Array.Empty<SelectListItem>();
 }
 
 <h1 class="h3 mb-3">Create Course</h1>

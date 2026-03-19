@@ -13,6 +13,8 @@ public interface IAppDbContext
 
     IQueryable<Semester> Semesters { get; }
 
+    IQueryable<CourseOffering> CourseOfferings { get; }
+
     IQueryable<User> Users { get; }
 
     IQueryable<Role> Roles { get; }

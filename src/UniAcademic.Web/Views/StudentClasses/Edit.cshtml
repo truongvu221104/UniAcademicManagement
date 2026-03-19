@@ -4,7 +4,7 @@
 
 @{
     ViewData["Title"] = "Edit Student Class";
-    var facultyOptions = ViewBag.FacultyOptions as IReadOnlyCollection<SelectListItem> ?? [];
+    var facultyOptions = ViewBag.FacultyOptions as IReadOnlyCollection<SelectListItem> ?? Array.Empty<SelectListItem>();
 }
 
 <h1 class="h3 mb-3">Edit Student Class</h1>

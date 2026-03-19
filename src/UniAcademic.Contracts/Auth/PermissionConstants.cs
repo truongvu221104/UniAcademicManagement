@@ -56,6 +56,14 @@ public static class PermissionConstants
         public const string Delete = "academic.semesters.delete";
     }
 
+    public static class CourseOfferings
+    {
+        public const string View = "academic.courseofferings.view";
+        public const string Create = "academic.courseofferings.create";
+        public const string Edit = "academic.courseofferings.edit";
+        public const string Delete = "academic.courseofferings.delete";
+    }
+
     public static IReadOnlyCollection<string> All => new[]
     {
         Auth.Login,
@@ -81,7 +89,11 @@ public static class PermissionConstants
         Semesters.View,
         Semesters.Create,
         Semesters.Edit,
-        Semesters.Delete
+        Semesters.Delete,
+        CourseOfferings.View,
+        CourseOfferings.Create,
+        CourseOfferings.Edit,
+        CourseOfferings.Delete
     };
 
     public static string BuildPolicy(string permission) => $"{PolicyPrefix}{permission}";

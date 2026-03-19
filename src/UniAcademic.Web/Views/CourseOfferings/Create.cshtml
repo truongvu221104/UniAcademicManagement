@@ -1,0 +1,65 @@
+@using Microsoft.AspNetCore.Mvc.Rendering
+@using UniAcademic.Domain.Enums
+@model UniAcademic.Web.Models.CourseOfferings.CreateCourseOfferingViewModel
+
+@{
+    ViewData["Title"] = "Create Course Offering";
+    var courseOptions = ViewBag.CourseOptions as IReadOnlyCollection<SelectListItem> ?? Array.Empty<SelectListItem>();
+    var semesterOptions = ViewBag.SemesterOptions as IReadOnlyCollection<SelectListItem> ?? Array.Empty<SelectListItem>();
+}
+
+<h1 class="h3 mb-3">Create Course Offering</h1>
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="mb-3">
+        <label asp-for="Code" class="form-label"></label>
+        <input asp-for="Code" class="form-control" />
+        <span asp-validation-for="Code" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="CourseId" class="form-label"></label>
+        <select asp-for="CourseId" class="form-select">
+            @foreach (var option in courseOptions)
+            {
+                <option value="@option.Value" selected="@option.Selected">@option.Text</option>
+            }
+        </select>
+        <span asp-validation-for="CourseId" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="SemesterId" class="form-label"></label>
+        <select asp-for="SemesterId" class="form-select">
+            @foreach (var option in semesterOptions)
+            {
+                <option value="@option.Value" selected="@option.Selected">@option.Text</option>
+            }
+        </select>
+        <span asp-validation-for="SemesterId" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="DisplayName" class="form-label"></label>
+        <input asp-for="DisplayName" class="form-control" />
+        <span asp-validation-for="DisplayName" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Capacity" class="form-label"></label>
+        <input asp-for="Capacity" class="form-control" />
+        <span asp-validation-for="Capacity" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Status" class="form-label"></label>
+        <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<CourseOfferingStatus>()"></select>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
