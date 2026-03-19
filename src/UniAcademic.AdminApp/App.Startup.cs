@@ -2,6 +2,7 @@ using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using UniAcademic.AdminApp.Services.Auth;
 using UniAcademic.AdminApp.Services.Faculties;
+using UniAcademic.AdminApp.Services.StudentClasses;
 
 namespace UniAcademic.AdminApp;
 
@@ -46,6 +47,11 @@ public partial class App : Application
         }).AddHttpMessageHandler<BearerTokenHandler>();
 
         services.AddHttpClient<IFacultyApiClient, FacultyApiClient>(client =>
+        {
+            client.BaseAddress = new Uri("https://localhost:7271/");
+        }).AddHttpMessageHandler<BearerTokenHandler>();
+
+        services.AddHttpClient<IStudentClassApiClient, StudentClassApiClient>(client =>
         {
             client.BaseAddress = new Uri("https://localhost:7271/");
         }).AddHttpMessageHandler<BearerTokenHandler>();

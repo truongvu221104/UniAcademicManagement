@@ -1,0 +1,56 @@
+@using Microsoft.AspNetCore.Mvc.Rendering
+@using UniAcademic.Domain.Enums
+@model UniAcademic.Web.Models.StudentClasses.UpdateStudentClassViewModel
+
+@{
+    ViewData["Title"] = "Edit Student Class";
+    var facultyOptions = ViewBag.FacultyOptions as IReadOnlyCollection<SelectListItem> ?? [];
+}
+
+<h1 class="h3 mb-3">Edit Student Class</h1>
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <input asp-for="Id" type="hidden" />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="mb-3">
+        <label asp-for="Code" class="form-label"></label>
+        <input asp-for="Code" class="form-control" />
+        <span asp-validation-for="Code" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="FacultyId" class="form-label"></label>
+        <select asp-for="FacultyId" class="form-select">
+            <option value="">Select faculty</option>
+            @foreach (var option in facultyOptions)
+            {
+                <option value="@option.Value" selected="@option.Selected">@option.Text</option>
+            }
+        </select>
+        <span asp-validation-for="FacultyId" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="IntakeYear" class="form-label"></label>
+        <input asp-for="IntakeYear" class="form-control" />
+        <span asp-validation-for="IntakeYear" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Status" class="form-label"></label>
+        <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<StudentClassStatus>()"></select>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

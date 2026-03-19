@@ -7,6 +7,8 @@ public interface IAppDbContext
 {
     IQueryable<Faculty> Faculties { get; }
 
+    IQueryable<StudentClass> StudentClasses { get; }
+
     IQueryable<User> Users { get; }
 
     IQueryable<Role> Roles { get; }

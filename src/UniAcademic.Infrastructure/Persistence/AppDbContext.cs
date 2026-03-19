@@ -18,6 +18,8 @@ public sealed class AppDbContext : DbContext, IAppDbContext
 
     public DbSet<Faculty> FacultiesSet => Set<Faculty>();
 
+    public DbSet<StudentClass> StudentClassesSet => Set<StudentClass>();
+
     public DbSet<SeedDatasetState> SeedDatasetStates => Set<SeedDatasetState>();
 
     public DbSet<Role> Roles => Set<Role>();
@@ -37,6 +39,8 @@ public sealed class AppDbContext : DbContext, IAppDbContext
     IQueryable<User> IAppDbContext.Users => Users;
 
     IQueryable<Faculty> IAppDbContext.Faculties => FacultiesSet;
+
+    IQueryable<StudentClass> IAppDbContext.StudentClasses => StudentClassesSet;
 
     IQueryable<Role> IAppDbContext.Roles => Roles;
 

@@ -1,0 +1,95 @@
+@using Microsoft.AspNetCore.Mvc.Rendering
+@using UniAcademic.Application.Models.StudentClasses
+@using UniAcademic.Domain.Enums
+@model IReadOnlyCollection<StudentClassListItemModel>
+
+@{
+    ViewData["Title"] = "Student Classes";
+    var keyword = ViewBag.Keyword as string;
+    var intakeYear = ViewBag.IntakeYear as int?;
+    var selectedStatus = ViewBag.Status as StudentClassStatus?;
+    var facultyOptions = ViewBag.FacultyOptions as IReadOnlyCollection<SelectListItem> ?? [];
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Student Classes</h1>
+    <a asp-action="Create" class="btn btn-primary">Create Student Class</a>
+</div>
+
+@if (TempData["ErrorMessage"] is string errorMessage)
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+<form method="get" class="row g-3 mb-3">
+    <div class="col-md-3">
+        <input type="text" name="keyword" value="@keyword" class="form-control" placeholder="Search by code or name" />
+    </div>
+    <div class="col-md-3">
+        <select name="facultyId" class="form-select">
+            <option value="">All faculties</option>
+            @foreach (var option in facultyOptions)
+            {
+                <option value="@option.Value" selected="@option.Selected">@option.Text</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <input type="number" name="intakeYear" value="@intakeYear" class="form-control" placeholder="Intake year" />
+    </div>
+    <div class="col-md-2">
+        <select name="status" class="form-select">
+            <option value="">All statuses</option>
+            @foreach (var status in Enum.GetValues<StudentClassStatus>())
+            {
+                <option value="@status" selected="@(selectedStatus == status)">@status</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-outline-primary">Search</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Reset</a>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Code</th>
+            <th>Name</th>
+            <th>Faculty</th>
+            <th>Intake Year</th>
+            <th>Status</th>
+            <th class="text-end">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @if (Model.Count == 0)
+    {
+        <tr>
+            <td colspan="6" class="text-center">No student classes found.</td>
+        </tr>
+    }
+    else
+    {
+        @foreach (var studentClass in Model)
+        {
+            <tr>
+                <td>@studentClass.Code</td>
+                <td>@studentClass.Name</td>
+                <td>@studentClass.FacultyName</td>
+                <td>@studentClass.IntakeYear</td>
+                <td>@studentClass.Status</td>
+                <td class="text-end">
+                    <a asp-action="Details" asp-route-id="@studentClass.Id" class="btn btn-sm btn-outline-secondary">Details</a>
+                    <a asp-action="Edit" asp-route-id="@studentClass.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                    <form asp-action="Delete" asp-route-id="@studentClass.Id" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this student class?');">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    }
+    </tbody>
+</table>
