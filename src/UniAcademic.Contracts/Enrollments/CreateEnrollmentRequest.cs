@@ -1,0 +1,10 @@
+namespace UniAcademic.Contracts.Enrollments;
+
+public sealed class CreateEnrollmentRequest
+{
+    public Guid StudentProfileId { get; set; }
+
+    public Guid CourseOfferingId { get; set; }
+
+    public string? Note { get; set; }
+}

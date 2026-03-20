@@ -1,0 +1,86 @@
+@using Microsoft.AspNetCore.Mvc.Rendering
+@using UniAcademic.Domain.Enums
+@model IReadOnlyCollection<UniAcademic.Application.Models.Enrollments.EnrollmentListItemModel>
+
+@{
+    ViewData["Title"] = "Enrollments";
+    var keyword = ViewBag.Keyword as string;
+    var studentProfileOptions = ViewBag.StudentProfileOptions as IReadOnlyCollection<SelectListItem> ?? Array.Empty<SelectListItem>();
+    var courseOfferingOptions = ViewBag.CourseOfferingOptions as IReadOnlyCollection<SelectListItem> ?? Array.Empty<SelectListItem>();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Enrollments</h1>
+    <a asp-action="Create" class="btn btn-primary">Enroll Student</a>
+</div>
+
+<form method="get" class="row g-3 mb-3">
+    <div class="col-md-3">
+        <label class="form-label">Keyword</label>
+        <input type="text" name="keyword" value="@keyword" class="form-control" />
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Student</label>
+        <select name="studentProfileId" class="form-select">
+            @foreach (var option in studentProfileOptions)
+            {
+                <option value="@option.Value" selected="@option.Selected">@option.Text</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Course Offering</label>
+        <select name="courseOfferingId" class="form-select">
+            @foreach (var option in courseOfferingOptions)
+            {
+                <option value="@option.Value" selected="@option.Selected">@option.Text</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Status</label>
+        <select name="status" class="form-select" asp-items="Html.GetEnumSelectList<EnrollmentStatus>()">
+            <option value="">All</option>
+        </select>
+    </div>
+    <div class="col-md-1 d-flex align-items-end">
+        <button type="submit" class="btn btn-secondary w-100">Filter</button>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Student</th>
+            <th>Course Offering</th>
+            <th>Course</th>
+            <th>Semester</th>
+            <th>Status</th>
+            <th>Enrolled At</th>
+            <th class="text-end">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.StudentCode - @item.StudentFullName</td>
+            <td>@item.CourseOfferingCode</td>
+            <td>@item.CourseName</td>
+            <td>@item.SemesterName</td>
+            <td>@item.Status</td>
+            <td>@item.EnrolledAtUtc.ToString("yyyy-MM-dd HH:mm")</td>
+            <td class="text-end">
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info">Details</a>
+                @if (item.Status == EnrollmentStatus.Enrolled)
+                {
+                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Drop this enrollment?');">Drop</button>
+                    </form>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

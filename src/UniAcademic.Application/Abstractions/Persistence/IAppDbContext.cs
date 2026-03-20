@@ -11,6 +11,8 @@ public interface IAppDbContext
 
     IQueryable<StudentProfile> StudentProfiles { get; }
 
+    IQueryable<Enrollment> Enrollments { get; }
+
     IQueryable<Course> Courses { get; }
 
     IQueryable<Semester> Semesters { get; }

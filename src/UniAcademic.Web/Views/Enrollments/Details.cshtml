@@ -1,0 +1,38 @@
+@model UniAcademic.Application.Models.Enrollments.EnrollmentModel
+
+@{
+    ViewData["Title"] = "Enrollment Details";
+}
+
+<h1 class="h3 mb-3">Enrollment Details</h1>
+
+<dl class="row">
+    <dt class="col-sm-3">Student</dt>
+    <dd class="col-sm-9">@Model.StudentCode - @Model.StudentFullName</dd>
+
+    <dt class="col-sm-3">Student Class</dt>
+    <dd class="col-sm-9">@Model.StudentClassName</dd>
+
+    <dt class="col-sm-3">Course Offering</dt>
+    <dd class="col-sm-9">@Model.CourseOfferingCode</dd>
+
+    <dt class="col-sm-3">Course</dt>
+    <dd class="col-sm-9">@Model.CourseCode - @Model.CourseName</dd>
+
+    <dt class="col-sm-3">Semester</dt>
+    <dd class="col-sm-9">@Model.SemesterName</dd>
+
+    <dt class="col-sm-3">Status</dt>
+    <dd class="col-sm-9">@Model.Status</dd>
+
+    <dt class="col-sm-3">Enrolled At</dt>
+    <dd class="col-sm-9">@Model.EnrolledAtUtc.ToString("yyyy-MM-dd HH:mm")</dd>
+
+    <dt class="col-sm-3">Dropped At</dt>
+    <dd class="col-sm-9">@Model.DroppedAtUtc?.ToString("yyyy-MM-dd HH:mm")</dd>
+
+    <dt class="col-sm-3">Note</dt>
+    <dd class="col-sm-9">@Model.Note</dd>
+</dl>
+
+<a asp-action="Index" class="btn btn-secondary">Back</a>
