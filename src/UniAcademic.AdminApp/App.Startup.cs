@@ -6,6 +6,7 @@ using UniAcademic.AdminApp.Services.Courses;
 using UniAcademic.AdminApp.Services.Faculties;
 using UniAcademic.AdminApp.Services.Semesters;
 using UniAcademic.AdminApp.Services.StudentClasses;
+using UniAcademic.AdminApp.Services.StudentProfiles;
 
 namespace UniAcademic.AdminApp;
 
@@ -70,6 +71,11 @@ public partial class App : Application
         }).AddHttpMessageHandler<BearerTokenHandler>();
 
         services.AddHttpClient<ICourseOfferingApiClient, CourseOfferingApiClient>(client =>
+        {
+            client.BaseAddress = new Uri("https://localhost:7271/");
+        }).AddHttpMessageHandler<BearerTokenHandler>();
+
+        services.AddHttpClient<IStudentProfileApiClient, StudentProfileApiClient>(client =>
         {
             client.BaseAddress = new Uri("https://localhost:7271/");
         }).AddHttpMessageHandler<BearerTokenHandler>();

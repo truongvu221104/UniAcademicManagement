@@ -1,0 +1,82 @@
+@using Microsoft.AspNetCore.Mvc.Rendering
+@using UniAcademic.Domain.Enums
+@model IReadOnlyCollection<UniAcademic.Application.Models.StudentProfiles.StudentProfileListItemModel>
+
+@{
+    ViewData["Title"] = "Student Profiles";
+    var keyword = ViewBag.Keyword as string;
+    var studentClassOptions = ViewBag.StudentClassOptions as IReadOnlyCollection<SelectListItem> ?? Array.Empty<SelectListItem>();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Student Profiles</h1>
+    <a asp-action="Create" class="btn btn-primary">Create Student Profile</a>
+</div>
+
+<form method="get" class="row g-3 mb-3">
+    <div class="col-md-4">
+        <label class="form-label">Keyword</label>
+        <input type="text" name="keyword" value="@keyword" class="form-control" />
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Student Class</label>
+        <select name="studentClassId" class="form-select">
+            @foreach (var option in studentClassOptions)
+            {
+                <option value="@option.Value" selected="@option.Selected">@option.Text</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Gender</label>
+        <select name="gender" class="form-select" asp-items="Html.GetEnumSelectList<StudentGender>()">
+            <option value="">All</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Status</label>
+        <select name="status" class="form-select" asp-items="Html.GetEnumSelectList<StudentProfileStatus>()">
+            <option value="">All</option>
+        </select>
+    </div>
+    <div class="col-md-1 d-flex align-items-end">
+        <button type="submit" class="btn btn-secondary w-100">Filter</button>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Student Code</th>
+            <th>Full Name</th>
+            <th>Student Class</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Gender</th>
+            <th>Status</th>
+            <th class="text-end">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.StudentCode</td>
+            <td>@item.FullName</td>
+            <td>@item.StudentClassName</td>
+            <td>@item.Email</td>
+            <td>@item.Phone</td>
+            <td>@item.Gender</td>
+            <td>@item.Status</td>
+            <td class="text-end">
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info">Details</a>
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this student profile?');">Delete</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

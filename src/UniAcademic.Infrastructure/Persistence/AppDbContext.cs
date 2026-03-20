@@ -20,6 +20,8 @@ public sealed class AppDbContext : DbContext, IAppDbContext
 
     public DbSet<StudentClass> StudentClassesSet => Set<StudentClass>();
 
+    public DbSet<StudentProfile> StudentProfilesSet => Set<StudentProfile>();
+
     public DbSet<Course> CoursesSet => Set<Course>();
 
     public DbSet<Semester> SemestersSet => Set<Semester>();
@@ -47,6 +49,8 @@ public sealed class AppDbContext : DbContext, IAppDbContext
     IQueryable<Faculty> IAppDbContext.Faculties => FacultiesSet;
 
     IQueryable<StudentClass> IAppDbContext.StudentClasses => StudentClassesSet;
+
+    IQueryable<StudentProfile> IAppDbContext.StudentProfiles => StudentProfilesSet;
 
     IQueryable<Course> IAppDbContext.Courses => CoursesSet;
 

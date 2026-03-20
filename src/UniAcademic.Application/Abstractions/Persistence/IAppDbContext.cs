@@ -9,6 +9,8 @@ public interface IAppDbContext
 
     IQueryable<StudentClass> StudentClasses { get; }
 
+    IQueryable<StudentProfile> StudentProfiles { get; }
+
     IQueryable<Course> Courses { get; }
 
     IQueryable<Semester> Semesters { get; }

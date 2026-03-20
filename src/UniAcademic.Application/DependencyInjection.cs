@@ -4,11 +4,13 @@ using UniAcademic.Application.Abstractions.Courses;
 using UniAcademic.Application.Abstractions.Faculties;
 using UniAcademic.Application.Abstractions.Semesters;
 using UniAcademic.Application.Abstractions.StudentClasses;
+using UniAcademic.Application.Abstractions.StudentProfiles;
 using UniAcademic.Application.Features.CourseOfferings;
 using UniAcademic.Application.Features.Courses;
 using UniAcademic.Application.Features.Faculties;
 using UniAcademic.Application.Features.Semesters;
 using UniAcademic.Application.Features.StudentClasses;
+using UniAcademic.Application.Features.StudentProfiles;
 
 namespace UniAcademic.Application;
 
@@ -21,6 +23,7 @@ public static class DependencyInjection
         services.AddScoped<IFacultyService, FacultyService>();
         services.AddScoped<ISemesterService, SemesterService>();
         services.AddScoped<IStudentClassService, StudentClassService>();
+        services.AddScoped<IStudentProfileService, StudentProfileService>();
         return services;
     }
 }
