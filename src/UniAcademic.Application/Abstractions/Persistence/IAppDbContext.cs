@@ -23,6 +23,10 @@ public interface IAppDbContext
 
     IQueryable<CourseOfferingRosterItem> CourseOfferingRosterItems { get; }
 
+    IQueryable<AttendanceSession> AttendanceSessions { get; }
+
+    IQueryable<AttendanceRecord> AttendanceRecords { get; }
+
     IQueryable<User> Users { get; }
 
     IQueryable<Role> Roles { get; }

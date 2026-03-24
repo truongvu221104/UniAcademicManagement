@@ -1,0 +1,52 @@
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model UniAcademic.Web.Models.Attendance.CreateAttendanceSessionViewModel
+
+@{
+    ViewData["Title"] = "Create Attendance Session";
+    var courseOfferingOptions = ViewBag.CourseOfferingOptions as IReadOnlyCollection<SelectListItem> ?? Array.Empty<SelectListItem>();
+}
+
+<h1 class="h3 mb-3">Create Attendance Session</h1>
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="mb-3">
+        <label asp-for="CourseOfferingId" class="form-label"></label>
+        <select asp-for="CourseOfferingId" class="form-select">
+            @foreach (var option in courseOfferingOptions)
+            {
+                <option value="@option.Value" selected="@option.Selected">@option.Text</option>
+            }
+        </select>
+        <span asp-validation-for="CourseOfferingId" class="text-danger"></span>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label asp-for="SessionDate" class="form-label"></label>
+            <input asp-for="SessionDate" class="form-control" />
+            <span asp-validation-for="SessionDate" class="text-danger"></span>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label asp-for="SessionNo" class="form-label"></label>
+            <input asp-for="SessionNo" class="form-control" />
+            <span asp-validation-for="SessionNo" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Note" class="form-label"></label>
+        <textarea asp-for="Note" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Note" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

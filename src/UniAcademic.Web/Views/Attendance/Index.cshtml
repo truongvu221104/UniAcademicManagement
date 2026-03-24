@@ -1,0 +1,63 @@
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model IReadOnlyCollection<UniAcademic.Application.Models.Attendance.AttendanceSessionListItemModel>
+
+@{
+    ViewData["Title"] = "Attendance";
+    var courseOfferingOptions = ViewBag.CourseOfferingOptions as IReadOnlyCollection<SelectListItem> ?? Array.Empty<SelectListItem>();
+}
+
+<h1 class="h3 mb-3">Attendance Sessions</h1>
+
+<form method="get" class="row g-3 mb-3">
+    <div class="col-md-6">
+        <label class="form-label">Course Offering</label>
+        <select name="courseOfferingId" class="form-select">
+            @foreach (var option in courseOfferingOptions)
+            {
+                <option value="@option.Value" selected="@option.Selected">@option.Text</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-6 d-flex align-items-end gap-2">
+        <button type="submit" class="btn btn-outline-primary">Filter</button>
+        <a asp-action="Create" class="btn btn-primary">Create Session</a>
+    </div>
+</form>
+
+@if (TempData["ErrorMessage"] is string errorMessage)
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Course Offering</th>
+            <th>Course</th>
+            <th>Semester</th>
+            <th>Session Date</th>
+            <th>Session No</th>
+            <th>Title</th>
+            <th>Records</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.CourseOfferingCode</td>
+            <td>@item.CourseName</td>
+            <td>@item.SemesterName</td>
+            <td>@item.SessionDate.ToString("yyyy-MM-dd")</td>
+            <td>@item.SessionNo</td>
+            <td>@item.Title</td>
+            <td>@item.RecordCount</td>
+            <td class="text-nowrap">
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Details</a>
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Edit</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

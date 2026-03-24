@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using UniAcademic.Application.Abstractions.Attendance;
 using UniAcademic.Application.Abstractions.CourseOfferings;
 using UniAcademic.Application.Abstractions.Courses;
 using UniAcademic.Application.Abstractions.Enrollments;
@@ -7,6 +8,7 @@ using UniAcademic.Application.Abstractions.Semesters;
 using UniAcademic.Application.Abstractions.StudentClasses;
 using UniAcademic.Application.Abstractions.StudentProfiles;
 using UniAcademic.Application.Abstractions.Rosters;
+using UniAcademic.Application.Features.Attendance;
 using UniAcademic.Application.Features.CourseOfferings;
 using UniAcademic.Application.Features.Courses;
 using UniAcademic.Application.Features.Enrollments;
@@ -22,6 +24,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
+        services.AddScoped<IAttendanceService, AttendanceService>();
         services.AddScoped<ICourseOfferingService, CourseOfferingService>();
         services.AddScoped<ICourseService, CourseService>();
         services.AddScoped<IEnrollmentService, EnrollmentService>();

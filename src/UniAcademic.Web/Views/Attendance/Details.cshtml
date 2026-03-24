@@ -1,0 +1,55 @@
+@model UniAcademic.Application.Models.Attendance.AttendanceSessionModel
+
+@{
+    ViewData["Title"] = "Attendance Details";
+}
+
+<h1 class="h3 mb-3">Attendance Session Details</h1>
+
+<dl class="row">
+    <dt class="col-sm-3">Course Offering</dt>
+    <dd class="col-sm-9">@Model.CourseOfferingCode</dd>
+    <dt class="col-sm-3">Course</dt>
+    <dd class="col-sm-9">@Model.CourseName</dd>
+    <dt class="col-sm-3">Semester</dt>
+    <dd class="col-sm-9">@Model.SemesterName</dd>
+    <dt class="col-sm-3">Session Date</dt>
+    <dd class="col-sm-9">@Model.SessionDate.ToString("yyyy-MM-dd")</dd>
+    <dt class="col-sm-3">Session No</dt>
+    <dd class="col-sm-9">@Model.SessionNo</dd>
+    <dt class="col-sm-3">Title</dt>
+    <dd class="col-sm-9">@Model.Title</dd>
+    <dt class="col-sm-3">Note</dt>
+    <dd class="col-sm-9">@Model.Note</dd>
+    <dt class="col-sm-3">Record Count</dt>
+    <dd class="col-sm-9">@Model.RecordCount</dd>
+</dl>
+
+<div class="mb-3">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit Records</a>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</div>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Student Code</th>
+            <th>Full Name</th>
+            <th>Student Class</th>
+            <th>Status</th>
+            <th>Note</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Records)
+    {
+        <tr>
+            <td>@item.StudentCode</td>
+            <td>@item.StudentFullName</td>
+            <td>@item.StudentClassName</td>
+            <td>@item.Status</td>
+            <td>@item.Note</td>
+        </tr>
+    }
+    </tbody>
+</table>

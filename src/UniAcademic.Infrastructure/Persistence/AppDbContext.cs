@@ -34,6 +34,10 @@ public sealed class AppDbContext : DbContext, IAppDbContext
 
     public DbSet<CourseOfferingRosterItem> CourseOfferingRosterItemsSet => Set<CourseOfferingRosterItem>();
 
+    public DbSet<AttendanceSession> AttendanceSessionsSet => Set<AttendanceSession>();
+
+    public DbSet<AttendanceRecord> AttendanceRecordsSet => Set<AttendanceRecord>();
+
     public DbSet<SeedDatasetState> SeedDatasetStates => Set<SeedDatasetState>();
 
     public DbSet<Role> Roles => Set<Role>();
@@ -69,6 +73,10 @@ public sealed class AppDbContext : DbContext, IAppDbContext
     IQueryable<CourseOfferingRosterSnapshot> IAppDbContext.CourseOfferingRosterSnapshots => CourseOfferingRosterSnapshotsSet;
 
     IQueryable<CourseOfferingRosterItem> IAppDbContext.CourseOfferingRosterItems => CourseOfferingRosterItemsSet;
+
+    IQueryable<AttendanceSession> IAppDbContext.AttendanceSessions => AttendanceSessionsSet;
+
+    IQueryable<AttendanceRecord> IAppDbContext.AttendanceRecords => AttendanceRecordsSet;
 
     IQueryable<Role> IAppDbContext.Roles => Roles;
 
