@@ -27,6 +27,10 @@ public interface IAppDbContext
 
     IQueryable<AttendanceRecord> AttendanceRecords { get; }
 
+    IQueryable<GradeCategory> GradeCategories { get; }
+
+    IQueryable<GradeEntry> GradeEntries { get; }
+
     IQueryable<User> Users { get; }
 
     IQueryable<Role> Roles { get; }

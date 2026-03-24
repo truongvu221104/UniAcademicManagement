@@ -1,0 +1,58 @@
+@model UniAcademic.Application.Models.Grades.GradeCategoryModel
+
+@{
+    ViewData["Title"] = "Grade Category Details";
+}
+
+<h1 class="h3 mb-3">Grade Category Details</h1>
+
+<dl class="row">
+    <dt class="col-sm-3">Course Offering</dt>
+    <dd class="col-sm-9">@Model.CourseOfferingCode</dd>
+    <dt class="col-sm-3">Course</dt>
+    <dd class="col-sm-9">@Model.CourseName</dd>
+    <dt class="col-sm-3">Semester</dt>
+    <dd class="col-sm-9">@Model.SemesterName</dd>
+    <dt class="col-sm-3">Name</dt>
+    <dd class="col-sm-9">@Model.Name</dd>
+    <dt class="col-sm-3">Weight</dt>
+    <dd class="col-sm-9">@Model.Weight</dd>
+    <dt class="col-sm-3">Max Score</dt>
+    <dd class="col-sm-9">@Model.MaxScore</dd>
+    <dt class="col-sm-3">Order Index</dt>
+    <dd class="col-sm-9">@Model.OrderIndex</dd>
+    <dt class="col-sm-3">Active</dt>
+    <dd class="col-sm-9">@Model.IsActive</dd>
+    <dt class="col-sm-3">Entry Count</dt>
+    <dd class="col-sm-9">@Model.EntryCount</dd>
+</dl>
+
+<div class="mb-3">
+    <a asp-action="EditCategory" asp-route-id="@Model.Id" class="btn btn-outline-primary">Edit Category</a>
+    <a asp-action="EditEntries" asp-route-id="@Model.Id" class="btn btn-primary">Edit Entries</a>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</div>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Student Code</th>
+            <th>Full Name</th>
+            <th>Student Class</th>
+            <th>Score</th>
+            <th>Note</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Entries)
+    {
+        <tr>
+            <td>@item.StudentCode</td>
+            <td>@item.StudentFullName</td>
+            <td>@item.StudentClassName</td>
+            <td>@item.Score</td>
+            <td>@item.Note</td>
+        </tr>
+    }
+    </tbody>
+</table>

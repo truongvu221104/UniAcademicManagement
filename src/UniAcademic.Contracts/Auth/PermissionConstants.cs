@@ -92,6 +92,13 @@ public static class PermissionConstants
         public const string Edit = "academic.attendance.edit";
     }
 
+    public static class Grades
+    {
+        public const string View = "academic.grades.view";
+        public const string Create = "academic.grades.create";
+        public const string Edit = "academic.grades.edit";
+    }
+
     public static IReadOnlyCollection<string> All => new[]
     {
         Auth.Login,
@@ -133,7 +140,10 @@ public static class PermissionConstants
         CourseOfferingRosters.Finalize,
         Attendance.View,
         Attendance.Create,
-        Attendance.Edit
+        Attendance.Edit,
+        Grades.View,
+        Grades.Create,
+        Grades.Edit
     };
 
     public static string BuildPolicy(string permission) => $"{PolicyPrefix}{permission}";
