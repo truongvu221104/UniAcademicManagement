@@ -1,0 +1,64 @@
+@using Microsoft.AspNetCore.Authorization
+@using UniAcademic.Application.Security
+@inject IAuthorizationService AuthorizationService
+@model UniAcademic.Application.Models.Materials.CourseMaterialModel
+
+@{
+    ViewData["Title"] = "Course Material Details";
+    var canEdit = (await AuthorizationService.AuthorizeAsync(User, PermissionConstants.BuildPolicy(PermissionConstants.CourseMaterials.Edit))).Succeeded;
+    var canDownload = (await AuthorizationService.AuthorizeAsync(User, PermissionConstants.BuildPolicy(PermissionConstants.CourseMaterials.Download))).Succeeded;
+}
+
+<h1 class="h3 mb-3">Course Material Details</h1>
+
+@if (TempData["ErrorMessage"] is string errorMessage)
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+<dl class="row">
+    <dt class="col-sm-3">Course Offering</dt>
+    <dd class="col-sm-9">@Model.CourseOfferingCode</dd>
+
+    <dt class="col-sm-3">Course</dt>
+    <dd class="col-sm-9">@Model.CourseName</dd>
+
+    <dt class="col-sm-3">Semester</dt>
+    <dd class="col-sm-9">@Model.SemesterName</dd>
+
+    <dt class="col-sm-3">Title</dt>
+    <dd class="col-sm-9">@Model.Title</dd>
+
+    <dt class="col-sm-3">Description</dt>
+    <dd class="col-sm-9">@Model.Description</dd>
+
+    <dt class="col-sm-3">Type</dt>
+    <dd class="col-sm-9">@Model.MaterialType</dd>
+
+    <dt class="col-sm-3">File</dt>
+    <dd class="col-sm-9">@Model.OriginalFileName</dd>
+
+    <dt class="col-sm-3">Content Type</dt>
+    <dd class="col-sm-9">@Model.ContentType</dd>
+
+    <dt class="col-sm-3">Size</dt>
+    <dd class="col-sm-9">@Model.SizeInBytes bytes</dd>
+
+    <dt class="col-sm-3">Published</dt>
+    <dd class="col-sm-9">@(Model.IsPublished ? "Yes" : "No")</dd>
+
+    <dt class="col-sm-3">Uploaded</dt>
+    <dd class="col-sm-9">@Model.UploadedAtUtc.ToString("yyyy-MM-dd HH:mm") by @Model.UploadedBy</dd>
+</dl>
+
+<div class="d-flex gap-2">
+    @if (canEdit)
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+    }
+    @if (canDownload)
+    {
+        <a asp-action="Download" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Download</a>
+    }
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</div>

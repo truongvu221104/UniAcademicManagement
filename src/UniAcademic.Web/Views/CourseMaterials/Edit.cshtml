@@ -1,0 +1,78 @@
+@using UniAcademic.Domain.Enums
+@model UniAcademic.Web.Models.Materials.UpdateCourseMaterialViewModel
+
+@{
+    ViewData["Title"] = "Edit Course Material";
+}
+
+<h1 class="h3 mb-3">Edit Course Material</h1>
+
+<div class="row">
+    <div class="col-lg-8">
+        <form method="post">
+            @Html.AntiForgeryToken()
+            <input asp-for="Id" type="hidden" />
+            <input asp-for="CourseOfferingId" type="hidden" />
+            <input asp-for="CourseOfferingCode" type="hidden" />
+            <input asp-for="CourseName" type="hidden" />
+            <input asp-for="SemesterName" type="hidden" />
+            <input asp-for="OriginalFileName" type="hidden" />
+            <input asp-for="ContentType" type="hidden" />
+            <input asp-for="SizeInBytes" type="hidden" />
+            <input asp-for="IsPublished" type="hidden" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="mb-3">
+                <label class="form-label">Course Offering</label>
+                <input class="form-control" value="@Model.CourseOfferingCode - @Model.CourseName - @Model.SemesterName" readonly />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">File</label>
+                <input class="form-control" value="@Model.OriginalFileName (@Model.ContentType, @Model.SizeInBytes bytes)" readonly />
+            </div>
+            <div class="mb-3">
+                <label asp-for="Title" class="form-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="MaterialType" class="form-label"></label>
+                    <select asp-for="MaterialType" class="form-select" asp-items="Html.GetEnumSelectList<CourseMaterialType>()"></select>
+                    <span asp-validation-for="MaterialType" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="SortOrder" class="form-label"></label>
+                    <input asp-for="SortOrder" class="form-control" />
+                    <span asp-validation-for="SortOrder" class="text-danger"></span>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="h5">Publish State</h2>
+                <p>Current state: <strong>@(Model.IsPublished ? "Published" : "Hidden")</strong></p>
+                <form asp-action="SetPublishState" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <input type="hidden" name="isPublished" value="@(!Model.IsPublished)" />
+                    <button type="submit" class="btn btn-outline-primary">
+                        @(Model.IsPublished ? "Unpublish" : "Publish")
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

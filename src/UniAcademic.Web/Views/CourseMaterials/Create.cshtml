@@ -1,0 +1,64 @@
+@using Microsoft.AspNetCore.Mvc.Rendering
+@using UniAcademic.Domain.Enums
+@model UniAcademic.Web.Models.Materials.UploadCourseMaterialViewModel
+
+@{
+    ViewData["Title"] = "Upload Course Material";
+    var courseOfferingOptions = ViewBag.CourseOfferingOptions as IReadOnlyCollection<SelectListItem> ?? Array.Empty<SelectListItem>();
+}
+
+<h1 class="h3 mb-3">Upload Course Material</h1>
+
+<form method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="mb-3">
+        <label asp-for="CourseOfferingId" class="form-label"></label>
+        <select asp-for="CourseOfferingId" class="form-select">
+            @foreach (var option in courseOfferingOptions)
+            {
+                <option value="@option.Value" selected="@option.Selected">@option.Text</option>
+            }
+        </select>
+        <span asp-validation-for="CourseOfferingId" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="File" class="form-label"></label>
+        <input asp-for="File" class="form-control" type="file" />
+        <span asp-validation-for="File" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label asp-for="MaterialType" class="form-label"></label>
+            <select asp-for="MaterialType" class="form-select" asp-items="Html.GetEnumSelectList<CourseMaterialType>()"></select>
+            <span asp-validation-for="MaterialType" class="text-danger"></span>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="SortOrder" class="form-label"></label>
+            <input asp-for="SortOrder" class="form-control" />
+            <span asp-validation-for="SortOrder" class="text-danger"></span>
+        </div>
+        <div class="col-md-4 mb-3 d-flex align-items-center">
+            <div class="form-check mt-4">
+                <input asp-for="IsPublished" class="form-check-input" />
+                <label asp-for="IsPublished" class="form-check-label"></label>
+            </div>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Upload</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

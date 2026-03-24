@@ -42,6 +42,10 @@ public sealed class AppDbContext : DbContext, IAppDbContext
 
     public DbSet<GradeEntry> GradeEntriesSet => Set<GradeEntry>();
 
+    public DbSet<FileMetadata> FileMetadatasSet => Set<FileMetadata>();
+
+    public DbSet<CourseMaterial> CourseMaterialsSet => Set<CourseMaterial>();
+
     public DbSet<SeedDatasetState> SeedDatasetStates => Set<SeedDatasetState>();
 
     public DbSet<Role> Roles => Set<Role>();
@@ -85,6 +89,10 @@ public sealed class AppDbContext : DbContext, IAppDbContext
     IQueryable<GradeCategory> IAppDbContext.GradeCategories => GradeCategoriesSet;
 
     IQueryable<GradeEntry> IAppDbContext.GradeEntries => GradeEntriesSet;
+
+    IQueryable<FileMetadata> IAppDbContext.FileMetadatas => FileMetadatasSet;
+
+    IQueryable<CourseMaterial> IAppDbContext.CourseMaterials => CourseMaterialsSet;
 
     IQueryable<Role> IAppDbContext.Roles => Roles;
 

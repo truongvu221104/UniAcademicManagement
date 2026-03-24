@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using UniAcademic.Application.Abstractions.Auth;
 using UniAcademic.Application.Abstractions.Common;
 using UniAcademic.Application.Abstractions.Persistence;
+using UniAcademic.Application.Abstractions.Storage;
 using UniAcademic.Infrastructure.Options;
 using UniAcademic.Infrastructure.Persistence;
 using UniAcademic.Infrastructure.Security;
@@ -13,6 +14,7 @@ using UniAcademic.Infrastructure.SeedData;
 using UniAcademic.Infrastructure.SeedData.Services;
 using UniAcademic.Infrastructure.Services.Auth;
 using UniAcademic.Infrastructure.Services.Common;
+using UniAcademic.Infrastructure.Storage;
 
 namespace UniAcademic.Infrastructure;
 
@@ -23,6 +25,7 @@ public static class DependencyInjection
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
         services.Configure<BootstrapAdminOptions>(configuration.GetSection(BootstrapAdminOptions.SectionName));
         services.Configure<SeedDataOptions>(configuration.GetSection(SeedDataOptions.SectionName));
+        services.Configure<LocalFileStorageOptions>(configuration.GetSection(LocalFileStorageOptions.SectionName));
 
         services.AddHttpContextAccessor();
 
@@ -36,6 +39,7 @@ public static class DependencyInjection
         services.AddScoped<IPermissionService, PermissionService>();
         services.AddScoped<IAuditService, AuditService>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<ILocalFileStorage, LocalFileStorage>();
         services.AddSingleton<IDateTimeProvider, SystemDateTimeProvider>();
         services.AddScoped<ICurrentUser, CurrentUserAccessor>();
         services.AddScoped<IClientContextAccessor, ClientContextAccessor>();
