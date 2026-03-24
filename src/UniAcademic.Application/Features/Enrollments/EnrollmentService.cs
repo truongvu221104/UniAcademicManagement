@@ -33,6 +33,7 @@ public sealed class EnrollmentService : IEnrollmentService
     {
         var studentProfile = await RequireStudentProfileAsync(command.StudentProfileId, cancellationToken);
         var courseOffering = await RequireCourseOfferingAsync(command.CourseOfferingId, cancellationToken);
+        EnsureRosterIsOpen(courseOffering);
         var note = NormalizeNote(command.Note);
 
         var existingEnrollment = await _dbContext.Enrollments
@@ -101,13 +102,17 @@ public sealed class EnrollmentService : IEnrollmentService
 
     public async Task DropAsync(DropEnrollmentCommand command, CancellationToken cancellationToken = default)
     {
-        var enrollment = await _dbContext.Enrollments.FirstOrDefaultAsync(x => x.Id == command.Id, cancellationToken)
+        var enrollment = await _dbContext.Enrollments
+            .Include(x => x.CourseOffering)
+            .FirstOrDefaultAsync(x => x.Id == command.Id, cancellationToken)
             ?? throw new AuthException("Enrollment was not found.");
 
         if (enrollment.Status == EnrollmentStatus.Dropped)
         {
             throw new AuthException("Enrollment was already dropped.");
         }
+
+        EnsureRosterIsOpen(enrollment.CourseOffering);
 
         enrollment.Status = EnrollmentStatus.Dropped;
         enrollment.DroppedAtUtc = _dateTimeProvider.UtcNow;
@@ -238,6 +243,14 @@ public sealed class EnrollmentService : IEnrollmentService
         if (enrolledCount >= capacity)
         {
             throw new AuthException("Course offering capacity has been reached.");
+        }
+    }
+
+    private static void EnsureRosterIsOpen(CourseOffering? courseOffering)
+    {
+        if (courseOffering?.IsRosterFinalized == true)
+        {
+            throw new AuthException("Course offering roster was already finalized.");
         }
     }
 

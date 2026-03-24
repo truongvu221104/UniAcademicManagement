@@ -79,6 +79,12 @@ public static class PermissionConstants
         public const string Delete = "academic.enrollments.delete";
     }
 
+    public static class CourseOfferingRosters
+    {
+        public const string View = "academic.courseofferingrosters.view";
+        public const string Finalize = "academic.courseofferingrosters.finalize";
+    }
+
     public static IReadOnlyCollection<string> All => new[]
     {
         Auth.Login,
@@ -115,7 +121,9 @@ public static class PermissionConstants
         StudentProfiles.Delete,
         Enrollments.View,
         Enrollments.Create,
-        Enrollments.Delete
+        Enrollments.Delete,
+        CourseOfferingRosters.View,
+        CourseOfferingRosters.Finalize
     };
 
     public static string BuildPolicy(string permission) => $"{PolicyPrefix}{permission}";

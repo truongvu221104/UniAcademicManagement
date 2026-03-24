@@ -1,0 +1,36 @@
+@model UniAcademic.Application.Models.Rosters.CourseOfferingRosterModel
+
+@{
+    ViewData["Title"] = "Finalize Course Offering Roster";
+}
+
+<h1 class="h3 mb-3">Finalize Course Offering Roster</h1>
+
+<div class="alert alert-warning">
+    Finalizing the roster will lock enroll, drop, and reactivate for this course offering.
+</div>
+
+<dl class="row">
+    <dt class="col-sm-3">Course Offering</dt>
+    <dd class="col-sm-9">@Model.CourseOfferingCode</dd>
+
+    <dt class="col-sm-3">Course</dt>
+    <dd class="col-sm-9">@Model.CourseName</dd>
+
+    <dt class="col-sm-3">Semester</dt>
+    <dd class="col-sm-9">@Model.SemesterName</dd>
+
+    <dt class="col-sm-3">Current Enrolled Count</dt>
+    <dd class="col-sm-9">@Model.ItemCount</dd>
+</dl>
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="courseOfferingId" value="@Model.CourseOfferingId" />
+    <div class="mb-3">
+        <label class="form-label" for="note">Note</label>
+        <textarea class="form-control" id="note" name="note" rows="4"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Finalize</button>
+    <a asp-action="Details" asp-route-courseOfferingId="@Model.CourseOfferingId" class="btn btn-secondary">Cancel</a>
+</form>

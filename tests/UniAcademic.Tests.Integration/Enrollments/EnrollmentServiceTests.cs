@@ -278,6 +278,99 @@ public sealed class EnrollmentServiceTests
     }
 
     [Fact]
+    public async Task EnrollAsync_ShouldFail_WhenCourseOfferingRosterIsFinalized()
+    {
+        await using var dbContext = CreateDbContext();
+        var studentProfile = await SeedStudentProfileAsync(dbContext, "SV001");
+        var courseOffering = await SeedCourseOfferingAsync(dbContext, "CS101-HK1-01", 2);
+        courseOffering.IsRosterFinalized = true;
+        courseOffering.RosterFinalizedAtUtc = new DateTime(2026, 3, 24, 0, 0, 0, DateTimeKind.Utc);
+        await dbContext.SaveChangesAsync();
+
+        var service = CreateEnrollmentService(dbContext);
+        var exception = await Assert.ThrowsAsync<AuthException>(() => service.EnrollAsync(new EnrollStudentCommand
+        {
+            StudentProfileId = studentProfile.Id,
+            CourseOfferingId = courseOffering.Id
+        }));
+
+        Assert.Equal("Course offering roster was already finalized.", exception.Message);
+        Assert.False(await dbContext.EnrollmentsSet.AnyAsync());
+    }
+
+    [Fact]
+    public async Task EnrollAsync_ShouldFailToReactivate_WhenCourseOfferingRosterIsFinalized()
+    {
+        await using var dbContext = CreateDbContext();
+        var studentProfile = await SeedStudentProfileAsync(dbContext, "SV001");
+        var courseOffering = await SeedCourseOfferingAsync(dbContext, "CS101-HK1-01", 2);
+        var droppedEnrollment = new Enrollment
+        {
+            StudentProfileId = studentProfile.Id,
+            CourseOfferingId = courseOffering.Id,
+            Status = EnrollmentStatus.Dropped,
+            EnrolledAtUtc = new DateTime(2026, 3, 18, 0, 0, 0, DateTimeKind.Utc),
+            DroppedAtUtc = new DateTime(2026, 3, 19, 0, 0, 0, DateTimeKind.Utc),
+            CreatedBy = "seed"
+        };
+        dbContext.EnrollmentsSet.Add(droppedEnrollment);
+        await dbContext.SaveChangesAsync();
+
+        courseOffering.IsRosterFinalized = true;
+        courseOffering.RosterFinalizedAtUtc = new DateTime(2026, 3, 24, 0, 0, 0, DateTimeKind.Utc);
+        await dbContext.SaveChangesAsync();
+
+        var service = CreateEnrollmentService(dbContext);
+        var exception = await Assert.ThrowsAsync<AuthException>(() => service.EnrollAsync(new EnrollStudentCommand
+        {
+            StudentProfileId = studentProfile.Id,
+            CourseOfferingId = courseOffering.Id
+        }));
+
+        Assert.Equal("Course offering roster was already finalized.", exception.Message);
+
+        var enrollments = await dbContext.EnrollmentsSet
+            .Where(x => x.CourseOfferingId == courseOffering.Id)
+            .ToListAsync();
+
+        Assert.Single(enrollments);
+        var unchangedDroppedEnrollment = enrollments.Single();
+        Assert.Equal(EnrollmentStatus.Dropped, unchangedDroppedEnrollment.Status);
+        Assert.NotNull(unchangedDroppedEnrollment.DroppedAtUtc);
+    }
+
+    [Fact]
+    public async Task DropAsync_ShouldFail_WhenCourseOfferingRosterIsFinalized()
+    {
+        await using var dbContext = CreateDbContext();
+        var studentProfile = await SeedStudentProfileAsync(dbContext, "SV001");
+        var courseOffering = await SeedCourseOfferingAsync(dbContext, "CS101-HK1-01", 2);
+        courseOffering.IsRosterFinalized = true;
+        courseOffering.RosterFinalizedAtUtc = new DateTime(2026, 3, 24, 0, 0, 0, DateTimeKind.Utc);
+        var enrollment = new Enrollment
+        {
+            StudentProfileId = studentProfile.Id,
+            CourseOfferingId = courseOffering.Id,
+            Status = EnrollmentStatus.Enrolled,
+            EnrolledAtUtc = new DateTime(2026, 3, 20, 0, 0, 0, DateTimeKind.Utc),
+            CreatedBy = "seed"
+        };
+        dbContext.EnrollmentsSet.Add(enrollment);
+        await dbContext.SaveChangesAsync();
+
+        var service = CreateEnrollmentService(dbContext);
+        var exception = await Assert.ThrowsAsync<AuthException>(() => service.DropAsync(new DropEnrollmentCommand
+        {
+            Id = enrollment.Id
+        }));
+
+        Assert.Equal("Course offering roster was already finalized.", exception.Message);
+        var unchangedEnrollment = await dbContext.EnrollmentsSet.SingleAsync(x => x.Id == enrollment.Id);
+        Assert.Equal(EnrollmentStatus.Enrolled, unchangedEnrollment.Status);
+        Assert.Null(unchangedEnrollment.DroppedAtUtc);
+    }
+
+    [Fact]
     public async Task GetListAsync_ShouldFilterByStatus()
     {
         await using var dbContext = CreateDbContext();

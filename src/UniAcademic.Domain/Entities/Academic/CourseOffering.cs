@@ -17,6 +17,10 @@ public sealed class CourseOffering : AuditableEntity, IAuditableEntity
 
     public CourseOfferingStatus Status { get; set; } = CourseOfferingStatus.Active;
 
+    public bool IsRosterFinalized { get; set; }
+
+    public DateTime? RosterFinalizedAtUtc { get; set; }
+
     public string? Description { get; set; }
 
     public bool IsDeleted { get; set; }

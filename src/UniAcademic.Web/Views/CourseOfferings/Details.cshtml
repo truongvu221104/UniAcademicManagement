@@ -30,4 +30,6 @@
 </dl>
 
 <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+<a asp-controller="CourseOfferingRosters" asp-action="Details" asp-route-courseOfferingId="@Model.Id" class="btn btn-outline-info">Roster</a>
+<a asp-controller="CourseOfferingRosters" asp-action="Finalize" asp-route-courseOfferingId="@Model.Id" class="btn btn-outline-warning">Finalize Roster</a>
 <a asp-action="Index" class="btn btn-secondary">Back</a>

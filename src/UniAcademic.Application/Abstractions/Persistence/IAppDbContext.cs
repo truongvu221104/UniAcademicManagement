@@ -19,6 +19,10 @@ public interface IAppDbContext
 
     IQueryable<CourseOffering> CourseOfferings { get; }
 
+    IQueryable<CourseOfferingRosterSnapshot> CourseOfferingRosterSnapshots { get; }
+
+    IQueryable<CourseOfferingRosterItem> CourseOfferingRosterItems { get; }
+
     IQueryable<User> Users { get; }
 
     IQueryable<Role> Roles { get; }

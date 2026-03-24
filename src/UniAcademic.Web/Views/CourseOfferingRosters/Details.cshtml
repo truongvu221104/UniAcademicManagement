@@ -1,0 +1,65 @@
+@model UniAcademic.Application.Models.Rosters.CourseOfferingRosterModel
+
+@{
+    ViewData["Title"] = "Course Offering Roster";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Course Offering Roster</h1>
+    @if (!Model.IsFinalized)
+    {
+        <a asp-action="Finalize" asp-route-courseOfferingId="@Model.CourseOfferingId" class="btn btn-primary">Finalize Roster</a>
+    }
+</div>
+
+<dl class="row">
+    <dt class="col-sm-3">Course Offering</dt>
+    <dd class="col-sm-9">@Model.CourseOfferingCode</dd>
+
+    <dt class="col-sm-3">Course</dt>
+    <dd class="col-sm-9">@Model.CourseName</dd>
+
+    <dt class="col-sm-3">Semester</dt>
+    <dd class="col-sm-9">@Model.SemesterName</dd>
+
+    <dt class="col-sm-3">Finalized</dt>
+    <dd class="col-sm-9">@Model.IsFinalized</dd>
+
+    <dt class="col-sm-3">Finalized At</dt>
+    <dd class="col-sm-9">@Model.FinalizedAtUtc?.ToString("yyyy-MM-dd HH:mm")</dd>
+
+    <dt class="col-sm-3">Finalized By</dt>
+    <dd class="col-sm-9">@Model.FinalizedBy</dd>
+
+    <dt class="col-sm-3">Item Count</dt>
+    <dd class="col-sm-9">@Model.ItemCount</dd>
+
+    <dt class="col-sm-3">Note</dt>
+    <dd class="col-sm-9">@Model.Note</dd>
+</dl>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Student Code</th>
+            <th>Student Name</th>
+            <th>Student Class</th>
+            <th>Course</th>
+            <th>Semester</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Items)
+    {
+        <tr>
+            <td>@item.StudentCode</td>
+            <td>@item.StudentFullName</td>
+            <td>@item.StudentClassName</td>
+            <td>@item.CourseCode - @item.CourseName</td>
+            <td>@item.SemesterName</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<a asp-controller="CourseOfferings" asp-action="Details" asp-route-id="@Model.CourseOfferingId" class="btn btn-secondary">Back</a>
