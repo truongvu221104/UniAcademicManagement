@@ -31,6 +31,8 @@ public interface IAppDbContext
 
     IQueryable<GradeEntry> GradeEntries { get; }
 
+    IQueryable<GradeResult> GradeResults { get; }
+
     IQueryable<FileMetadata> FileMetadatas { get; }
 
     IQueryable<CourseMaterial> CourseMaterials { get; }

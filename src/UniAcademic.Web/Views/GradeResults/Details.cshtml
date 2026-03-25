@@ -1,0 +1,38 @@
+@model UniAcademic.Application.Models.GradeResults.GradeResultModel
+
+@{
+    ViewData["Title"] = "Grade Result Details";
+}
+
+<h1 class="h3 mb-3">Grade Result Details</h1>
+
+<dl class="row">
+    <dt class="col-sm-3">Course Offering</dt>
+    <dd class="col-sm-9">@Model.CourseOfferingCode</dd>
+
+    <dt class="col-sm-3">Course</dt>
+    <dd class="col-sm-9">@Model.CourseName</dd>
+
+    <dt class="col-sm-3">Semester</dt>
+    <dd class="col-sm-9">@Model.SemesterName</dd>
+
+    <dt class="col-sm-3">Student</dt>
+    <dd class="col-sm-9">@Model.StudentCode - @Model.StudentFullName</dd>
+
+    <dt class="col-sm-3">Class</dt>
+    <dd class="col-sm-9">@Model.StudentClassName</dd>
+
+    <dt class="col-sm-3">Weighted Final Score</dt>
+    <dd class="col-sm-9">@Model.WeightedFinalScore.ToString("0.0000")</dd>
+
+    <dt class="col-sm-3">Passing Score</dt>
+    <dd class="col-sm-9">@Model.PassingScore.ToString("0.0000")</dd>
+
+    <dt class="col-sm-3">Is Passed</dt>
+    <dd class="col-sm-9">@(Model.IsPassed ? "Pass" : "Fail")</dd>
+
+    <dt class="col-sm-3">Calculated</dt>
+    <dd class="col-sm-9">@Model.CalculatedAtUtc.ToString("yyyy-MM-dd HH:mm") by @Model.CalculatedBy</dd>
+</dl>
+
+<a asp-action="Index" asp-route-courseOfferingId="@Model.CourseOfferingId" class="btn btn-secondary">Back</a>

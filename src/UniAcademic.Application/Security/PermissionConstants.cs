@@ -107,6 +107,12 @@ public static class PermissionConstants
         public const string Download = "academic.coursematerials.download";
     }
 
+    public static class GradeResults
+    {
+        public const string View = "academic.graderesults.view";
+        public const string Calculate = "academic.graderesults.calculate";
+    }
+
     public static IReadOnlyCollection<string> All => new[]
     {
         Auth.Login,
@@ -155,7 +161,9 @@ public static class PermissionConstants
         CourseMaterials.View,
         CourseMaterials.Create,
         CourseMaterials.Edit,
-        CourseMaterials.Download
+        CourseMaterials.Download,
+        GradeResults.View,
+        GradeResults.Calculate
     };
 
     public static string BuildPolicy(string permission) => $"{PolicyPrefix}{permission}";
