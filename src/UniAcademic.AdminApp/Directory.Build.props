@@ -1,0 +1,12 @@
+<Project>
+  <Import Project="..\..\Directory.Build.props" />
+  <PropertyGroup>
+    <BaseIntermediateOutputPath>obj_adminapp\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath>obj_adminapp\</MSBuildProjectExtensionsPath>
+    <BaseOutputPath>bin_adminapp\</BaseOutputPath>
+    <BuildInParallel>false</BuildInParallel>
+    <RestoreDisableParallel>true</RestoreDisableParallel>
+    <NuGetAudit>false</NuGetAudit>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(MSBuildProjectDirectory)\obj\**;$(MSBuildProjectDirectory)\obj2\**</DefaultItemExcludes>
+  </PropertyGroup>
+</Project>

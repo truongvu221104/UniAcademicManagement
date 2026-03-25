@@ -15,6 +15,9 @@ using UniAcademic.AdminApp.Services.Rosters;
 using UniAcademic.AdminApp.Services.Semesters;
 using UniAcademic.AdminApp.Services.StudentClasses;
 using UniAcademic.AdminApp.Services.StudentProfiles;
+using UniAcademic.AdminApp.Dialogs;
+using UniAcademic.AdminApp.Navigation;
+using UniAcademic.AdminApp.ViewModels;
 
 namespace UniAcademic.AdminApp;
 
@@ -30,8 +33,9 @@ public partial class App : Application
         ConfigureServices(services);
         _serviceProvider = services.BuildServiceProvider();
 
-        var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
-        mainWindow.Show();
+        var shellWindow = _serviceProvider.GetRequiredService<ShellWindow>();
+        MainWindow = shellWindow;
+        shellWindow.Show();
     }
 
     protected override void OnExit(ExitEventArgs e)
@@ -42,7 +46,14 @@ public partial class App : Application
 
     private static void ConfigureServices(IServiceCollection services)
     {
-        services.AddSingleton<MainWindow>();
+        services.AddSingleton<ShellWindow>();
+        services.AddSingleton<LoginViewModel>();
+        services.AddSingleton<MainWindowViewModel>();
+        services.AddSingleton<AdminModuleCatalog>();
+        services.AddSingleton<IMessageDialogService, MessageDialogService>();
+        services.AddSingleton<IFormDialogService, FormDialogService>();
+        services.AddSingleton<ITextEditorDialogService, TextEditorDialogService>();
+        services.AddSingleton<IFileDialogService, FileDialogService>();
 
         services.AddSingleton<ITokenStore, ProtectedTokenStore>();
         services.AddSingleton<IAuthSessionService, AuthSessionService>();

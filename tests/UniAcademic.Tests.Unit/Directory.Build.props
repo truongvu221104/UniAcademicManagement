@@ -1,0 +1,9 @@
+<Project>
+  <Import Project="..\..\Directory.Build.props" />
+  <PropertyGroup>
+    <BaseIntermediateOutputPath>obj2\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath>obj2\</MSBuildProjectExtensionsPath>
+    <BuildInParallel>false</BuildInParallel>
+    <RestoreDisableParallel>true</RestoreDisableParallel>
+  </PropertyGroup>
+</Project>

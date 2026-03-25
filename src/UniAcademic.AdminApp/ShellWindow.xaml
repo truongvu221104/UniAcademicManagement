@@ -1,0 +1,92 @@
+<Window x:Class="UniAcademic.AdminApp.ShellWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="UniAcademic Admin"
+        Width="1480"
+        Height="900"
+        WindowStartupLocation="CenterScreen">
+    <Grid Background="#F6F8FA">
+        <Grid Visibility="{Binding IsAuthenticated, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="280" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0"
+                    Background="#0F172A"
+                    Padding="16">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Bottom">
+                        <TextBlock Text="{Binding CurrentUserDisplay}"
+                                   Foreground="White"
+                                   TextWrapping="Wrap"
+                                   Margin="0,12,0,12" />
+                        <Button Content="Logout"
+                                Command="{Binding LogoutCommand}" />
+                    </StackPanel>
+
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <TextBlock Text="UniAcademic"
+                                       Foreground="White"
+                                       FontSize="22"
+                                       FontWeight="Bold"
+                                       Margin="0,0,0,16" />
+
+                            <ItemsControl ItemsSource="{Binding Groups}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Margin="0,0,0,16">
+                                            <TextBlock Text="{Binding Title}"
+                                                       Foreground="#93C5FD"
+                                                       FontWeight="SemiBold"
+                                                       Margin="0,0,0,8" />
+                                            <ItemsControl ItemsSource="{Binding Items}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Button Content="{Binding Title}"
+                                                                Margin="0,0,0,8"
+                                                                HorizontalContentAlignment="Left"
+                                                                Command="{Binding OpenCommand}" />
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </ScrollViewer>
+                </DockPanel>
+            </Border>
+
+            <Border Grid.Column="1"
+                    Margin="16"
+                    Padding="8"
+                    Background="White"
+                    CornerRadius="12"
+                    BorderBrush="#D0D7DE"
+                    BorderThickness="1">
+                <ContentControl Content="{Binding CurrentModule}" />
+            </Border>
+        </Grid>
+
+        <ContentControl Content="{Binding Login}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+            <ContentControl.Style>
+                <Style TargetType="ContentControl">
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsAuthenticated}" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+        </ContentControl>
+    </Grid>
+</Window>
