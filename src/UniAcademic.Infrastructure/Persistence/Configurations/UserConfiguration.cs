@@ -23,5 +23,17 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.HasIndex(x => x.NormalizedUsername).IsUnique();
         builder.HasIndex(x => x.NormalizedEmail).IsUnique();
+        builder.HasIndex(x => x.StudentProfileId);
+        builder.HasIndex(x => x.LecturerProfileId);
+
+        builder.HasOne(x => x.StudentProfile)
+            .WithMany()
+            .HasForeignKey(x => x.StudentProfileId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(x => x.LecturerProfile)
+            .WithMany()
+            .HasForeignKey(x => x.LecturerProfileId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

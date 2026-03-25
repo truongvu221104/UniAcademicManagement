@@ -1,4 +1,5 @@
 using UniAcademic.SharedKernel;
+using UniAcademic.Domain.Entities.Academic;
 
 namespace UniAcademic.Domain.Entities.Identity;
 
@@ -16,6 +17,10 @@ public sealed class User : AuditableEntity, IAuditableEntity
 
     public string PasswordHash { get; set; } = string.Empty;
 
+    public Guid? StudentProfileId { get; set; }
+
+    public Guid? LecturerProfileId { get; set; }
+
     public bool IsActive { get; set; } = true;
 
     public bool IsLocked { get; set; }
@@ -29,6 +34,10 @@ public sealed class User : AuditableEntity, IAuditableEntity
     public byte[] RowVersion { get; set; } = [];
 
     public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+
+    public StudentProfile? StudentProfile { get; set; }
+
+    public LecturerProfile? LecturerProfile { get; set; }
 
     public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 

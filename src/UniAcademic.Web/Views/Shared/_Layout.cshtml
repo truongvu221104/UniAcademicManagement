@@ -1,4 +1,6 @@
 ﻿<!DOCTYPE html>
+@inject UniAcademic.Application.Abstractions.Auth.ICurrentStudentContext CurrentStudentContext
+@inject UniAcademic.Application.Abstractions.Auth.ICurrentLecturerContext CurrentLecturerContext
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -18,6 +20,12 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    @{
+                        var hasStudentPortal = User.Identity?.IsAuthenticated == true
+                            && await CurrentStudentContext.GetStudentProfileIdAsync() is not null;
+                        var hasLecturerPortal = User.Identity?.IsAuthenticated == true
+                            && await CurrentLecturerContext.GetLecturerProfileIdAsync() is not null;
+                    }
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
@@ -66,6 +74,42 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="CourseMaterials" asp-action="Index">Course Materials</a>
                             </li>
+                            @if (hasStudentPortal)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="Student" asp-controller="StudentCourseOfferings" asp-action="Index">My Courses</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="Student" asp-controller="StudentAttendance" asp-action="Index">My Attendance</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="Student" asp-controller="StudentGrades" asp-action="Index">My Grades</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="Student" asp-controller="StudentGradeResults" asp-action="Index">My Results</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="Student" asp-controller="StudentMaterials" asp-action="Index">My Materials</a>
+                                </li>
+                            }
+                            @if (hasLecturerPortal)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="Lecturer" asp-controller="LecturerOfferings" asp-action="Index">My Teaching</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="Lecturer" asp-controller="LecturerAttendance" asp-action="Index">Teaching Attendance</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="Lecturer" asp-controller="LecturerGrades" asp-action="Index">Teaching Grades</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="Lecturer" asp-controller="LecturerMaterials" asp-action="Index">Teaching Materials</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="Lecturer" asp-controller="LecturerGradeResults" asp-action="Index">Teaching Results</a>
+                                </li>
+                            }
                         }
                     </ul>
                     <ul class="navbar-nav">

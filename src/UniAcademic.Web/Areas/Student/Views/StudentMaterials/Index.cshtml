@@ -1,0 +1,52 @@
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model IReadOnlyCollection<UniAcademic.Application.Models.Materials.CourseMaterialListItemModel>
+
+@{
+    ViewData["Title"] = "My Materials";
+    var courseOfferingOptions = ViewBag.CourseOfferingOptions as IReadOnlyCollection<SelectListItem> ?? Array.Empty<SelectListItem>();
+}
+
+<h1 class="h3 mb-3">My Materials</h1>
+
+<form method="get" class="row g-3 mb-3">
+    <div class="col-md-4">
+        <label class="form-label">Course Offering</label>
+        <select name="courseOfferingId" class="form-select">
+            @foreach (var option in courseOfferingOptions)
+            {
+                <option value="@option.Value" selected="@option.Selected">@option.Text</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-secondary w-100">Filter</button>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Course Offering</th>
+            <th>Title</th>
+            <th>Type</th>
+            <th>File</th>
+            <th>Uploaded At</th>
+            <th class="text-end">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.CourseOfferingCode - @item.CourseName (@item.SemesterName)</td>
+            <td>@item.Title</td>
+            <td>@item.MaterialType</td>
+            <td>@item.OriginalFileName</td>
+            <td>@item.UploadedAtUtc.ToString("yyyy-MM-dd HH:mm")</td>
+            <td class="text-end">
+                <a asp-area="Student" asp-controller="StudentMaterials" asp-action="Download" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Download</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -1,0 +1,46 @@
+@model IReadOnlyCollection<UniAcademic.Application.Models.CourseOfferings.CourseOfferingListItemModel>
+
+@{
+    ViewData["Title"] = "My Teaching Offerings";
+}
+
+<h1 class="h3 mb-3">My Teaching Offerings</h1>
+
+<form method="get" class="row g-3 mb-3">
+    <div class="col-md-6">
+        <label class="form-label">Keyword</label>
+        <input type="text" name="keyword" value="@ViewBag.Keyword" class="form-control" />
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-secondary w-100">Filter</button>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Code</th>
+            <th>Display Name</th>
+            <th>Course</th>
+            <th>Semester</th>
+            <th class="text-end">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Code</td>
+            <td>@item.DisplayName</td>
+            <td>@item.CourseCode - @item.CourseName</td>
+            <td>@item.SemesterName</td>
+            <td class="text-end">
+                <a asp-area="Lecturer" asp-controller="LecturerAttendance" asp-action="Index" asp-route-courseOfferingId="@item.Id" class="btn btn-sm btn-outline-primary">Attendance</a>
+                <a asp-area="Lecturer" asp-controller="LecturerGrades" asp-action="Index" asp-route-courseOfferingId="@item.Id" class="btn btn-sm btn-outline-success">Grades</a>
+                <a asp-area="Lecturer" asp-controller="LecturerMaterials" asp-action="Index" asp-route-courseOfferingId="@item.Id" class="btn btn-sm btn-outline-info">Materials</a>
+                <a asp-area="Lecturer" asp-controller="LecturerGradeResults" asp-action="Index" asp-route-courseOfferingId="@item.Id" class="btn btn-sm btn-outline-dark">Results</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

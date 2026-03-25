@@ -1,0 +1,31 @@
+@model UniAcademic.Application.Models.Materials.CourseMaterialModel
+
+@{
+    ViewData["Title"] = "Material Details";
+}
+
+<h1 class="h3 mb-3">Material Details</h1>
+
+<dl class="row">
+    <dt class="col-sm-3">Course Offering</dt>
+    <dd class="col-sm-9">@Model.CourseOfferingCode - @Model.CourseName (@Model.SemesterName)</dd>
+
+    <dt class="col-sm-3">Title</dt>
+    <dd class="col-sm-9">@Model.Title</dd>
+
+    <dt class="col-sm-3">Description</dt>
+    <dd class="col-sm-9">@Model.Description</dd>
+
+    <dt class="col-sm-3">Type</dt>
+    <dd class="col-sm-9">@Model.MaterialType</dd>
+
+    <dt class="col-sm-3">Published</dt>
+    <dd class="col-sm-9">@Model.IsPublished</dd>
+
+    <dt class="col-sm-3">File</dt>
+    <dd class="col-sm-9">@Model.OriginalFileName (@Model.ContentType, @Model.SizeInBytes bytes)</dd>
+</dl>
+
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+<a asp-action="Download" asp-route-id="@Model.Id" class="btn btn-secondary">Download</a>
+<a asp-action="Index" class="btn btn-outline-secondary">Back</a>

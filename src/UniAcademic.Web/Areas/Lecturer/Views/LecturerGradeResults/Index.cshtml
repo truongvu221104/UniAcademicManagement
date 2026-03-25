@@ -1,0 +1,50 @@
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model IReadOnlyCollection<UniAcademic.Application.Models.GradeResults.GradeResultListItemModel>
+
+@{
+    ViewData["Title"] = "View Grade Results";
+    var courseOfferingOptions = ViewBag.CourseOfferingOptions as IReadOnlyCollection<SelectListItem> ?? Array.Empty<SelectListItem>();
+}
+
+<h1 class="h3 mb-3">View Grade Results</h1>
+
+<form method="get" class="row g-3 mb-3">
+    <div class="col-md-4">
+        <label class="form-label">Course Offering</label>
+        <select name="courseOfferingId" class="form-select">
+            @foreach (var option in courseOfferingOptions)
+            {
+                <option value="@option.Value" selected="@option.Selected">@option.Text</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-secondary w-100">Filter</button>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Course Offering</th>
+            <th>Student</th>
+            <th>Weighted Final Score</th>
+            <th>Passing Score</th>
+            <th>Passed</th>
+            <th>Calculated At</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.CourseOfferingCode - @item.CourseName (@item.SemesterName)</td>
+            <td>@item.StudentCode - @item.StudentFullName</td>
+            <td>@item.WeightedFinalScore.ToString("0.00")</td>
+            <td>@item.PassingScore.ToString("0.00")</td>
+            <td>@item.IsPassed</td>
+            <td>@item.CalculatedAtUtc.ToString("yyyy-MM-dd HH:mm")</td>
+        </tr>
+    }
+    </tbody>
+</table>

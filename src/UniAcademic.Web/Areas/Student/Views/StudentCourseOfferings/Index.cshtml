@@ -1,0 +1,43 @@
+@model IReadOnlyCollection<UniAcademic.Application.Models.CourseOfferings.CourseOfferingListItemModel>
+
+@{
+    ViewData["Title"] = "My Course Offerings";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">My Course Offerings</h1>
+</div>
+
+<form method="get" class="row g-3 mb-3">
+    <div class="col-md-6">
+        <label class="form-label">Keyword</label>
+        <input type="text" name="keyword" value="@ViewBag.Keyword" class="form-control" />
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-secondary w-100">Filter</button>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Code</th>
+            <th>Display Name</th>
+            <th>Course</th>
+            <th>Semester</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Code</td>
+            <td>@item.DisplayName</td>
+            <td>@item.CourseCode - @item.CourseName</td>
+            <td>@item.SemesterName</td>
+            <td>@item.Status</td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -1,0 +1,40 @@
+@model UniAcademic.Application.Models.Grades.GradeCategoryModel
+
+@{
+    ViewData["Title"] = "Grade Category Details";
+}
+
+<h1 class="h3 mb-3">Grade Category Details</h1>
+
+<div class="mb-3">
+    <strong>@Model.CourseOfferingCode</strong> - @Model.CourseName (@Model.SemesterName)<br />
+    Category: @Model.Name | Weight: @Model.Weight | Max Score: @Model.MaxScore
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Student Code</th>
+            <th>Full Name</th>
+            <th>Class</th>
+            <th>Score</th>
+            <th>Note</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Entries)
+    {
+        <tr>
+            <td>@item.StudentCode</td>
+            <td>@item.StudentFullName</td>
+            <td>@item.StudentClassName</td>
+            <td>@item.Score</td>
+            <td>@item.Note</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<a asp-action="EditCategory" asp-route-id="@Model.Id" class="btn btn-primary">Edit Category</a>
+<a asp-action="EditEntries" asp-route-id="@Model.Id" class="btn btn-success">Edit Entries</a>
+<a asp-action="Index" class="btn btn-secondary">Back</a>

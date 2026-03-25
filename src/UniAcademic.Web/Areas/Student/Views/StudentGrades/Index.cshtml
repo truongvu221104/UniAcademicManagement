@@ -1,0 +1,50 @@
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model IReadOnlyCollection<UniAcademic.Application.Models.StudentPortal.StudentGradeItemModel>
+
+@{
+    ViewData["Title"] = "My Grades";
+    var courseOfferingOptions = ViewBag.CourseOfferingOptions as IReadOnlyCollection<SelectListItem> ?? Array.Empty<SelectListItem>();
+}
+
+<h1 class="h3 mb-3">My Grades</h1>
+
+<form method="get" class="row g-3 mb-3">
+    <div class="col-md-4">
+        <label class="form-label">Course Offering</label>
+        <select name="courseOfferingId" class="form-select">
+            @foreach (var option in courseOfferingOptions)
+            {
+                <option value="@option.Value" selected="@option.Selected">@option.Text</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-secondary w-100">Filter</button>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Course Offering</th>
+            <th>Category</th>
+            <th>Weight</th>
+            <th>Max Score</th>
+            <th>Score</th>
+            <th>Note</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.CourseOfferingCode - @item.CourseName (@item.SemesterName)</td>
+            <td>@item.CategoryName</td>
+            <td>@item.Weight</td>
+            <td>@item.MaxScore</td>
+            <td>@item.Score</td>
+            <td>@item.Note</td>
+        </tr>
+    }
+    </tbody>
+</table>
