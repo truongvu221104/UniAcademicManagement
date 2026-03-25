@@ -1,0 +1,70 @@
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model IReadOnlyCollection<UniAcademic.Application.Models.LecturerAssignments.LecturerAssignmentModel>
+
+@{
+    ViewData["Title"] = "Lecturer Assignments";
+    var courseOfferingOptions = ViewBag.CourseOfferingOptions as IReadOnlyCollection<SelectListItem> ?? Array.Empty<SelectListItem>();
+    var lecturerProfileOptions = ViewBag.LecturerProfileOptions as IReadOnlyCollection<SelectListItem> ?? Array.Empty<SelectListItem>();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Lecturer Assignments</h1>
+    <a asp-action="Create" asp-route-courseOfferingId="@ViewBag.CourseOfferingId" class="btn btn-primary">Assign Lecturer</a>
+</div>
+
+<form method="get" class="row g-3 mb-3">
+    <div class="col-md-5">
+        <label class="form-label">Course Offering</label>
+        <select name="courseOfferingId" class="form-select">
+            @foreach (var option in courseOfferingOptions)
+            {
+                <option value="@option.Value" selected="@option.Selected">@option.Text</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-5">
+        <label class="form-label">Lecturer</label>
+        <select name="lecturerProfileId" class="form-select">
+            @foreach (var option in lecturerProfileOptions)
+            {
+                <option value="@option.Value" selected="@option.Selected">@option.Text</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-secondary w-100">Filter</button>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Course Offering</th>
+            <th>Course</th>
+            <th>Lecturer</th>
+            <th>Faculty</th>
+            <th>Primary</th>
+            <th>Assigned At</th>
+            <th class="text-end">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.CourseOfferingCode</td>
+            <td>@item.CourseName (@item.SemesterName)</td>
+            <td>@item.LecturerCode - @item.LecturerFullName</td>
+            <td>@item.FacultyName</td>
+            <td>@item.IsPrimary</td>
+            <td>@item.AssignedAtUtc</td>
+            <td class="text-end">
+                <form asp-action="Delete" asp-route-id="@item.Id" asp-route-courseOfferingId="@item.CourseOfferingId" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Unassign this lecturer?');">Unassign</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

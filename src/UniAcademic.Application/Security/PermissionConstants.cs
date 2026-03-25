@@ -113,6 +113,21 @@ public static class PermissionConstants
         public const string Calculate = "academic.graderesults.calculate";
     }
 
+    public static class LecturerProfiles
+    {
+        public const string View = "academic.lecturerprofiles.view";
+        public const string Create = "academic.lecturerprofiles.create";
+        public const string Edit = "academic.lecturerprofiles.edit";
+        public const string Delete = "academic.lecturerprofiles.delete";
+    }
+
+    public static class LecturerAssignments
+    {
+        public const string View = "academic.lecturerassignments.view";
+        public const string Assign = "academic.lecturerassignments.assign";
+        public const string Unassign = "academic.lecturerassignments.unassign";
+    }
+
     public static IReadOnlyCollection<string> All => new[]
     {
         Auth.Login,
@@ -163,7 +178,14 @@ public static class PermissionConstants
         CourseMaterials.Edit,
         CourseMaterials.Download,
         GradeResults.View,
-        GradeResults.Calculate
+        GradeResults.Calculate,
+        LecturerProfiles.View,
+        LecturerProfiles.Create,
+        LecturerProfiles.Edit,
+        LecturerProfiles.Delete,
+        LecturerAssignments.View,
+        LecturerAssignments.Assign,
+        LecturerAssignments.Unassign
     };
 
     public static string BuildPolicy(string permission) => $"{PolicyPrefix}{permission}";

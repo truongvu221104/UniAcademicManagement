@@ -24,6 +24,10 @@ public sealed class AppDbContext : DbContext, IAppDbContext
 
     public DbSet<Enrollment> EnrollmentsSet => Set<Enrollment>();
 
+    public DbSet<LecturerProfile> LecturerProfilesSet => Set<LecturerProfile>();
+
+    public DbSet<LecturerAssignment> LecturerAssignmentsSet => Set<LecturerAssignment>();
+
     public DbSet<Course> CoursesSet => Set<Course>();
 
     public DbSet<Semester> SemestersSet => Set<Semester>();
@@ -74,6 +78,10 @@ public sealed class AppDbContext : DbContext, IAppDbContext
 
     IQueryable<Enrollment> IAppDbContext.Enrollments => EnrollmentsSet;
 
+    IQueryable<LecturerProfile> IAppDbContext.LecturerProfiles => LecturerProfilesSet;
+
+    IQueryable<LecturerAssignment> IAppDbContext.LecturerAssignments => LecturerAssignmentsSet;
+
     IQueryable<Course> IAppDbContext.Courses => CoursesSet;
 
     IQueryable<Semester> IAppDbContext.Semesters => SemestersSet;
@@ -112,6 +120,12 @@ public sealed class AppDbContext : DbContext, IAppDbContext
         where TEntity : class
     {
         return Set<TEntity>().AddAsync(entity, cancellationToken).AsTask();
+    }
+
+    public new void Remove<TEntity>(TEntity entity)
+        where TEntity : class
+    {
+        Set<TEntity>().Remove(entity);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -8,6 +8,8 @@ using UniAcademic.AdminApp.Services.Enrollments;
 using UniAcademic.AdminApp.Services.Faculties;
 using UniAcademic.AdminApp.Services.Grades;
 using UniAcademic.AdminApp.Services.GradeResults;
+using UniAcademic.AdminApp.Services.LecturerAssignments;
+using UniAcademic.AdminApp.Services.LecturerProfiles;
 using UniAcademic.AdminApp.Services.Materials;
 using UniAcademic.AdminApp.Services.Rosters;
 using UniAcademic.AdminApp.Services.Semesters;
@@ -107,6 +109,16 @@ public partial class App : Application
         }).AddHttpMessageHandler<BearerTokenHandler>();
 
         services.AddHttpClient<IGradeResultApiClient, GradeResultApiClient>(client =>
+        {
+            client.BaseAddress = new Uri("https://localhost:7271/");
+        }).AddHttpMessageHandler<BearerTokenHandler>();
+
+        services.AddHttpClient<ILecturerProfileApiClient, LecturerProfileApiClient>(client =>
+        {
+            client.BaseAddress = new Uri("https://localhost:7271/");
+        }).AddHttpMessageHandler<BearerTokenHandler>();
+
+        services.AddHttpClient<ILecturerAssignmentApiClient, LecturerAssignmentApiClient>(client =>
         {
             client.BaseAddress = new Uri("https://localhost:7271/");
         }).AddHttpMessageHandler<BearerTokenHandler>();

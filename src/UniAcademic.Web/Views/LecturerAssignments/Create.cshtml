@@ -1,0 +1,40 @@
+@model UniAcademic.Web.Models.LecturerAssignments.AssignLecturerViewModel
+
+@{
+    ViewData["Title"] = "Assign Lecturer";
+}
+
+<h1 class="h3 mb-3">Assign Lecturer</h1>
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label asp-for="CourseOfferingId" class="form-label">Course Offering</label>
+            <select asp-for="CourseOfferingId" class="form-select" asp-items="ViewBag.CourseOfferingOptions"></select>
+            <span asp-validation-for="CourseOfferingId" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="LecturerProfileId" class="form-label">Lecturer</label>
+            <select asp-for="LecturerProfileId" class="form-select" asp-items="ViewBag.LecturerProfileOptions"></select>
+            <span asp-validation-for="LecturerProfileId" class="text-danger"></span>
+        </div>
+        <div class="col-12">
+            <div class="form-check">
+                <input asp-for="IsPrimary" class="form-check-input" />
+                <label asp-for="IsPrimary" class="form-check-label">Primary Lecturer</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">Assign</button>
+        <a asp-action="Index" asp-route-courseOfferingId="@Model.CourseOfferingId" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -13,6 +13,10 @@ public interface IAppDbContext
 
     IQueryable<Enrollment> Enrollments { get; }
 
+    IQueryable<LecturerProfile> LecturerProfiles { get; }
+
+    IQueryable<LecturerAssignment> LecturerAssignments { get; }
+
     IQueryable<Course> Courses { get; }
 
     IQueryable<Semester> Semesters { get; }
@@ -50,6 +54,9 @@ public interface IAppDbContext
     IQueryable<AuditLog> AuditLogs { get; }
 
     Task AddAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default)
+        where TEntity : class;
+
+    void Remove<TEntity>(TEntity entity)
         where TEntity : class;
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

@@ -1,0 +1,33 @@
+@model UniAcademic.Application.Models.LecturerProfiles.LecturerProfileModel
+
+@{
+    ViewData["Title"] = "Lecturer Profile Details";
+}
+
+<h1 class="h3 mb-3">Lecturer Profile Details</h1>
+
+<dl class="row">
+    <dt class="col-sm-3">Code</dt>
+    <dd class="col-sm-9">@Model.Code</dd>
+
+    <dt class="col-sm-3">Full Name</dt>
+    <dd class="col-sm-9">@Model.FullName</dd>
+
+    <dt class="col-sm-3">Faculty</dt>
+    <dd class="col-sm-9">@Model.FacultyCode - @Model.FacultyName</dd>
+
+    <dt class="col-sm-3">Email</dt>
+    <dd class="col-sm-9">@Model.Email</dd>
+
+    <dt class="col-sm-3">Phone Number</dt>
+    <dd class="col-sm-9">@Model.PhoneNumber</dd>
+
+    <dt class="col-sm-3">Active</dt>
+    <dd class="col-sm-9">@Model.IsActive</dd>
+
+    <dt class="col-sm-3">Note</dt>
+    <dd class="col-sm-9">@Model.Note</dd>
+</dl>
+
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+<a asp-action="Index" class="btn btn-secondary">Back</a>
