@@ -1,0 +1,62 @@
+@page
+@model UniAcademic.Web.Pages.Student.Enrollments.IndexModel
+@{
+    ViewData["Title"] = "My Enrollments";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="h3 mb-1">My Enrollments</h1>
+        <p class="text-muted mb-0">Your current enrolled course offerings.</p>
+    </div>
+    <a asp-page="/Student/Courses/Index" class="btn btn-primary">Browse Courses</a>
+</div>
+
+@if (Model.Enrollments.Count == 0)
+{
+    <div class="alert alert-info">You do not have any active enrollments.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Offering</th>
+                    <th>Course</th>
+                    <th>Semester</th>
+                    <th>Credits</th>
+                    <th>Schedule</th>
+                    <th>Enrolled At</th>
+                    <th class="text-end">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var enrollment in Model.Enrollments)
+                {
+                    <tr>
+                        <td>@enrollment.CourseOfferingCode</td>
+                        <td>@enrollment.CourseCode - @enrollment.CourseName</td>
+                        <td>@enrollment.SemesterName</td>
+                        <td>@enrollment.Credits</td>
+                        <td>@UniAcademic.Web.Pages.Student.Enrollments.IndexModel.FormatSchedule(enrollment)</td>
+                        <td>@enrollment.EnrolledAtUtc.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                        <td class="text-end">
+                            @if (enrollment.IsRosterFinalized)
+                            {
+                                <span class="badge bg-secondary">Locked</span>
+                            }
+                            else
+                            {
+                                <form method="post" asp-page-handler="Drop" class="d-inline">
+                                    <input type="hidden" name="enrollmentId" value="@enrollment.EnrollmentId" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Drop</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

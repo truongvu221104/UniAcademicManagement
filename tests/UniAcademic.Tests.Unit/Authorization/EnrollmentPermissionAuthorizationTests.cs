@@ -25,6 +25,22 @@ public sealed class EnrollmentPermissionAuthorizationTests
         Assert.False(context.HasSucceeded);
     }
 
+    [Fact]
+    public async Task HandleRequirementAsync_ShouldSucceed_WhenEnrollmentOverridePermissionExists()
+    {
+        var currentUser = new FakeCurrentUser
+        {
+            PermissionsValue = [PermissionConstants.Enrollments.Override]
+        };
+        var handler = new PermissionAuthorizationHandler(currentUser);
+        var requirement = new PermissionRequirement(PermissionConstants.Enrollments.Override);
+        var context = new AuthorizationHandlerContext([requirement], new ClaimsPrincipal(), null);
+
+        await handler.HandleAsync(context);
+
+        Assert.True(context.HasSucceeded);
+    }
+
     private sealed class FakeCurrentUser : ICurrentUser
     {
         public Guid? UserId => null;

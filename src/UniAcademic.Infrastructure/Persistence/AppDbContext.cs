@@ -30,6 +30,8 @@ public sealed class AppDbContext : DbContext, IAppDbContext
 
     public DbSet<Course> CoursesSet => Set<Course>();
 
+    public DbSet<CoursePrerequisite> CoursePrerequisitesSet => Set<CoursePrerequisite>();
+
     public DbSet<Semester> SemestersSet => Set<Semester>();
 
     public DbSet<CourseOffering> CourseOfferingsSet => Set<CourseOffering>();
@@ -37,6 +39,8 @@ public sealed class AppDbContext : DbContext, IAppDbContext
     public DbSet<CourseOfferingRosterSnapshot> CourseOfferingRosterSnapshotsSet => Set<CourseOfferingRosterSnapshot>();
 
     public DbSet<CourseOfferingRosterItem> CourseOfferingRosterItemsSet => Set<CourseOfferingRosterItem>();
+
+    public DbSet<ExamHandoffLog> ExamHandoffLogsSet => Set<ExamHandoffLog>();
 
     public DbSet<AttendanceSession> AttendanceSessionsSet => Set<AttendanceSession>();
 
@@ -84,6 +88,8 @@ public sealed class AppDbContext : DbContext, IAppDbContext
 
     IQueryable<Course> IAppDbContext.Courses => CoursesSet;
 
+    IQueryable<CoursePrerequisite> IAppDbContext.CoursePrerequisites => CoursePrerequisitesSet;
+
     IQueryable<Semester> IAppDbContext.Semesters => SemestersSet;
 
     IQueryable<CourseOffering> IAppDbContext.CourseOfferings => CourseOfferingsSet;
@@ -91,6 +97,8 @@ public sealed class AppDbContext : DbContext, IAppDbContext
     IQueryable<CourseOfferingRosterSnapshot> IAppDbContext.CourseOfferingRosterSnapshots => CourseOfferingRosterSnapshotsSet;
 
     IQueryable<CourseOfferingRosterItem> IAppDbContext.CourseOfferingRosterItems => CourseOfferingRosterItemsSet;
+
+    IQueryable<ExamHandoffLog> IAppDbContext.ExamHandoffLogs => ExamHandoffLogsSet;
 
     IQueryable<AttendanceSession> IAppDbContext.AttendanceSessions => AttendanceSessionsSet;
 

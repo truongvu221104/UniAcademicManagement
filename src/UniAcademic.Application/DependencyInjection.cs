@@ -11,6 +11,7 @@ using UniAcademic.Application.Abstractions.LecturerProfiles;
 using UniAcademic.Application.Abstractions.Materials;
 using UniAcademic.Application.Abstractions.Semesters;
 using UniAcademic.Application.Abstractions.StudentPortal;
+using UniAcademic.Application.Abstractions.Transcripts;
 using UniAcademic.Application.Abstractions.StudentClasses;
 using UniAcademic.Application.Abstractions.StudentProfiles;
 using UniAcademic.Application.Abstractions.Rosters;
@@ -31,6 +32,7 @@ using UniAcademic.Application.Features.Semesters;
 using UniAcademic.Application.Features.StudentPortal;
 using UniAcademic.Application.Features.StudentClasses;
 using UniAcademic.Application.Features.StudentProfiles;
+using UniAcademic.Application.Features.Transcripts;
 
 namespace UniAcademic.Application;
 
@@ -54,6 +56,7 @@ public static class DependencyInjection
         services.AddScoped<IStudentPortalService, StudentPortalService>();
         services.AddScoped<IStudentClassService, StudentClassService>();
         services.AddScoped<IStudentProfileService, StudentProfileService>();
+        services.AddScoped<ITranscriptService, TranscriptService>();
         return services;
     }
 }

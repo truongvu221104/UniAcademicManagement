@@ -77,6 +77,12 @@
                             @if (hasStudentPortal)
                             {
                                 <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-page="/Student/Courses/Index">Browse Courses</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-page="/Student/Enrollments/Index">My Enrollments</a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="Student" asp-controller="StudentCourseOfferings" asp-action="Index">My Courses</a>
                                 </li>
                                 <li class="nav-item">
@@ -87,6 +93,9 @@
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="Student" asp-controller="StudentGradeResults" asp-action="Index">My Results</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-page="/Student/Transcript/Index">My Transcript</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="Student" asp-controller="StudentMaterials" asp-action="Index">My Materials</a>
@@ -138,6 +147,18 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            @if (TempData["SuccessMessage"] is string successMessage)
+            {
+                <div class="alert alert-success" role="alert">
+                    @successMessage
+                </div>
+            }
+            @if (TempData["ErrorMessage"] is string errorMessage)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @errorMessage
+                </div>
+            }
             @RenderBody()
         </main>
     </div>

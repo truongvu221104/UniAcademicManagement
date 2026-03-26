@@ -286,6 +286,9 @@ namespace UniAcademic.Infrastructure.Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<int>("DayOfWeek")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("DeletedAtUtc")
                         .HasColumnType("datetime2");
 
@@ -301,6 +304,9 @@ namespace UniAcademic.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("EndPeriod")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -327,6 +333,9 @@ namespace UniAcademic.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("SemesterId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("StartPeriod")
+                        .HasColumnType("int");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -342,6 +351,8 @@ namespace UniAcademic.Infrastructure.Persistence.Migrations
                     b.HasIndex("Status");
 
                     b.HasIndex("SemesterId", "CourseId");
+
+                    b.HasIndex("SemesterId", "DayOfWeek", "StartPeriod", "EndPeriod");
 
                     b.ToTable("CourseOfferings", (string)null);
                 });
@@ -479,6 +490,50 @@ namespace UniAcademic.Infrastructure.Persistence.Migrations
                     b.ToTable("CourseOfferingRosterSnapshots", (string)null);
                 });
 
+            modelBuilder.Entity("UniAcademic.Domain.Entities.Academic.CoursePrerequisite", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CourseId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("ModifiedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<Guid>("PrerequisiteCourseId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("PrerequisiteCourseId");
+
+                    b.HasIndex("CourseId", "PrerequisiteCourseId")
+                        .IsUnique();
+
+                    b.ToTable("CoursePrerequisites", (string)null);
+                });
+
             modelBuilder.Entity("UniAcademic.Domain.Entities.Academic.Enrollment", b =>
                 {
                     b.Property<Guid>("Id")
@@ -538,6 +593,62 @@ namespace UniAcademic.Infrastructure.Persistence.Migrations
                     b.HasIndex("StudentProfileId", "Status");
 
                     b.ToTable("Enrollments", (string)null);
+                });
+
+            modelBuilder.Entity("UniAcademic.Domain.Entities.Academic.ExamHandoffLog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CourseOfferingId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("ErrorMessage")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<DateTime?>("ModifiedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("ResponseCode")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("RosterSnapshotId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<DateTime>("SentAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseOfferingId");
+
+                    b.HasIndex("RosterSnapshotId");
+
+                    b.HasIndex("CourseOfferingId", "SentAtUtc");
+
+                    b.ToTable("ExamHandoffLogs", (string)null);
                 });
 
             modelBuilder.Entity("UniAcademic.Domain.Entities.Academic.Faculty", b =>
@@ -1760,6 +1871,25 @@ namespace UniAcademic.Infrastructure.Persistence.Migrations
                     b.Navigation("CourseOffering");
                 });
 
+            modelBuilder.Entity("UniAcademic.Domain.Entities.Academic.CoursePrerequisite", b =>
+                {
+                    b.HasOne("UniAcademic.Domain.Entities.Academic.Course", "Course")
+                        .WithMany("Prerequisites")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("UniAcademic.Domain.Entities.Academic.Course", "PrerequisiteCourse")
+                        .WithMany("RequiredForCourses")
+                        .HasForeignKey("PrerequisiteCourseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+
+                    b.Navigation("PrerequisiteCourse");
+                });
+
             modelBuilder.Entity("UniAcademic.Domain.Entities.Academic.Enrollment", b =>
                 {
                     b.HasOne("UniAcademic.Domain.Entities.Academic.CourseOffering", "CourseOffering")
@@ -1777,6 +1907,25 @@ namespace UniAcademic.Infrastructure.Persistence.Migrations
                     b.Navigation("CourseOffering");
 
                     b.Navigation("StudentProfile");
+                });
+
+            modelBuilder.Entity("UniAcademic.Domain.Entities.Academic.ExamHandoffLog", b =>
+                {
+                    b.HasOne("UniAcademic.Domain.Entities.Academic.CourseOffering", "CourseOffering")
+                        .WithMany()
+                        .HasForeignKey("CourseOfferingId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("UniAcademic.Domain.Entities.Academic.CourseOfferingRosterSnapshot", "RosterSnapshot")
+                        .WithMany()
+                        .HasForeignKey("RosterSnapshotId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("CourseOffering");
+
+                    b.Navigation("RosterSnapshot");
                 });
 
             modelBuilder.Entity("UniAcademic.Domain.Entities.Academic.GradeCategory", b =>
@@ -1994,6 +2143,13 @@ namespace UniAcademic.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("UniAcademic.Domain.Entities.Academic.AttendanceSession", b =>
                 {
                     b.Navigation("Records");
+                });
+
+            modelBuilder.Entity("UniAcademic.Domain.Entities.Academic.Course", b =>
+                {
+                    b.Navigation("Prerequisites");
+
+                    b.Navigation("RequiredForCourses");
                 });
 
             modelBuilder.Entity("UniAcademic.Domain.Entities.Academic.CourseOfferingRosterSnapshot", b =>

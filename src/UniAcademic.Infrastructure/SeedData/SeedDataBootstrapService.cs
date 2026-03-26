@@ -18,6 +18,7 @@ public sealed class SeedDataBootstrapService
     private readonly JsonSeedDataFileReader _fileReader;
     private readonly DatasetHashService _hashService;
     private readonly FacultyDatasetSynchronizer _facultyDatasetSynchronizer;
+    private readonly DemoFoundationDatasetSynchronizer _demoFoundationDatasetSynchronizer;
 
     public SeedDataBootstrapService(
         AppDbContext dbContext,
@@ -26,7 +27,8 @@ public sealed class SeedDataBootstrapService
         IHostEnvironment hostEnvironment,
         JsonSeedDataFileReader fileReader,
         DatasetHashService hashService,
-        FacultyDatasetSynchronizer facultyDatasetSynchronizer)
+        FacultyDatasetSynchronizer facultyDatasetSynchronizer,
+        DemoFoundationDatasetSynchronizer demoFoundationDatasetSynchronizer)
     {
         _dbContext = dbContext;
         _authSeedData = authSeedData;
@@ -35,6 +37,7 @@ public sealed class SeedDataBootstrapService
         _fileReader = fileReader;
         _hashService = hashService;
         _facultyDatasetSynchronizer = facultyDatasetSynchronizer;
+        _demoFoundationDatasetSynchronizer = demoFoundationDatasetSynchronizer;
     }
 
     public async Task RunAsync(CancellationToken cancellationToken = default)
@@ -57,14 +60,23 @@ public sealed class SeedDataBootstrapService
 
         var rootPath = ResolveRootPath();
         var facultyFilePath = Path.Combine(rootPath, "academic", "faculties.json");
-        if (!File.Exists(facultyFilePath))
+        if (File.Exists(facultyFilePath))
+        {
+            var facultyFileHash = await _hashService.ComputeFileHashAsync(facultyFilePath, cancellationToken);
+            var facultyItems = await _fileReader.ReadListAsync<FacultySeedItem>(facultyFilePath, cancellationToken);
+            await _facultyDatasetSynchronizer.SynchronizeAsync(facultyFilePath, facultyFileHash, facultyItems, cancellationToken);
+        }
+
+        var demoFoundationFilePath = Path.Combine(rootPath, "academic", "demo-foundation.json");
+        if (!File.Exists(demoFoundationFilePath))
         {
             return;
         }
 
-        var fileHash = await _hashService.ComputeFileHashAsync(facultyFilePath, cancellationToken);
-        var items = await _fileReader.ReadListAsync<FacultySeedItem>(facultyFilePath, cancellationToken);
-        await _facultyDatasetSynchronizer.SynchronizeAsync(facultyFilePath, fileHash, items, cancellationToken);
+        var demoFileHash = await _hashService.ComputeFileHashAsync(demoFoundationFilePath, cancellationToken);
+        var demoDataset = await _fileReader.ReadAsync<DemoFoundationSeedData>(demoFoundationFilePath, cancellationToken)
+            ?? new DemoFoundationSeedData();
+        await _demoFoundationDatasetSynchronizer.SynchronizeAsync(demoFoundationFilePath, demoFileHash, demoDataset, cancellationToken);
     }
 
     private string ResolveRootPath()

@@ -20,6 +20,12 @@ public sealed class CourseOfferingConfiguration : IEntityTypeConfiguration<Cours
             .HasMaxLength(200)
             .IsRequired();
 
+        builder.Property(x => x.DayOfWeek);
+
+        builder.Property(x => x.StartPeriod);
+
+        builder.Property(x => x.EndPeriod);
+
         builder.Property(x => x.Description)
             .HasMaxLength(1000);
 
@@ -43,6 +49,8 @@ public sealed class CourseOfferingConfiguration : IEntityTypeConfiguration<Cours
         builder.HasIndex(x => x.SemesterId);
 
         builder.HasIndex(x => x.Status);
+
+        builder.HasIndex(x => new { x.SemesterId, x.DayOfWeek, x.StartPeriod, x.EndPeriod });
 
         builder.HasIndex(x => new { x.SemesterId, x.CourseId });
 

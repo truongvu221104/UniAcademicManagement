@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using UniAcademic.Application.Abstractions.ExamHandoff;
 using UniAcademic.Application.Abstractions.Rosters;
 using UniAcademic.Application.Common;
+using UniAcademic.Application.Models.ExamHandoff;
 using UniAcademic.Application.Models.Rosters;
 using UniAcademic.Application.Security;
 using UniAcademic.Contracts.Rosters;
@@ -13,10 +15,14 @@ namespace UniAcademic.Api.Controllers;
 public sealed class CourseOfferingRostersController : ControllerBase
 {
     private readonly ICourseOfferingRosterService _courseOfferingRosterService;
+    private readonly IExamHandoffService _examHandoffService;
 
-    public CourseOfferingRostersController(ICourseOfferingRosterService courseOfferingRosterService)
+    public CourseOfferingRostersController(
+        ICourseOfferingRosterService courseOfferingRosterService,
+        IExamHandoffService examHandoffService)
     {
         _courseOfferingRosterService = courseOfferingRosterService;
+        _examHandoffService = examHandoffService;
     }
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.CourseOfferingRosters.View)]
@@ -67,6 +73,30 @@ public sealed class CourseOfferingRostersController : ControllerBase
         }
     }
 
+    [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.CourseOfferingRosters.RetryHandoff)]
+    [HttpPost("handoff")]
+    [ProducesResponseType(StatusCodes.Status202Accepted)]
+    public async Task<IActionResult> RetryHandoff(Guid courseOfferingId, CancellationToken cancellationToken)
+    {
+        await _examHandoffService.RetryHandoffAsync(courseOfferingId, cancellationToken);
+        return Accepted();
+    }
+
+    [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.CourseOfferingRosters.View)]
+    [HttpGet("handoff/status")]
+    [ProducesResponseType(typeof(ExamHandoffStatusResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetHandoffStatus(Guid courseOfferingId, CancellationToken cancellationToken)
+    {
+        var result = await _examHandoffService.GetLatestStatusAsync(courseOfferingId, cancellationToken);
+        if (result is null)
+        {
+            return NotFound(new { message = "Exam handoff status was not found." });
+        }
+
+        return Ok(Map(result));
+    }
+
     private static CourseOfferingRosterResponse Map(CourseOfferingRosterModel model)
     {
         return new CourseOfferingRosterResponse
@@ -92,6 +122,20 @@ public sealed class CourseOfferingRostersController : ControllerBase
                 CourseName = x.CourseName,
                 SemesterName = x.SemesterName
             }).ToList()
+        };
+    }
+
+    private static ExamHandoffStatusResponse Map(ExamHandoffLogModel model)
+    {
+        return new ExamHandoffStatusResponse
+        {
+            Id = model.Id,
+            CourseOfferingId = model.CourseOfferingId,
+            RosterSnapshotId = model.RosterSnapshotId,
+            Status = model.Status,
+            SentAtUtc = model.SentAtUtc,
+            ResponseCode = model.ResponseCode,
+            ErrorMessage = model.ErrorMessage
         };
     }
 }

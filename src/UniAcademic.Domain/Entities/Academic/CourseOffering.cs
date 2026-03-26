@@ -15,6 +15,12 @@ public sealed class CourseOffering : AuditableEntity, IAuditableEntity
 
     public int Capacity { get; set; }
 
+    public int DayOfWeek { get; set; }
+
+    public int StartPeriod { get; set; }
+
+    public int EndPeriod { get; set; }
+
     public CourseOfferingStatus Status { get; set; } = CourseOfferingStatus.Active;
 
     public bool IsRosterFinalized { get; set; }

@@ -28,6 +28,7 @@ using UniAcademic.Contracts.Rosters;
 using UniAcademic.Contracts.Semesters;
 using UniAcademic.Contracts.StudentClasses;
 using UniAcademic.Contracts.StudentProfiles;
+using System.Runtime.CompilerServices;
 
 namespace UniAcademic.AdminApp.Navigation;
 
@@ -690,20 +691,24 @@ public sealed class AdminModuleCatalog
 
         foreach (var value in values)
         {
-            switch (value)
+            if (value is not ITuple tuple)
             {
-                case ValueTuple<string, Type> tuple:
-                    fields.Add(new FormFieldViewModel(tuple.Item1, tuple.Item2));
-                    break;
-                case ValueTuple<string, Type, object?> tuple:
-                    fields.Add(new FormFieldViewModel(tuple.Item1, tuple.Item2, tuple.Item3));
-                    break;
-                case ValueTuple<string, Type, object?, bool> tuple:
-                    fields.Add(new FormFieldViewModel(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
-                    break;
-                default:
-                    throw new InvalidOperationException("Unsupported field definition.");
+                throw new InvalidOperationException("Unsupported field definition.");
             }
+
+            if (tuple.Length < 2 || tuple.Length > 4)
+            {
+                throw new InvalidOperationException("Unsupported field definition.");
+            }
+
+            if (tuple[0] is not string label || tuple[1] is not Type valueType)
+            {
+                throw new InvalidOperationException("Unsupported field definition.");
+            }
+
+            var initialValue = tuple.Length >= 3 ? tuple[2] : null;
+            var isMultiline = tuple.Length == 4 && tuple[3] is bool multiline && multiline;
+            fields.Add(new FormFieldViewModel(label, valueType, initialValue, isMultiline));
         }
 
         return fields;

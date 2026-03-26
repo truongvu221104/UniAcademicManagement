@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using UniAcademic.Application.Abstractions.Common;
+using UniAcademic.Application.Abstractions.ExamHandoff;
 using UniAcademic.Application.Common;
 using UniAcademic.Application.Features.Rosters;
+using UniAcademic.Application.Models.ExamHandoff;
 using UniAcademic.Application.Models.Rosters;
 using UniAcademic.Application.Security;
 using UniAcademic.Domain.Entities.Academic;
@@ -260,7 +262,8 @@ public sealed class CourseOfferingRosterServiceTests
             dbContext,
             new AuditService(dbContext, new FakeClientContextAccessor()),
             new FakeCurrentUser(),
-            new FakeDateTimeProvider());
+            new FakeDateTimeProvider(),
+            new FakeExamHandoffService());
     }
 
     private sealed class FakeCurrentUser : ICurrentUser
@@ -282,5 +285,17 @@ public sealed class CourseOfferingRosterServiceTests
         public string? IpAddress => "127.0.0.1";
         public string? UserAgent => "RosterTests";
         public string ClientType => "Tests";
+    }
+
+    private sealed class FakeExamHandoffService : IExamHandoffService
+    {
+        public Task<ExamHandoffLogModel?> GetLatestStatusAsync(Guid courseOfferingId, CancellationToken cancellationToken = default)
+            => Task.FromResult<ExamHandoffLogModel?>(null);
+
+        public Task HandoffAsync(CourseOfferingRosterSnapshot snapshot, CancellationToken cancellationToken = default)
+            => Task.CompletedTask;
+
+        public Task RetryHandoffAsync(Guid courseOfferingId, CancellationToken cancellationToken = default)
+            => Task.CompletedTask;
     }
 }

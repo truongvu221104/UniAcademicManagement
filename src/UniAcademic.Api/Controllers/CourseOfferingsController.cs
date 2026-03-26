@@ -68,6 +68,9 @@ public sealed class CourseOfferingsController : ControllerBase
                 SemesterId = request.SemesterId,
                 DisplayName = request.DisplayName,
                 Capacity = request.Capacity,
+                DayOfWeek = request.DayOfWeek,
+                StartPeriod = request.StartPeriod,
+                EndPeriod = request.EndPeriod,
                 Status = request.Status,
                 Description = request.Description
             }, cancellationToken);
@@ -97,6 +100,9 @@ public sealed class CourseOfferingsController : ControllerBase
                 SemesterId = request.SemesterId,
                 DisplayName = request.DisplayName,
                 Capacity = request.Capacity,
+                DayOfWeek = request.DayOfWeek,
+                StartPeriod = request.StartPeriod,
+                EndPeriod = request.EndPeriod,
                 Status = request.Status,
                 Description = request.Description
             }, cancellationToken);
@@ -144,6 +150,9 @@ public sealed class CourseOfferingsController : ControllerBase
             SemesterName = model.SemesterName,
             DisplayName = model.DisplayName,
             Capacity = model.Capacity,
+            DayOfWeek = model.DayOfWeek,
+            StartPeriod = model.StartPeriod,
+            EndPeriod = model.EndPeriod,
             Status = model.Status,
             Description = model.Description
         };
@@ -162,6 +171,9 @@ public sealed class CourseOfferingsController : ControllerBase
             SemesterName = model.SemesterName,
             DisplayName = model.DisplayName,
             Capacity = model.Capacity,
+            DayOfWeek = model.DayOfWeek,
+            StartPeriod = model.StartPeriod,
+            EndPeriod = model.EndPeriod,
             Status = model.Status
         };
     }

@@ -1,0 +1,64 @@
+@page "{id:guid}"
+@model UniAcademic.Web.Pages.Student.Courses.EnrollModel
+@{
+    ViewData["Title"] = "Confirm Enrollment";
+}
+
+@if (Model.Offering is null)
+{
+    <div class="alert alert-warning">Course offering was not found.</div>
+    return;
+}
+
+<div class="mb-3">
+    <h1 class="h3 mb-1">Confirm Enrollment</h1>
+    <p class="text-muted mb-0">Review the course offering details before submitting your enrollment request.</p>
+</div>
+
+@if (!ViewContext.ModelState.IsValid)
+{
+    <div asp-validation-summary="All" class="alert alert-danger"></div>
+}
+
+<div class="card shadow-sm mb-3">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Offering</dt>
+            <dd class="col-sm-9">@Model.Offering.Code</dd>
+
+            <dt class="col-sm-3">Course</dt>
+            <dd class="col-sm-9">@Model.Offering.CourseCode - @Model.Offering.CourseName</dd>
+
+            <dt class="col-sm-3">Semester</dt>
+            <dd class="col-sm-9">@Model.Offering.SemesterName</dd>
+
+            <dt class="col-sm-3">Credits</dt>
+            <dd class="col-sm-9">@Model.Offering.Credits</dd>
+
+            <dt class="col-sm-3">Capacity</dt>
+            <dd class="col-sm-9">@Model.Offering.EnrolledCount / @Model.Offering.Capacity</dd>
+
+            <dt class="col-sm-3">Schedule</dt>
+            <dd class="col-sm-9">@UniAcademic.Web.Pages.Student.Courses.EnrollModel.FormatSchedule(Model.Offering)</dd>
+
+            <dt class="col-sm-3">Description</dt>
+            <dd class="col-sm-9">@(string.IsNullOrWhiteSpace(Model.Offering.Description) ? "N/A" : Model.Offering.Description)</dd>
+        </dl>
+    </div>
+</div>
+
+@if (Model.Offering.IsAlreadyEnrolled)
+{
+    <div class="alert alert-info">You are already enrolled in this course offering.</div>
+}
+else if (Model.Offering.IsRosterFinalized)
+{
+    <div class="alert alert-warning">This course offering roster has already been finalized and can no longer be enrolled.</div>
+}
+else
+{
+    <form method="post">
+        <button type="submit" class="btn btn-primary">Confirm Enroll</button>
+        <a asp-page="./Index" class="btn btn-outline-secondary">Back</a>
+    </form>
+}

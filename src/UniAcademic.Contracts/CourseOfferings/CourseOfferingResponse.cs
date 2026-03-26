@@ -24,6 +24,12 @@ public sealed class CourseOfferingResponse
 
     public int Capacity { get; set; }
 
+    public int DayOfWeek { get; set; }
+
+    public int StartPeriod { get; set; }
+
+    public int EndPeriod { get; set; }
+
     public CourseOfferingStatus Status { get; set; }
 
     public string? Description { get; set; }

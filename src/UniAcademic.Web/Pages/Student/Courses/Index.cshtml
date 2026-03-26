@@ -1,0 +1,82 @@
+@page
+@model UniAcademic.Web.Pages.Student.Courses.IndexModel
+@{
+    ViewData["Title"] = "Browse Courses";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="h3 mb-1">Browse Courses</h1>
+        <p class="text-muted mb-0">Active course offerings in the current semester.</p>
+    </div>
+</div>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-6">
+        <input asp-for="Keyword" class="form-control" placeholder="Search by offering code, course code, or course name" />
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </div>
+    <div class="col-auto">
+        <a asp-page="./Index" class="btn btn-outline-secondary">Reset</a>
+    </div>
+</form>
+
+@if (Model.Offerings.Count == 0)
+{
+    <div class="alert alert-info">No active course offerings were found for self-enrollment.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Offering</th>
+                    <th>Course</th>
+                    <th>Semester</th>
+                    <th>Credits</th>
+                    <th>Capacity</th>
+                    <th>Enrolled</th>
+                    <th>Schedule</th>
+                    <th class="text-end">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var offering in Model.Offerings)
+                {
+                    <tr>
+                        <td>
+                            <div class="fw-semibold">@offering.Code</div>
+                            <div class="text-muted small">@offering.DisplayName</div>
+                        </td>
+                        <td>
+                            <div class="fw-semibold">@offering.CourseCode</div>
+                            <div class="text-muted small">@offering.CourseName</div>
+                        </td>
+                        <td>@offering.SemesterName</td>
+                        <td>@offering.Credits</td>
+                        <td>@offering.Capacity</td>
+                        <td>@offering.EnrolledCount</td>
+                        <td>@UniAcademic.Web.Pages.Student.Courses.IndexModel.FormatSchedule(offering)</td>
+                        <td class="text-end">
+                            @if (offering.IsAlreadyEnrolled)
+                            {
+                                <span class="badge bg-success">Enrolled</span>
+                            }
+                            else if (offering.IsRosterFinalized)
+                            {
+                                <span class="badge bg-secondary">Roster Finalized</span>
+                            }
+                            else
+                            {
+                                <a asp-page="./Enroll" asp-route-id="@offering.Id" class="btn btn-sm btn-primary">Enroll</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using UniAcademic.Application.Abstractions.Auth;
 using UniAcademic.Application.Abstractions.Common;
+using UniAcademic.Application.Abstractions.ExamHandoff;
 using UniAcademic.Application.Abstractions.Persistence;
 using UniAcademic.Application.Abstractions.Rosters;
 using UniAcademic.Application.Common;
@@ -16,17 +17,20 @@ public sealed class CourseOfferingRosterService : ICourseOfferingRosterService
     private readonly IAuditService _auditService;
     private readonly ICurrentUser _currentUser;
     private readonly IDateTimeProvider _dateTimeProvider;
+    private readonly IExamHandoffService _examHandoffService;
 
     public CourseOfferingRosterService(
         IAppDbContext dbContext,
         IAuditService auditService,
         ICurrentUser currentUser,
-        IDateTimeProvider dateTimeProvider)
+        IDateTimeProvider dateTimeProvider,
+        IExamHandoffService examHandoffService)
     {
         _dbContext = dbContext;
         _auditService = auditService;
         _currentUser = currentUser;
         _dateTimeProvider = dateTimeProvider;
+        _examHandoffService = examHandoffService;
     }
 
     public async Task<CourseOfferingRosterModel> GetByCourseOfferingIdAsync(GetCourseOfferingRosterQuery query, CancellationToken cancellationToken = default)
@@ -104,6 +108,15 @@ public sealed class CourseOfferingRosterService : ICourseOfferingRosterService
             snapshot.ItemCount,
             snapshot.FinalizedAtUtc
         }, _currentUser.UserId, cancellationToken);
+
+        try
+        {
+            await _examHandoffService.HandoffAsync(snapshot, cancellationToken);
+        }
+        catch
+        {
+            // Finalize stays committed even if UniTestSystem handoff fails unexpectedly.
+        }
 
         return Map(courseOffering, snapshot);
     }

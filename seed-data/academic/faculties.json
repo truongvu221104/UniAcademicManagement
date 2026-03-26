@@ -1,14 +1,14 @@
 [
   {
-    "code": "CNTT",
-    "name": "Công nghệ thông tin",
-    "description": "Khoa Công nghệ thông tin",
+    "code": "FIT",
+    "name": "Information Technology",
+    "description": "Faculty of Information Technology",
     "status": "Active"
   },
   {
-    "code": "QTKD",
-    "name": "Quản trị kinh doanh",
-    "description": "Khoa Quản trị kinh doanh",
+    "code": "FBA",
+    "name": "Business Administration",
+    "description": "Faculty of Business Administration",
     "status": "Active"
   }
 ]

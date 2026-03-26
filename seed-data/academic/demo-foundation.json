@@ -1,0 +1,198 @@
+{
+  "users": [
+    {
+      "username": "admin",
+      "email": "admin@uniacademic.local",
+      "displayName": "System Administrator",
+      "password": "Admin@123456",
+      "isActive": true
+    },
+    {
+      "username": "staff.ops",
+      "email": "staff.ops@uniacademic.local",
+      "displayName": "Operations Staff",
+      "password": "Demo@123456",
+      "isActive": true
+    },
+    {
+      "username": "student.an",
+      "email": "student.an@uniacademic.local",
+      "displayName": "Nguyen Van An",
+      "password": "Demo@123456",
+      "studentCode": "STU001",
+      "isActive": true
+    },
+    {
+      "username": "student.binh",
+      "email": "student.binh@uniacademic.local",
+      "displayName": "Tran Thi Binh",
+      "password": "Demo@123456",
+      "studentCode": "STU002",
+      "isActive": true
+    },
+    {
+      "username": "lecturer.quang",
+      "email": "lecturer.quang@uniacademic.local",
+      "displayName": "Dr. Pham Quang",
+      "password": "Demo@123456",
+      "lecturerCode": "LEC001",
+      "isActive": true
+    },
+    {
+      "username": "lecturer.thu",
+      "email": "lecturer.thu@uniacademic.local",
+      "displayName": "Ms. Vo Thu",
+      "password": "Demo@123456",
+      "lecturerCode": "LEC002",
+      "isActive": true
+    }
+  ],
+  "studentClasses": [
+    {
+      "code": "SE2022A",
+      "name": "Software Engineering 2022A",
+      "facultyCode": "FIT",
+      "intakeYear": 2022,
+      "status": "Active",
+      "description": "Software Engineering cohort 2022A"
+    },
+    {
+      "code": "BA2022A",
+      "name": "Business Administration 2022A",
+      "facultyCode": "FBA",
+      "intakeYear": 2022,
+      "status": "Active",
+      "description": "Business Administration cohort 2022A"
+    }
+  ],
+  "courses": [
+    {
+      "code": "SE101",
+      "name": "Introduction to Software Engineering",
+      "credits": 3,
+      "facultyCode": "FIT",
+      "status": "Active",
+      "description": "Foundation course for software engineering."
+    },
+    {
+      "code": "DB201",
+      "name": "Database Systems",
+      "credits": 3,
+      "facultyCode": "FIT",
+      "status": "Active",
+      "description": "Relational database design and querying."
+    },
+    {
+      "code": "BA101",
+      "name": "Principles of Management",
+      "credits": 3,
+      "facultyCode": "FBA",
+      "status": "Active",
+      "description": "Management fundamentals for business students."
+    }
+  ],
+  "semesters": [
+    {
+      "code": "2025T1",
+      "name": "2025-2026 / Term 1",
+      "academicYear": "2025-2026",
+      "termNo": 1,
+      "startDate": "2025-09-01T00:00:00Z",
+      "endDate": "2025-12-31T00:00:00Z",
+      "status": "Active",
+      "description": "Primary semester for demo flows."
+    }
+  ],
+  "studentProfiles": [
+    {
+      "studentCode": "STU001",
+      "fullName": "Nguyen Van An",
+      "studentClassCode": "SE2022A",
+      "email": "an.student@uniacademic.local",
+      "phone": "0900000001",
+      "gender": "Male",
+      "status": "Active",
+      "note": "Demo student for self-service flows."
+    },
+    {
+      "studentCode": "STU002",
+      "fullName": "Tran Thi Binh",
+      "studentClassCode": "SE2022A",
+      "email": "binh.student@uniacademic.local",
+      "phone": "0900000002",
+      "gender": "Female",
+      "status": "Active",
+      "note": "Demo student for isolation checks."
+    },
+    {
+      "studentCode": "STU003",
+      "fullName": "Le Minh Chau",
+      "studentClassCode": "BA2022A",
+      "email": "chau.student@uniacademic.local",
+      "phone": "0900000003",
+      "gender": "Female",
+      "status": "Active",
+      "note": "Demo student kept unassigned for negative flows."
+    }
+  ],
+  "lecturerProfiles": [
+    {
+      "code": "LEC001",
+      "fullName": "Dr. Pham Quang",
+      "email": "quang.lecturer@uniacademic.local",
+      "phoneNumber": "0910000001",
+      "facultyCode": "FIT",
+      "isActive": true,
+      "note": "Primary lecturer for SE101 demo offering."
+    },
+    {
+      "code": "LEC002",
+      "fullName": "Ms. Vo Thu",
+      "email": "thu.lecturer@uniacademic.local",
+      "phoneNumber": "0910000002",
+      "facultyCode": "FIT",
+      "isActive": true,
+      "note": "Secondary SE101 lecturer and primary DB201 lecturer."
+    }
+  ],
+  "courseOfferings": [
+    {
+      "code": "SE101-2025T1-01",
+      "courseCode": "SE101",
+      "semesterCode": "2025T1",
+      "displayName": "SE101 - Introduction to Software Engineering - 2025T1 - 01",
+      "capacity": 40,
+      "status": "Active",
+      "description": "Demo software engineering offering."
+    },
+    {
+      "code": "DB201-2025T1-01",
+      "courseCode": "DB201",
+      "semesterCode": "2025T1",
+      "displayName": "DB201 - Database Systems - 2025T1 - 01",
+      "capacity": 35,
+      "status": "Active",
+      "description": "Demo database offering."
+    }
+  ],
+  "lecturerAssignments": [
+    {
+      "courseOfferingCode": "SE101-2025T1-01",
+      "lecturerCode": "LEC001",
+      "isPrimary": true,
+      "assignedAtUtc": "2025-08-25T08:00:00Z"
+    },
+    {
+      "courseOfferingCode": "SE101-2025T1-01",
+      "lecturerCode": "LEC002",
+      "isPrimary": false,
+      "assignedAtUtc": "2025-08-25T08:15:00Z"
+    },
+    {
+      "courseOfferingCode": "DB201-2025T1-01",
+      "lecturerCode": "LEC002",
+      "isPrimary": true,
+      "assignedAtUtc": "2025-08-25T08:30:00Z"
+    }
+  ]
+}

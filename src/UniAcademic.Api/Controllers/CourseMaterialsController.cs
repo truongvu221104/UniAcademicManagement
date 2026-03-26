@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using UniAcademic.Api.Models.CourseMaterials;
 using UniAcademic.Application.Abstractions.Materials;
 using UniAcademic.Application.Common;
 using UniAcademic.Application.Models.Materials;
@@ -55,35 +56,27 @@ public sealed class CourseMaterialsController : ControllerBase
     [Consumes("multipart/form-data")]
     [ProducesResponseType(typeof(CourseMaterialResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Upload(
-        [FromForm] Guid courseOfferingId,
-        [FromForm] string title,
-        [FromForm] string? description,
-        [FromForm] CourseMaterialType materialType,
-        [FromForm] int sortOrder,
-        [FromForm] bool isPublished,
-        [FromForm] IFormFile? file,
-        CancellationToken cancellationToken)
+    public async Task<IActionResult> Upload([FromForm] UploadCourseMaterialFormRequest request, CancellationToken cancellationToken)
     {
-        if (file is null)
+        if (request.File is null)
         {
             return BadRequest(new { message = "Material file is required." });
         }
 
         try
         {
-            await using var stream = file.OpenReadStream();
+            await using var stream = request.File.OpenReadStream();
             var result = await _courseMaterialService.UploadAsync(new UploadCourseMaterialCommand
             {
-                CourseOfferingId = courseOfferingId,
-                Title = title,
-                Description = description,
-                MaterialType = materialType,
-                SortOrder = sortOrder,
-                IsPublished = isPublished,
-                OriginalFileName = file.FileName,
-                ContentType = file.ContentType,
-                SizeInBytes = file.Length,
+                CourseOfferingId = request.CourseOfferingId,
+                Title = request.Title,
+                Description = request.Description,
+                MaterialType = request.MaterialType,
+                SortOrder = request.SortOrder,
+                IsPublished = request.IsPublished,
+                OriginalFileName = request.File.FileName,
+                ContentType = request.File.ContentType,
+                SizeInBytes = request.File.Length,
                 FileContent = stream
             }, cancellationToken);
 

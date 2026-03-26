@@ -7,6 +7,14 @@ namespace UniAcademic.Application.Abstractions.StudentPortal;
 
 public interface IStudentPortalService
 {
+    Task<IReadOnlyCollection<StudentSelfEnrollCourseOfferingItemModel>> GetSelfEnrollCourseOfferingsAsync(GetSelfEnrollCourseOfferingsQuery query, CancellationToken cancellationToken = default);
+
+    Task<StudentSelfEnrollCourseOfferingDetailModel> GetSelfEnrollCourseOfferingByIdAsync(Guid courseOfferingId, CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyCollection<StudentCurrentEnrollmentItemModel>> GetMyCurrentEnrollmentsAsync(CancellationToken cancellationToken = default);
+
+    Task<StudentCurrentEnrollmentItemModel> GetMyCurrentEnrollmentByIdAsync(Guid enrollmentId, CancellationToken cancellationToken = default);
+
     Task<IReadOnlyCollection<CourseOfferingListItemModel>> GetMyCourseOfferingsAsync(GetMyCourseOfferingsQuery query, CancellationToken cancellationToken = default);
 
     Task<IReadOnlyCollection<StudentAttendanceItemModel>> GetMyAttendanceAsync(GetMyAttendanceQuery query, CancellationToken cancellationToken = default);

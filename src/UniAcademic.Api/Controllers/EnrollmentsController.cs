@@ -14,10 +14,12 @@ namespace UniAcademic.Api.Controllers;
 public sealed class EnrollmentsController : ControllerBase
 {
     private readonly IEnrollmentService _enrollmentService;
+    private readonly IAuthorizationService _authorizationService;
 
-    public EnrollmentsController(IEnrollmentService enrollmentService)
+    public EnrollmentsController(IEnrollmentService enrollmentService, IAuthorizationService authorizationService)
     {
         _enrollmentService = enrollmentService;
+        _authorizationService = authorizationService;
     }
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.Enrollments.View)]
@@ -66,11 +68,26 @@ public sealed class EnrollmentsController : ControllerBase
     {
         try
         {
+            if (request.IsOverride)
+            {
+                var authorizationResult = await _authorizationService.AuthorizeAsync(
+                    User,
+                    null,
+                    PermissionConstants.BuildPolicy(PermissionConstants.Enrollments.Override));
+
+                if (!authorizationResult.Succeeded)
+                {
+                    return Forbid();
+                }
+            }
+
             var result = await _enrollmentService.EnrollAsync(new EnrollStudentCommand
             {
                 StudentProfileId = request.StudentProfileId,
                 CourseOfferingId = request.CourseOfferingId,
-                Note = request.Note
+                Note = request.Note,
+                IsOverride = request.IsOverride,
+                OverrideReason = request.OverrideReason
             }, cancellationToken);
 
             return CreatedAtAction(nameof(GetById), new { id = result.Id }, Map(result));

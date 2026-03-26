@@ -178,6 +178,7 @@ public sealed class FacultySeedDataBootstrapServiceTests
 
     private static SeedDataBootstrapService CreateBootstrapService(AppDbContext dbContext, string rootPath)
     {
+        var passwordHasher = new PasswordHasher();
         var bootstrapAdminOptions = Options.Create(new BootstrapAdminOptions
         {
             Username = "admin",
@@ -188,7 +189,7 @@ public sealed class FacultySeedDataBootstrapServiceTests
 
         return new SeedDataBootstrapService(
             dbContext,
-            new AuthSeedData(dbContext, new PasswordHasher(), bootstrapAdminOptions),
+            new AuthSeedData(dbContext, passwordHasher, bootstrapAdminOptions),
             Options.Create(new SeedDataOptions
             {
                 ApplyMigrationsEnabled = false,
@@ -198,7 +199,8 @@ public sealed class FacultySeedDataBootstrapServiceTests
             new FakeHostEnvironment(),
             new JsonSeedDataFileReader(),
             new DatasetHashService(),
-            new FacultyDatasetSynchronizer(dbContext));
+            new FacultyDatasetSynchronizer(dbContext),
+            new DemoFoundationDatasetSynchronizer(dbContext, passwordHasher));
     }
 
     private static string CreateSeedRoot(string facultiesJson)

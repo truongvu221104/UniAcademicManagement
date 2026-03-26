@@ -76,6 +76,7 @@ public static class PermissionConstants
     {
         public const string View = "academic.enrollments.view";
         public const string Create = "academic.enrollments.create";
+        public const string Override = "academic.enrollments.override";
         public const string Delete = "academic.enrollments.delete";
     }
 
@@ -83,6 +84,7 @@ public static class PermissionConstants
     {
         public const string View = "academic.courseofferingrosters.view";
         public const string Finalize = "academic.courseofferingrosters.finalize";
+        public const string RetryHandoff = "academic.courseofferingrosters.handoff.retry";
     }
 
     public static class Attendance
@@ -128,6 +130,11 @@ public static class PermissionConstants
         public const string Unassign = "academic.lecturerassignments.unassign";
     }
 
+    public static class Transcripts
+    {
+        public const string View = "academic.transcripts.view";
+    }
+
     public static IReadOnlyCollection<string> All => new[]
     {
         Auth.Login,
@@ -164,9 +171,11 @@ public static class PermissionConstants
         StudentProfiles.Delete,
         Enrollments.View,
         Enrollments.Create,
+        Enrollments.Override,
         Enrollments.Delete,
         CourseOfferingRosters.View,
         CourseOfferingRosters.Finalize,
+        CourseOfferingRosters.RetryHandoff,
         Attendance.View,
         Attendance.Create,
         Attendance.Edit,
@@ -185,7 +194,8 @@ public static class PermissionConstants
         LecturerProfiles.Delete,
         LecturerAssignments.View,
         LecturerAssignments.Assign,
-        LecturerAssignments.Unassign
+        LecturerAssignments.Unassign,
+        Transcripts.View
     };
 
     public static string BuildPolicy(string permission) => $"{PolicyPrefix}{permission}";

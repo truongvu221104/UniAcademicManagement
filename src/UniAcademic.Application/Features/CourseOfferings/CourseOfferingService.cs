@@ -34,6 +34,7 @@ public sealed class CourseOfferingService : ICourseOfferingService
         var normalizedCode = NormalizeCode(command.Code);
         var displayName = NormalizeDisplayName(command.DisplayName);
         var capacity = NormalizeCapacity(command.Capacity);
+        ValidateSchedule(command.DayOfWeek, command.StartPeriod, command.EndPeriod);
         var course = await RequireCourseAsync(command.CourseId, cancellationToken);
         var semester = await RequireSemesterAsync(command.SemesterId, cancellationToken);
         EnsureStatus(command.Status);
@@ -53,6 +54,9 @@ public sealed class CourseOfferingService : ICourseOfferingService
             SemesterId = semester.Id,
             DisplayName = displayName,
             Capacity = capacity,
+            DayOfWeek = command.DayOfWeek,
+            StartPeriod = command.StartPeriod,
+            EndPeriod = command.EndPeriod,
             Status = command.Status,
             Description = NormalizeDescription(command.Description),
             CreatedBy = _currentUser.Username ?? "system"
@@ -67,6 +71,9 @@ public sealed class CourseOfferingService : ICourseOfferingService
             courseOffering.SemesterId,
             courseOffering.DisplayName,
             courseOffering.Capacity,
+            courseOffering.DayOfWeek,
+            courseOffering.StartPeriod,
+            courseOffering.EndPeriod,
             courseOffering.Status
         }, _currentUser.UserId, cancellationToken);
 
@@ -84,6 +91,7 @@ public sealed class CourseOfferingService : ICourseOfferingService
         var normalizedCode = NormalizeCode(command.Code);
         var displayName = NormalizeDisplayName(command.DisplayName);
         var capacity = NormalizeCapacity(command.Capacity);
+        ValidateSchedule(command.DayOfWeek, command.StartPeriod, command.EndPeriod);
         var course = await RequireCourseAsync(command.CourseId, cancellationToken);
         var semester = await RequireSemesterAsync(command.SemesterId, cancellationToken);
         EnsureStatus(command.Status);
@@ -101,6 +109,9 @@ public sealed class CourseOfferingService : ICourseOfferingService
         courseOffering.SemesterId = semester.Id;
         courseOffering.DisplayName = displayName;
         courseOffering.Capacity = capacity;
+        courseOffering.DayOfWeek = command.DayOfWeek;
+        courseOffering.StartPeriod = command.StartPeriod;
+        courseOffering.EndPeriod = command.EndPeriod;
         courseOffering.Status = command.Status;
         courseOffering.Description = NormalizeDescription(command.Description);
         courseOffering.ModifiedBy = _currentUser.Username ?? "system";
@@ -113,6 +124,9 @@ public sealed class CourseOfferingService : ICourseOfferingService
             courseOffering.SemesterId,
             courseOffering.DisplayName,
             courseOffering.Capacity,
+            courseOffering.DayOfWeek,
+            courseOffering.StartPeriod,
+            courseOffering.EndPeriod,
             courseOffering.Status
         }, _currentUser.UserId, cancellationToken);
 
@@ -195,6 +209,9 @@ public sealed class CourseOfferingService : ICourseOfferingService
                 SemesterName = x.Semester != null ? x.Semester.Name : string.Empty,
                 DisplayName = x.DisplayName,
                 Capacity = x.Capacity,
+                DayOfWeek = x.DayOfWeek,
+                StartPeriod = x.StartPeriod,
+                EndPeriod = x.EndPeriod,
                 Status = x.Status
             })
             .ToListAsync(cancellationToken);
@@ -252,6 +269,9 @@ public sealed class CourseOfferingService : ICourseOfferingService
             SemesterName = semester?.Name ?? string.Empty,
             DisplayName = courseOffering.DisplayName,
             Capacity = courseOffering.Capacity,
+            DayOfWeek = courseOffering.DayOfWeek,
+            StartPeriod = courseOffering.StartPeriod,
+            EndPeriod = courseOffering.EndPeriod,
             Status = courseOffering.Status,
             Description = courseOffering.Description
         };
@@ -287,6 +307,25 @@ public sealed class CourseOfferingService : ICourseOfferingService
         }
 
         return capacity;
+    }
+
+    private static void ValidateSchedule(int dayOfWeek, int startPeriod, int endPeriod)
+    {
+        var hasAnyScheduleValue = dayOfWeek != 0 || startPeriod != 0 || endPeriod != 0;
+        if (!hasAnyScheduleValue)
+        {
+            return;
+        }
+
+        if (dayOfWeek is < 1 or > 7)
+        {
+            throw new AuthException("Course offering day of week is invalid.");
+        }
+
+        if (startPeriod < 1 || endPeriod < startPeriod)
+        {
+            throw new AuthException("Course offering periods are invalid.");
+        }
     }
 
     private static string? NormalizeDescription(string? description)

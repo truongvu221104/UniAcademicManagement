@@ -26,4 +26,8 @@ public sealed class Course : AuditableEntity, IAuditableEntity
     public byte[] RowVersion { get; set; } = [];
 
     public Faculty? Faculty { get; set; }
+
+    public ICollection<CoursePrerequisite> Prerequisites { get; set; } = [];
+
+    public ICollection<CoursePrerequisite> RequiredForCourses { get; set; } = [];
 }

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using UniAcademic.Application.Abstractions.Auth;
 using UniAcademic.Application.Abstractions.Common;
+using UniAcademic.Application.Abstractions.ExamHandoff;
 using UniAcademic.Application.Abstractions.LecturerPortal;
 using UniAcademic.Application.Abstractions.Persistence;
 using UniAcademic.Application.Abstractions.Storage;
@@ -16,6 +17,7 @@ using UniAcademic.Infrastructure.SeedData;
 using UniAcademic.Infrastructure.SeedData.Services;
 using UniAcademic.Infrastructure.Services.Auth;
 using UniAcademic.Infrastructure.Services.Common;
+using UniAcademic.Infrastructure.Services.ExamHandoff;
 using UniAcademic.Infrastructure.Storage;
 
 namespace UniAcademic.Infrastructure;
@@ -28,12 +30,23 @@ public static class DependencyInjection
         services.Configure<BootstrapAdminOptions>(configuration.GetSection(BootstrapAdminOptions.SectionName));
         services.Configure<SeedDataOptions>(configuration.GetSection(SeedDataOptions.SectionName));
         services.Configure<LocalFileStorageOptions>(configuration.GetSection(LocalFileStorageOptions.SectionName));
+        services.Configure<UniTestSystemOptions>(configuration.GetSection(UniTestSystemOptions.SectionName));
 
         services.AddHttpContextAccessor();
 
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DB")));
         services.AddScoped<IAppDbContext>(sp => sp.GetRequiredService<AppDbContext>());
+        services.AddHttpClient("UniTestSystem", (sp, client) =>
+        {
+            var options = sp.GetRequiredService<IOptions<UniTestSystemOptions>>().Value;
+            if (!string.IsNullOrWhiteSpace(options.BaseUrl))
+            {
+                client.BaseAddress = new Uri(options.BaseUrl);
+            }
+
+            client.Timeout = TimeSpan.FromSeconds(10);
+        });
 
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
@@ -41,6 +54,7 @@ public static class DependencyInjection
         services.AddScoped<IPermissionService, PermissionService>();
         services.AddScoped<IAuditService, AuditService>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IExamHandoffService, ExamHandoffService>();
         services.AddScoped<ILocalFileStorage, LocalFileStorage>();
         services.AddSingleton<IDateTimeProvider, SystemDateTimeProvider>();
         services.AddScoped<ICurrentUser, CurrentUserAccessor>();
@@ -51,6 +65,7 @@ public static class DependencyInjection
         services.AddScoped<JsonSeedDataFileReader>();
         services.AddSingleton<DatasetHashService>();
         services.AddScoped<FacultyDatasetSynchronizer>();
+        services.AddScoped<DemoFoundationDatasetSynchronizer>();
         services.AddScoped<SeedDataBootstrapService>();
 
         return services;

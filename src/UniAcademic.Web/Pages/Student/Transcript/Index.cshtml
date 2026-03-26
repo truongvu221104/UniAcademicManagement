@@ -1,0 +1,68 @@
+@page
+@model UniAcademic.Web.Pages.Student.Transcript.IndexModel
+@{
+    ViewData["Title"] = "My Transcript";
+}
+
+<div class="mb-4">
+    <h1 class="h3">My Transcript</h1>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <div><strong>Student Code:</strong> @Model.Transcript.StudentCode</div>
+        <div><strong>Full Name:</strong> @Model.Transcript.StudentFullName</div>
+        <div><strong>Class:</strong> @Model.Transcript.StudentClassName</div>
+        <div><strong>Faculty:</strong> @Model.Transcript.FacultyName</div>
+        <div class="mt-3"><strong>Overall GPA:</strong> @Model.Transcript.OverallGPA.ToString("0.00")</div>
+        <div><strong>Total Credits Earned:</strong> @Model.Transcript.TotalCreditsEarned</div>
+    </div>
+</div>
+
+@if (Model.Transcript.Semesters.Count == 0)
+{
+    <div class="alert alert-info">No transcript results are available yet.</div>
+}
+else
+{
+    @foreach (var semester in Model.Transcript.Semesters)
+    {
+        <div class="card mb-4">
+            <div class="card-header">
+                <strong>@semester.SemesterName</strong> - @semester.AcademicYear
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Course Code</th>
+                                <th>Course Name</th>
+                                <th>Credits</th>
+                                <th>Score</th>
+                                <th>Grade</th>
+                                <th>Passed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var course in semester.Courses)
+                            {
+                                <tr>
+                                    <td>@course.CourseCode</td>
+                                    <td>@course.CourseName</td>
+                                    <td>@course.Credits</td>
+                                    <td>@course.WeightedFinalScore.ToString("0.00")</td>
+                                    <td>@course.GradeSymbol</td>
+                                    <td>@(course.IsPassed ? "Yes" : "No")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div><strong>Semester GPA:</strong> @semester.SemesterGPA.ToString("0.00")</div>
+                <div><strong>Semester Credits Earned:</strong> @semester.SemesterCreditsEarned</div>
+            </div>
+        </div>
+    }
+}

@@ -25,6 +25,22 @@ public sealed class CourseOfferingRosterPermissionAuthorizationTests
         Assert.False(context.HasSucceeded);
     }
 
+    [Fact]
+    public async Task HandleRequirementAsync_ShouldNotSucceed_WhenCourseOfferingRosterRetryHandoffPermissionIsMissing()
+    {
+        var currentUser = new FakeCurrentUser
+        {
+            PermissionsValue = [PermissionConstants.CourseOfferingRosters.View]
+        };
+        var handler = new PermissionAuthorizationHandler(currentUser);
+        var requirement = new PermissionRequirement(PermissionConstants.CourseOfferingRosters.RetryHandoff);
+        var context = new AuthorizationHandlerContext([requirement], new ClaimsPrincipal(), null);
+
+        await handler.HandleAsync(context);
+
+        Assert.False(context.HasSucceeded);
+    }
+
     private sealed class FakeCurrentUser : ICurrentUser
     {
         public Guid? UserId => null;

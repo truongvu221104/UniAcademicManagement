@@ -14,6 +14,12 @@ public sealed class CreateCourseOfferingRequest
 
     public int Capacity { get; set; }
 
+    public int DayOfWeek { get; set; }
+
+    public int StartPeriod { get; set; }
+
+    public int EndPeriod { get; set; }
+
     public CourseOfferingStatus Status { get; set; } = CourseOfferingStatus.Active;
 
     public string? Description { get; set; }

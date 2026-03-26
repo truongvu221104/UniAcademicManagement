@@ -19,6 +19,8 @@ public interface IAppDbContext
 
     IQueryable<Course> Courses { get; }
 
+    IQueryable<CoursePrerequisite> CoursePrerequisites { get; }
+
     IQueryable<Semester> Semesters { get; }
 
     IQueryable<CourseOffering> CourseOfferings { get; }
@@ -26,6 +28,8 @@ public interface IAppDbContext
     IQueryable<CourseOfferingRosterSnapshot> CourseOfferingRosterSnapshots { get; }
 
     IQueryable<CourseOfferingRosterItem> CourseOfferingRosterItems { get; }
+
+    IQueryable<ExamHandoffLog> ExamHandoffLogs { get; }
 
     IQueryable<AttendanceSession> AttendanceSessions { get; }
 
