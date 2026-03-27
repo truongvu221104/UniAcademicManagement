@@ -41,19 +41,19 @@
             <tr>
                 <td>
                     @Model.Records[i].StudentCode
-                    <input asp-for="Records[@i].RosterItemId" type="hidden" />
-                    <input asp-for="Records[@i].StudentCode" type="hidden" />
-                    <input asp-for="Records[@i].StudentFullName" type="hidden" />
-                    <input asp-for="Records[@i].StudentClassName" type="hidden" />
+                    <input asp-for="Records[i].RosterItemId" type="hidden" />
+                    <input asp-for="Records[i].StudentCode" type="hidden" />
+                    <input asp-for="Records[i].StudentFullName" type="hidden" />
+                    <input asp-for="Records[i].StudentClassName" type="hidden" />
                 </td>
                 <td>@Model.Records[i].StudentFullName</td>
                 <td>@Model.Records[i].StudentClassName</td>
                 <td>
-                    <select asp-for="Records[@i].Status" class="form-select" asp-items="Html.GetEnumSelectList<AttendanceStatus>()"></select>
+                    <select asp-for="Records[i].Status" class="form-select" asp-items="Html.GetEnumSelectList<AttendanceStatus>()"></select>
                 </td>
                 <td>
-                    <input asp-for="Records[@i].Note" class="form-control" />
-                    <span asp-validation-for="Records[@i].Note" class="text-danger"></span>
+                    <input asp-for="Records[i].Note" class="form-control" />
+                    <span asp-validation-for="Records[i].Note" class="text-danger"></span>
                 </td>
             </tr>
         }

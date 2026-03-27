@@ -7,6 +7,7 @@ public sealed class FormFieldViewModel : ObservableObject
 {
     private string _textValue = string.Empty;
     private bool _boolValue;
+    private DateTime? _selectedDate;
     private string? _selectedOption;
     private FormOptionViewModel? _selectedLookupOption;
     private string _lookupText = string.Empty;
@@ -21,6 +22,15 @@ public sealed class FormFieldViewModel : ObservableObject
         if (ValueType == typeof(bool))
         {
             _boolValue = initialValue as bool? ?? false;
+        }
+        else if (ValueType == typeof(DateTime))
+        {
+            _selectedDate = initialValue switch
+            {
+                DateTime dateTime => dateTime,
+                DateTimeOffset dateTimeOffset => dateTimeOffset.DateTime,
+                _ => null
+            };
         }
         else if (ValueType.IsEnum)
         {
@@ -64,6 +74,8 @@ public sealed class FormFieldViewModel : ObservableObject
 
     public bool IsBoolean => ValueType == typeof(bool);
 
+    public bool IsDate => ValueType == typeof(DateTime);
+
     public bool IsEnum => ValueType.IsEnum;
 
     public bool IsLookup => LookupOptions.Count > 0;
@@ -84,6 +96,12 @@ public sealed class FormFieldViewModel : ObservableObject
     {
         get => _boolValue;
         set => SetProperty(ref _boolValue, value);
+    }
+
+    public DateTime? SelectedDate
+    {
+        get => _selectedDate;
+        set => SetProperty(ref _selectedDate, value);
     }
 
     public string? SelectedOption
@@ -140,6 +158,24 @@ public sealed class FormFieldViewModel : ObservableObject
 
             value = Enum.Parse(ValueType, SelectedOption, true);
             return true;
+        }
+
+        if (IsDate)
+        {
+            if (SelectedDate.HasValue)
+            {
+                value = SelectedDate.Value;
+                return true;
+            }
+
+            if (IsNullable)
+            {
+                value = null;
+                return true;
+            }
+
+            error = $"{Label} is required.";
+            return false;
         }
 
         if (IsLookup)

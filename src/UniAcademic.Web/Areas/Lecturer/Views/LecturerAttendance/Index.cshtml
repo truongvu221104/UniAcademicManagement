@@ -1,25 +1,20 @@
-@using Microsoft.AspNetCore.Mvc.Rendering
-@model IReadOnlyCollection<UniAcademic.Application.Models.Attendance.AttendanceSessionListItemModel>
+@model IReadOnlyCollection<UniAcademic.Web.Models.LecturerPortal.LecturerAttendanceOfferingOverviewItemViewModel>
 
 @{
-    ViewData["Title"] = "Take Attendance";
-    var courseOfferingOptions = ViewBag.CourseOfferingOptions as IReadOnlyCollection<SelectListItem> ?? Array.Empty<SelectListItem>();
+    ViewData["Title"] = "Attendance";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="h3 mb-0">Take Attendance</h1>
-    <a asp-area="Lecturer" asp-controller="LecturerAttendance" asp-action="Create" asp-route-courseOfferingId="@ViewBag.CourseOfferingId" class="btn btn-primary">Create Session</a>
+    <div>
+        <h1 class="h3 mb-1">Attendance</h1>
+        <p class="text-muted mb-0">Open a teaching class first, then review the session list and update each session when needed.</p>
+    </div>
 </div>
 
 <form method="get" class="row g-3 mb-3">
-    <div class="col-md-4">
-        <label class="form-label">Course Offering</label>
-        <select name="courseOfferingId" class="form-select">
-            @foreach (var option in courseOfferingOptions)
-            {
-                <option value="@option.Value" selected="@option.Selected">@option.Text</option>
-            }
-        </select>
+    <div class="col-md-6">
+        <label class="form-label">Keyword</label>
+        <input type="text" name="keyword" value="@ViewBag.Keyword" class="form-control" placeholder="Search by offering code, course code, or course name" />
     </div>
     <div class="col-md-2 d-flex align-items-end">
         <button type="submit" class="btn btn-secondary w-100">Filter</button>
@@ -29,11 +24,11 @@
 <table class="table table-striped">
     <thead>
         <tr>
-            <th>Course Offering</th>
-            <th>Session Date</th>
-            <th>Session No</th>
-            <th>Title</th>
-            <th>Records</th>
+            <th>Offering</th>
+            <th>Course</th>
+            <th>Semester</th>
+            <th>Sessions</th>
+            <th>Latest Session</th>
             <th class="text-end">Actions</th>
         </tr>
     </thead>
@@ -41,14 +36,17 @@
     @foreach (var item in Model)
     {
         <tr>
-            <td>@item.CourseOfferingCode - @item.CourseName (@item.SemesterName)</td>
-            <td>@item.SessionDate.ToString("yyyy-MM-dd")</td>
-            <td>@item.SessionNo</td>
-            <td>@item.Title</td>
-            <td>@item.RecordCount</td>
+            <td>
+                <div class="fw-semibold">@item.CourseOfferingCode</div>
+                <div class="text-muted small">@item.DisplayName</div>
+            </td>
+            <td>@item.CourseCode - @item.CourseName</td>
+            <td>@item.SemesterName</td>
+            <td>@item.SessionCount</td>
+            <td>@(item.LatestSessionDate?.ToString("yyyy-MM-dd") ?? "No sessions yet")</td>
             <td class="text-end">
-                <a asp-area="Lecturer" asp-controller="LecturerAttendance" asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info">Details</a>
-                <a asp-area="Lecturer" asp-controller="LecturerAttendance" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                <a asp-area="Lecturer" asp-controller="LecturerAttendance" asp-action="Sessions" asp-route-courseOfferingId="@item.CourseOfferingId" class="btn btn-sm btn-outline-primary">View Sessions</a>
+                <a asp-area="Lecturer" asp-controller="LecturerAttendance" asp-action="Create" asp-route-courseOfferingId="@item.CourseOfferingId" class="btn btn-sm btn-primary">Create Session</a>
             </td>
         </tr>
     }

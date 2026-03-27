@@ -33,7 +33,7 @@ public sealed class EnrollmentsController : Controller
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.Enrollments.View)]
     [HttpGet]
-    public async Task<IActionResult> Index(string? keyword, Guid? studentProfileId, Guid? courseOfferingId, EnrollmentStatus? status, int? page, int? pageSize, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(string? keyword, Guid? studentProfileId, Guid? courseOfferingId, EnrollmentStatus? status, int? pageNumber, int? pageSize, CancellationToken cancellationToken)
     {
         var enrollments = await _enrollmentService.GetListAsync(new GetEnrollmentsQuery
         {
@@ -42,7 +42,7 @@ public sealed class EnrollmentsController : Controller
             CourseOfferingId = courseOfferingId,
             Status = status
         }, cancellationToken);
-        var pagedEnrollments = UniAcademic.Web.Helpers.PaginationHelper.Paginate(enrollments, page, pageSize);
+        var pagedEnrollments = UniAcademic.Web.Helpers.PaginationHelper.Paginate(enrollments, pageNumber, pageSize);
 
         ViewBag.Keyword = keyword;
         ViewBag.StudentProfileId = studentProfileId;

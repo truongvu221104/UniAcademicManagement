@@ -1,0 +1,94 @@
+@model UniAcademic.Web.Models.LecturerPortal.LecturerOwnProfileViewModel
+
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="h3 mb-1">My Profile</h1>
+        <p class="text-muted mb-0">You can update your contact information here. Academic identity fields are read-only.</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="h5 mb-3">Profile Summary</h2>
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Lecturer Code</dt>
+                    <dd class="col-sm-8">@Model.Code</dd>
+
+                    <dt class="col-sm-4">Full Name</dt>
+                    <dd class="col-sm-8">@Model.FullName</dd>
+
+                    <dt class="col-sm-4">Faculty</dt>
+                    <dd class="col-sm-8">@Model.FacultyCode - @Model.FacultyName</dd>
+
+                    <dt class="col-sm-4">Status</dt>
+                    <dd class="col-sm-8">
+                        <span class="badge @(Model.IsActive ? "bg-success" : "bg-secondary")">@(Model.IsActive ? "Active" : "Inactive")</span>
+                    </dd>
+
+                    <dt class="col-sm-4">Note</dt>
+                    <dd class="col-sm-8">@(string.IsNullOrWhiteSpace(Model.Note) ? "-" : Model.Note)</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="h5 mb-3">Editable Information</h2>
+                <p class="text-muted mb-3">Only contact fields are editable in lecturer profile at the current scope.</p>
+
+                <form method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Lecturer Code</label>
+                            <input class="form-control" value="@Model.Code" readonly />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Full Name</label>
+                            <input class="form-control" value="@Model.FullName" readonly />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Faculty</label>
+                            <input class="form-control" value="@($"{Model.FacultyCode} - {Model.FacultyName}")" readonly />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Status</label>
+                            <input class="form-control" value="@(Model.IsActive ? "Active" : "Inactive")" readonly />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="PhoneNumber" class="form-label"></label>
+                            <input asp-for="PhoneNumber" class="form-control" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">Reset</a>
+                    </div>
+                </form>
+
+                <partial name="_ChangePasswordCard" model='new UniAcademic.Web.Models.Account.ChangePasswordViewModel { ReturnUrl = Context.Request.Path + Context.Request.QueryString }' />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

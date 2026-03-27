@@ -13,12 +13,22 @@ public sealed class EnrollmentApiClient : IEnrollmentApiClient
         _httpClient = httpClient;
     }
 
-    public async Task<IReadOnlyCollection<EnrollmentListItemResponse>> GetListAsync(string? keyword = null, Guid? studentProfileId = null, Guid? courseOfferingId = null, string? status = null, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyCollection<EnrollmentListItemResponse>> GetListAsync(string? keyword = null, string? studentCode = null, string? studentFullName = null, Guid? studentProfileId = null, Guid? courseOfferingId = null, string? status = null, CancellationToken cancellationToken = default)
     {
         var query = new List<string>();
         if (!string.IsNullOrWhiteSpace(keyword))
         {
             query.Add($"keyword={Uri.EscapeDataString(keyword)}");
+        }
+
+        if (!string.IsNullOrWhiteSpace(studentCode))
+        {
+            query.Add($"studentCode={Uri.EscapeDataString(studentCode)}");
+        }
+
+        if (!string.IsNullOrWhiteSpace(studentFullName))
+        {
+            query.Add($"studentFullName={Uri.EscapeDataString(studentFullName)}");
         }
 
         if (studentProfileId.HasValue)

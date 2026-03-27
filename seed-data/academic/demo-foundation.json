@@ -713,6 +713,12 @@
                         "description":  "Môn học cơ sở về nguyên lý kế toán và lập báo cáo tài chính."
                     }
                 ],
+    "coursePrerequisites":  [
+                                {
+                                    "courseCode":  "BA101",
+                                    "prerequisiteCourseCode":  "DB201"
+                                }
+                            ],
     "semesters":  [
                       {
                           "code":  "2025T1",
@@ -1457,6 +1463,15 @@
                                 "description":  "Lớp học phần môn Nguyên lý Quản trị."
                             },
                             {
+                                "code":  "BA101-2025T1-02",
+                                "courseCode":  "BA101",
+                                "semesterCode":  "2025T1",
+                                "displayName":  "BA101 - NguyĂªn lĂ½ Quáº£n trá»‹ - 2025T1 - 02",
+                                "capacity":  35,
+                                "status":  "Active",
+                                "description":  "Lá»›p há»c pháº§n má»Ÿ Ä‘á»ƒ test Ä‘iá»u kiá»‡n tiĂªn quyáº¿t DB201."
+                            },
+                            {
                                 "code":  "MKT201-2025T1-01",
                                 "courseCode":  "MKT201",
                                 "semesterCode":  "2025T1",
@@ -1553,6 +1568,12 @@
                                     "lecturerCode":  "LEC006",
                                     "isPrimary":  false,
                                     "assignedAtUtc":  "2025-08-20T10:00:00Z"
+                                },
+                                {
+                                    "courseOfferingCode":  "BA101-2025T1-02",
+                                    "lecturerCode":  "LEC005",
+                                    "isPrimary":  true,
+                                    "assignedAtUtc":  "2025-08-20T10:05:00Z"
                                 },
                                 {
                                     "courseOfferingCode":  "MKT201-2025T1-01",

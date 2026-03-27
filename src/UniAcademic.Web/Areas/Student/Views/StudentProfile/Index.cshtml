@@ -1,0 +1,110 @@
+@model UniAcademic.Web.Models.StudentPortal.StudentOwnProfileViewModel
+@using UniAcademic.Domain.Enums
+
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="h3 mb-1">My Profile</h1>
+        <p class="text-muted mb-0">You can update only your contact and personal information fields below.</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="h5 mb-3">Profile Summary</h2>
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Student Code</dt>
+                    <dd class="col-sm-8">@Model.StudentCode</dd>
+
+                    <dt class="col-sm-4">Full Name</dt>
+                    <dd class="col-sm-8">@Model.FullName</dd>
+
+                    <dt class="col-sm-4">Class</dt>
+                    <dd class="col-sm-8">@Model.StudentClassCode - @Model.StudentClassName</dd>
+
+                    <dt class="col-sm-4">Status</dt>
+                    <dd class="col-sm-8">
+                        <span class="badge @(Model.Status == StudentProfileStatus.Active ? "bg-success" : "bg-secondary")">@Model.Status</span>
+                    </dd>
+
+                    <dt class="col-sm-4">Note</dt>
+                    <dd class="col-sm-8">@(string.IsNullOrWhiteSpace(Model.Note) ? "-" : Model.Note)</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="h5 mb-3">Editable Information</h2>
+                <p class="text-muted mb-3">Sensitive academic fields are locked and shown only for reference.</p>
+
+                <form method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Student Code</label>
+                            <input class="form-control" value="@Model.StudentCode" readonly />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Full Name</label>
+                            <input class="form-control" value="@Model.FullName" readonly />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Student Class</label>
+                            <input class="form-control" value="@($"{Model.StudentClassCode} - {Model.StudentClassName}")" readonly />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Status</label>
+                            <input class="form-control" value="@Model.Status" readonly />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Phone" class="form-label"></label>
+                            <input asp-for="Phone" class="form-control" />
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="DateOfBirth" class="form-label"></label>
+                            <input asp-for="DateOfBirth" type="date" class="form-control" />
+                            <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Gender" class="form-label"></label>
+                            <select asp-for="Gender" asp-items="Html.GetEnumSelectList<StudentGender>()" class="form-select"></select>
+                            <span asp-validation-for="Gender" class="text-danger"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="Address" class="form-label"></label>
+                            <textarea asp-for="Address" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">Reset</a>
+                    </div>
+                </form>
+
+                <partial name="_ChangePasswordCard" model='new UniAcademic.Web.Models.Account.ChangePasswordViewModel { ReturnUrl = Context.Request.Path + Context.Request.QueryString }' />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

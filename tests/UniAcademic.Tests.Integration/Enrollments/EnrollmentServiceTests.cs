@@ -346,6 +346,35 @@ public sealed class EnrollmentServiceTests
     }
 
     [Fact]
+    public async Task EnrollAsync_ShouldNotAllowOverride_WhenPrerequisiteIsMissing()
+    {
+        await using var dbContext = CreateDbContext();
+        var studentProfile = await SeedStudentProfileAsync(dbContext, "SV001");
+        var prerequisiteCourse = await SeedCourseAsync(dbContext, "DB201", credits: 3);
+        var targetCourse = await SeedCourseAsync(dbContext, "BA101", credits: 3);
+        dbContext.CoursePrerequisitesSet.Add(new CoursePrerequisite
+        {
+            CourseId = targetCourse.Id,
+            PrerequisiteCourseId = prerequisiteCourse.Id,
+            CreatedBy = "seed"
+        });
+        await dbContext.SaveChangesAsync();
+
+        var targetOffering = await SeedCourseOfferingAsync(dbContext, "BA101-HK1-01", 10, targetCourse);
+        var service = CreateEnrollmentService(dbContext);
+
+        var exception = await Assert.ThrowsAsync<AuthException>(() => service.EnrollAsync(new EnrollStudentCommand
+        {
+            StudentProfileId = studentProfile.Id,
+            CourseOfferingId = targetOffering.Id,
+            IsOverride = true,
+            OverrideReason = "Admin override"
+        }));
+
+        Assert.Equal("Student has not satisfied course prerequisites.", exception.Message);
+    }
+
+    [Fact]
     public async Task EnrollAsync_ShouldFailToReactivate_WhenCapacityIsExceeded()
     {
         await using var dbContext = CreateDbContext();

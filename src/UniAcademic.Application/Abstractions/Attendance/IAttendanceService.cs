@@ -6,6 +6,8 @@ public interface IAttendanceService
 {
     Task<AttendanceSessionModel> CreateSessionAsync(CreateAttendanceSessionCommand command, CancellationToken cancellationToken = default);
 
+    Task<AttendanceSessionModel> UpdateSessionAsync(UpdateAttendanceSessionCommand command, CancellationToken cancellationToken = default);
+
     Task<AttendanceSessionModel> UpdateRecordsAsync(UpdateAttendanceRecordsCommand command, CancellationToken cancellationToken = default);
 
     Task<AttendanceSessionModel> GetByIdAsync(GetAttendanceSessionByIdQuery query, CancellationToken cancellationToken = default);

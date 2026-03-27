@@ -42,13 +42,12 @@ public sealed class AttendanceService : IAttendanceService
         var duplicateExists = await _dbContext.AttendanceSessions
             .AnyAsync(
                 x => x.CourseOfferingId == courseOffering.Id
-                    && x.SessionDate == sessionDate
                     && x.SessionNo == sessionNo,
                 cancellationToken);
 
         if (duplicateExists)
         {
-            throw new AuthException("Attendance session already exists.");
+            throw new AuthException("Attendance session number already exists for this class.");
         }
 
         var createdBy = _currentUser.Username ?? "system";
@@ -86,11 +85,66 @@ public sealed class AttendanceService : IAttendanceService
         return await GetByIdAsync(new GetAttendanceSessionByIdQuery { Id = session.Id }, cancellationToken);
     }
 
+    public async Task<AttendanceSessionModel> UpdateSessionAsync(UpdateAttendanceSessionCommand command, CancellationToken cancellationToken = default)
+    {
+        var session = await BuildSessionQuery()
+            .FirstOrDefaultAsync(x => x.Id == command.Id, cancellationToken)
+            ?? throw new AuthException("Attendance session was not found.");
+
+        var sessionNo = NormalizeSessionNo(command.SessionNo);
+        var title = NormalizeTitle(command.Title);
+        var note = NormalizeNote(command.Note);
+
+        var duplicateExists = await _dbContext.AttendanceSessions
+            .AnyAsync(
+                x => x.CourseOfferingId == session.CourseOfferingId
+                    && x.Id != session.Id
+                    && x.SessionNo == sessionNo,
+                cancellationToken);
+
+        if (duplicateExists)
+        {
+            throw new AuthException("Attendance session number already exists for this class.");
+        }
+
+        session.SessionNo = sessionNo;
+        session.Title = title;
+        session.Note = note;
+        session.ModifiedBy = _currentUser.Username ?? "system";
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+        await _auditService.WriteAsync("attendance.session.update", nameof(AttendanceSession), session.Id.ToString(), new
+        {
+            session.CourseOfferingId,
+            session.SessionDate,
+            session.SessionNo,
+            session.Title
+        }, _currentUser.UserId, cancellationToken);
+
+        return Map(session);
+    }
+
     public async Task<AttendanceSessionModel> UpdateRecordsAsync(UpdateAttendanceRecordsCommand command, CancellationToken cancellationToken = default)
     {
         var session = await BuildSessionQuery()
             .FirstOrDefaultAsync(x => x.Id == command.Id, cancellationToken)
             ?? throw new AuthException("Attendance session was not found.");
+
+        var sessionNo = NormalizeSessionNo(command.SessionNo);
+        var title = NormalizeTitle(command.Title);
+        var note = NormalizeNote(command.Note);
+
+        var duplicateExists = await _dbContext.AttendanceSessions
+            .AnyAsync(
+                x => x.CourseOfferingId == session.CourseOfferingId
+                    && x.Id != session.Id
+                    && x.SessionNo == sessionNo,
+                cancellationToken);
+
+        if (duplicateExists)
+        {
+            throw new AuthException("Attendance session number already exists for this class.");
+        }
 
         if (command.Records.Count == 0)
         {
@@ -126,6 +180,9 @@ public sealed class AttendanceService : IAttendanceService
             record.ModifiedBy = modifiedBy;
         }
 
+        session.SessionNo = sessionNo;
+        session.Title = title;
+        session.Note = note;
         session.ModifiedBy = modifiedBy;
 
         await _dbContext.SaveChangesAsync(cancellationToken);

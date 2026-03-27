@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Grade Category Details";
+    var isGradebookEditable = ViewBag.IsGradebookEditable as bool? ?? false;
 }
 
 <h1 class="h3 mb-3">Grade Category Details</h1>
@@ -11,7 +12,19 @@
     Category: @Model.Name | Weight: @Model.Weight | Max Score: @Model.MaxScore
 </div>
 
-<table class="table table-striped">
+<div class="alert @(isGradebookEditable ? "alert-info" : "alert-secondary")">
+    Grade item structure is managed by academic staff.
+    @if (isGradebookEditable)
+    {
+        <span> This class is still open, so you can update each student's score and note through <strong>Edit Student Scores</strong>.</span>
+    }
+    else
+    {
+        <span> Final results already exist for this class, so this page is now review-only for lecturers.</span>
+    }
+</div>
+
+<table class="table table-striped align-middle">
     <thead>
         <tr>
             <th>Student Code</th>
@@ -35,6 +48,8 @@
     </tbody>
 </table>
 
-<a asp-action="EditCategory" asp-route-id="@Model.Id" class="btn btn-primary">Edit Category</a>
-<a asp-action="EditEntries" asp-route-id="@Model.Id" class="btn btn-success">Edit Entries</a>
-<a asp-action="Index" class="btn btn-secondary">Back</a>
+@if (isGradebookEditable)
+{
+    <a asp-action="EditEntries" asp-route-id="@Model.Id" class="btn btn-success">Edit Student Scores</a>
+}
+<a asp-action="Categories" asp-route-courseOfferingId="@Model.CourseOfferingId" class="btn btn-secondary">Back</a>

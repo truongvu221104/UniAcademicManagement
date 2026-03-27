@@ -2,42 +2,63 @@
 
 @{
     ViewData["Title"] = "My Course Offerings";
+    var keyword = ViewBag.Keyword as string;
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="h3 mb-0">My Course Offerings</h1>
+    <div>
+        <h1 class="h3 mb-1">My Course Offerings</h1>
+        <p class="text-muted mb-0">Course offerings that are currently associated with your account.</p>
+    </div>
 </div>
 
-<form method="get" class="row g-3 mb-3">
+<form method="get" class="row g-2 mb-3">
     <div class="col-md-6">
-        <label class="form-label">Keyword</label>
-        <input type="text" name="keyword" value="@ViewBag.Keyword" class="form-control" />
+        <input type="text" name="keyword" value="@keyword" class="form-control" placeholder="Search by offering code, course code, or course name" />
     </div>
-    <div class="col-md-2 d-flex align-items-end">
-        <button type="submit" class="btn btn-secondary w-100">Filter</button>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </div>
+    <div class="col-auto">
+        <a asp-action="Index" class="btn btn-outline-secondary">Reset</a>
     </div>
 </form>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Code</th>
-            <th>Display Name</th>
-            <th>Course</th>
-            <th>Semester</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>@item.Code</td>
-            <td>@item.DisplayName</td>
-            <td>@item.CourseCode - @item.CourseName</td>
-            <td>@item.SemesterName</td>
-            <td>@item.Status</td>
-        </tr>
-    }
-    </tbody>
-</table>
+@if (Model.Count == 0)
+{
+    <div class="alert alert-info">No course offerings are currently available for this account.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Offering</th>
+                    <th>Course</th>
+                    <th>Semester</th>
+                    <th>Capacity</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <div class="fw-semibold">@item.Code</div>
+                            <div class="text-muted small">@item.DisplayName</div>
+                        </td>
+                        <td>
+                            <div class="fw-semibold">@item.CourseCode</div>
+                            <div class="text-muted small">@item.CourseName</div>
+                        </td>
+                        <td>@item.SemesterName</td>
+                        <td>@item.CapacityDisplay</td>
+                        <td><span class="badge bg-secondary">@item.Status</span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

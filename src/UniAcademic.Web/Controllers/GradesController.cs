@@ -28,13 +28,13 @@ public sealed class GradesController : Controller
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.Grades.View)]
     [HttpGet]
-    public async Task<IActionResult> Index(Guid? courseOfferingId, int? page, int? pageSize, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(Guid? courseOfferingId, int? pageNumber, int? pageSize, CancellationToken cancellationToken)
     {
         var categories = await _gradeService.GetListAsync(new GetGradeCategoriesQuery
         {
             CourseOfferingId = courseOfferingId
         }, cancellationToken);
-        var pagedCategories = PaginationHelper.Paginate(categories, page, pageSize);
+        var pagedCategories = PaginationHelper.Paginate(categories, pageNumber, pageSize);
 
         ViewBag.CourseOfferingId = courseOfferingId;
         ViewBag.CourseOfferingOptions = await BuildCourseOfferingOptionsAsync(cancellationToken, courseOfferingId, includeEmpty: true);

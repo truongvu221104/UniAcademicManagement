@@ -28,13 +28,13 @@ public sealed class AttendanceController : Controller
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.Attendance.View)]
     [HttpGet]
-    public async Task<IActionResult> Index(Guid? courseOfferingId, int? page, int? pageSize, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(Guid? courseOfferingId, int? pageNumber, int? pageSize, CancellationToken cancellationToken)
     {
         var sessions = await _attendanceService.GetListAsync(new GetAttendanceSessionsQuery
         {
             CourseOfferingId = courseOfferingId
         }, cancellationToken);
-        var pagedSessions = PaginationHelper.Paginate(sessions, page, pageSize);
+        var pagedSessions = PaginationHelper.Paginate(sessions, pageNumber, pageSize);
 
         ViewBag.CourseOfferingId = courseOfferingId;
         ViewBag.CourseOfferingOptions = await BuildCourseOfferingOptionsAsync(cancellationToken, courseOfferingId, includeEmpty: true);

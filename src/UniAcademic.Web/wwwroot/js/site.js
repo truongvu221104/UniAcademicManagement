@@ -24,11 +24,11 @@ document.addEventListener("submit", function (event) {
         form.appendChild(pageSizeInput);
     }
 
-    var pageInput = form.querySelector("[name='page']");
+    var pageInput = form.querySelector("[name='pageNumber']");
     if (!pageInput) {
         pageInput = document.createElement("input");
         pageInput.setAttribute("type", "hidden");
-        pageInput.setAttribute("name", "page");
+        pageInput.setAttribute("name", "pageNumber");
         form.appendChild(pageInput);
     }
 

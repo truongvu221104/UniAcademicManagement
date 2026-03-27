@@ -21,14 +21,15 @@ public sealed class LecturerGradeResultsController : Controller
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.GradeResults.View)]
     [HttpGet]
-    public async Task<IActionResult> Index(Guid? courseOfferingId, int? page, int? pageSize, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(Guid? courseOfferingId, int? pageNumber, int? pageSize, CancellationToken cancellationToken)
     {
         await LoadOfferingOptionsAsync(cancellationToken, courseOfferingId, includeEmpty: true);
         var results = await _lecturerPortalService.GetGradeResultsAsync(new GetLecturerGradeResultsQuery
         {
             CourseOfferingId = courseOfferingId
         }, cancellationToken);
-        var pagedResults = PaginationHelper.Paginate(results, page, pageSize);
+        var pagedResults = PaginationHelper.Paginate(results, pageNumber, pageSize);
+        ViewBag.CourseOfferingId = courseOfferingId;
         ViewData["Pagination"] = pagedResults.Pagination;
         return View(pagedResults.Items);
     }

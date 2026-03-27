@@ -1,9 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System.Net;
+using System.Security.Cryptography;
 using UniAcademic.Application.Abstractions.Auth;
 using UniAcademic.Application.Abstractions.Common;
 using UniAcademic.Application.Common;
 using UniAcademic.Application.Models.Auth;
+using UniAcademic.Application.Models.Common;
 using UniAcademic.Domain.Entities.Identity;
 using UniAcademic.Infrastructure.Options;
 using UniAcademic.Infrastructure.Persistence;
@@ -18,6 +21,7 @@ public sealed class AuthService : IAuthService
     private readonly IRefreshTokenService _refreshTokenService;
     private readonly IPermissionService _permissionService;
     private readonly IAuditService _auditService;
+    private readonly IEmailSender _emailSender;
     private readonly ICurrentUser _currentUser;
     private readonly IDateTimeProvider _dateTimeProvider;
     private readonly IClientContextAccessor _clientContextAccessor;
@@ -30,6 +34,7 @@ public sealed class AuthService : IAuthService
         IRefreshTokenService refreshTokenService,
         IPermissionService permissionService,
         IAuditService auditService,
+        IEmailSender emailSender,
         ICurrentUser currentUser,
         IDateTimeProvider dateTimeProvider,
         IClientContextAccessor clientContextAccessor,
@@ -41,6 +46,7 @@ public sealed class AuthService : IAuthService
         _refreshTokenService = refreshTokenService;
         _permissionService = permissionService;
         _auditService = auditService;
+        _emailSender = emailSender;
         _currentUser = currentUser;
         _dateTimeProvider = dateTimeProvider;
         _clientContextAccessor = clientContextAccessor;
@@ -260,19 +266,102 @@ public sealed class AuthService : IAuthService
         user.PasswordHash = _passwordHasher.HashPassword(request.NewPassword);
         user.ModifiedBy = user.Username;
 
-        var activeRefreshTokens = await _dbContext.RefreshTokens
-            .Where(x => x.UserId == user.Id && x.RevokedAtUtc == null)
-            .ToListAsync(cancellationToken);
-
-        foreach (var refreshToken in activeRefreshTokens)
-        {
-            refreshToken.RevokedAtUtc = _dateTimeProvider.UtcNow;
-            refreshToken.RevokedByIp = _clientContextAccessor.IpAddress;
-            refreshToken.ModifiedBy = user.Username;
-        }
+        await RevokeAllSessionsAndTokensForUserAsync(user, cancellationToken);
 
         await _dbContext.SaveChangesAsync(cancellationToken);
         await _auditService.WriteAsync("auth.change_password", nameof(User), user.Id.ToString(), null, user.Id, cancellationToken);
+    }
+
+    public async Task ForgotPasswordAsync(AuthForgotPasswordRequest request, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(request.Email))
+        {
+            return;
+        }
+
+        var email = request.Email.Trim();
+        var normalizedEmail = email.ToUpperInvariant();
+        var user = await _dbContext.Users
+            .Include(x => x.StudentProfile)
+            .Include(x => x.LecturerProfile)
+            .FirstOrDefaultAsync(
+                x => x.NormalizedEmail == normalizedEmail
+                    || (x.StudentProfile != null
+                        && x.StudentProfile.Email != null
+                        && x.StudentProfile.Email.ToUpper() == normalizedEmail)
+                    || (x.LecturerProfile != null
+                        && x.LecturerProfile.Email != null
+                        && x.LecturerProfile.Email.ToUpper() == normalizedEmail),
+                cancellationToken);
+
+        if (user is null || !user.IsActive || user.IsLocked)
+        {
+            await _auditService.WriteAsync(
+                "auth.forgot_password.ignored",
+                nameof(User),
+                user?.Id.ToString(),
+                new { request.Email },
+                user?.Id,
+                cancellationToken);
+            return;
+        }
+
+        var newPassword = GenerateRandomPassword();
+        await using var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
+
+        try
+        {
+            user.PasswordHash = _passwordHasher.HashPassword(newPassword);
+            user.FailedLoginCount = 0;
+            user.IsLocked = false;
+            user.LockoutEndUtc = null;
+            user.ModifiedBy = user.Username;
+
+            await RevokeAllSessionsAndTokensForUserAsync(user, cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+
+            var subject = "UniAcademic password reset";
+            var plainTextBody =
+$@"Hello {user.DisplayName},
+
+Your UniAcademic password has been reset.
+
+Username: {user.Username}
+Temporary password: {newPassword}
+
+Please sign in and change your password as soon as possible.
+";
+
+            var htmlBody =
+$"""
+<p>Hello {WebUtility.HtmlEncode(user.DisplayName)},</p>
+<p>Your <strong>UniAcademic</strong> password has been reset.</p>
+<p><strong>Username:</strong> {WebUtility.HtmlEncode(user.Username)}<br />
+<strong>Temporary password:</strong> {WebUtility.HtmlEncode(newPassword)}</p>
+<p>Please sign in and change your password as soon as possible.</p>
+""";
+
+            var deliveryEmail = user.StudentProfile?.Email
+                ?? user.LecturerProfile?.Email
+                ?? user.Email;
+
+            await _emailSender.SendAsync(new EmailMessage
+            {
+                ToEmail = deliveryEmail,
+                ToName = user.DisplayName,
+                Subject = subject,
+                PlainTextBody = plainTextBody,
+                HtmlBody = htmlBody
+            }, cancellationToken);
+
+            await transaction.CommitAsync(cancellationToken);
+            await _auditService.WriteAsync("auth.forgot_password.succeeded", nameof(User), user.Id.ToString(), null, user.Id, cancellationToken);
+        }
+        catch
+        {
+            await transaction.RollbackAsync(cancellationToken);
+            throw new AuthException("Unable to process forgot password email right now.");
+        }
     }
 
     private async Task<AuthResult> CreateAuthResponseAsync(
@@ -385,5 +474,61 @@ public sealed class AuthService : IAuthService
 
         await _dbContext.SaveChangesAsync(cancellationToken);
         await _auditService.WriteAsync(auditAction, nameof(UserSession), session.Id.ToString(), null, actorUserId, cancellationToken);
+    }
+
+    private async Task RevokeAllSessionsAndTokensForUserAsync(User user, CancellationToken cancellationToken)
+    {
+        var now = _dateTimeProvider.UtcNow;
+
+        var activeRefreshTokens = await _dbContext.RefreshTokens
+            .Where(x => x.UserId == user.Id && x.RevokedAtUtc == null)
+            .ToListAsync(cancellationToken);
+
+        foreach (var refreshToken in activeRefreshTokens)
+        {
+            refreshToken.RevokedAtUtc = now;
+            refreshToken.RevokedByIp = _clientContextAccessor.IpAddress;
+            refreshToken.ModifiedBy = user.Username;
+        }
+
+        var activeSessions = await _dbContext.UserSessions
+            .Where(x => x.UserId == user.Id && !x.IsRevoked)
+            .ToListAsync(cancellationToken);
+
+        foreach (var session in activeSessions)
+        {
+            session.IsRevoked = true;
+            session.EndedAtUtc = session.EndedAtUtc ?? now;
+            session.LastSeenAtUtc = now;
+            session.ModifiedBy = user.Username;
+        }
+    }
+
+    private static string GenerateRandomPassword()
+    {
+        const string uppercase = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+        const string lowercase = "abcdefghijkmnopqrstuvwxyz";
+        const string digits = "23456789";
+        const string symbols = "!@#$%";
+        var all = uppercase + lowercase + digits + symbols;
+
+        Span<char> password = stackalloc char[12];
+        password[0] = uppercase[RandomNumberGenerator.GetInt32(uppercase.Length)];
+        password[1] = lowercase[RandomNumberGenerator.GetInt32(lowercase.Length)];
+        password[2] = digits[RandomNumberGenerator.GetInt32(digits.Length)];
+        password[3] = symbols[RandomNumberGenerator.GetInt32(symbols.Length)];
+
+        for (var i = 4; i < password.Length; i++)
+        {
+            password[i] = all[RandomNumberGenerator.GetInt32(all.Length)];
+        }
+
+        for (var i = password.Length - 1; i > 0; i--)
+        {
+            var swapIndex = RandomNumberGenerator.GetInt32(i + 1);
+            (password[i], password[swapIndex]) = (password[swapIndex], password[i]);
+        }
+
+        return new string(password);
     }
 }

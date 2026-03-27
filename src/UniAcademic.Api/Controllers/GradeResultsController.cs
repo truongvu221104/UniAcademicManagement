@@ -22,10 +22,16 @@ public sealed class GradeResultsController : ControllerBase
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.GradeResults.View)]
     [HttpGet]
     [ProducesResponseType(typeof(IReadOnlyCollection<GradeResultListItemResponse>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetList([FromQuery] Guid? courseOfferingId, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetList(
+        [FromQuery] string? studentCode,
+        [FromQuery] string? studentFullName,
+        [FromQuery] Guid? courseOfferingId,
+        CancellationToken cancellationToken)
     {
         var result = await _gradeResultService.GetListAsync(new GetGradeResultsQuery
         {
+            StudentCode = studentCode,
+            StudentFullName = studentFullName,
             CourseOfferingId = courseOfferingId
         }, cancellationToken);
 

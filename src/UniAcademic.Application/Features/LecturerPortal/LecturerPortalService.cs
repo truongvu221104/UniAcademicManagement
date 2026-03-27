@@ -130,6 +130,13 @@ public sealed class LecturerPortalService : ILecturerPortalService
         return await _attendanceService.CreateSessionAsync(command, cancellationToken);
     }
 
+    public async Task<AttendanceSessionModel> UpdateAttendanceSessionAsync(UpdateAttendanceSessionCommand command, CancellationToken cancellationToken = default)
+    {
+        var session = await _attendanceService.GetByIdAsync(new GetAttendanceSessionByIdQuery { Id = command.Id }, cancellationToken);
+        await EnsureAssignedToCourseOfferingAsync(session.CourseOfferingId, cancellationToken);
+        return await _attendanceService.UpdateSessionAsync(command, cancellationToken);
+    }
+
     public async Task<AttendanceSessionModel> UpdateAttendanceRecordsAsync(UpdateAttendanceRecordsCommand command, CancellationToken cancellationToken = default)
     {
         var session = await _attendanceService.GetByIdAsync(new GetAttendanceSessionByIdQuery { Id = command.Id }, cancellationToken);
@@ -199,7 +206,15 @@ public sealed class LecturerPortalService : ILecturerPortalService
     {
         var category = await _gradeService.GetByIdAsync(new GetGradeCategoryByIdQuery { Id = command.Id }, cancellationToken);
         await EnsureAssignedToCourseOfferingAsync(category.CourseOfferingId, cancellationToken);
+        await EnsureGradebookEditableAsync(category.CourseOfferingId, cancellationToken);
         return await _gradeService.UpdateEntriesAsync(command, cancellationToken);
+    }
+
+    public async Task<bool> IsGradebookEditableAsync(Guid courseOfferingId, CancellationToken cancellationToken = default)
+    {
+        await EnsureAssignedToCourseOfferingAsync(courseOfferingId, cancellationToken);
+        return !await _dbContext.GradeResults
+            .AnyAsync(x => x.CourseOfferingId == courseOfferingId, cancellationToken);
     }
 
     public async Task<IReadOnlyCollection<CourseMaterialListItemModel>> GetCourseMaterialsAsync(GetLecturerCourseMaterialsQuery query, CancellationToken cancellationToken = default)
@@ -324,6 +339,17 @@ public sealed class LecturerPortalService : ILecturerPortalService
         if (!isAssigned)
         {
             throw new AuthException("Current lecturer is not assigned to the course offering.");
+        }
+    }
+
+    private async Task EnsureGradebookEditableAsync(Guid courseOfferingId, CancellationToken cancellationToken)
+    {
+        var hasGradeResults = await _dbContext.GradeResults
+            .AnyAsync(x => x.CourseOfferingId == courseOfferingId, cancellationToken);
+
+        if (hasGradeResults)
+        {
+            throw new AuthException("This class grade book was already finalized. Student scores can no longer be changed from the lecturer portal.");
         }
     }
 }

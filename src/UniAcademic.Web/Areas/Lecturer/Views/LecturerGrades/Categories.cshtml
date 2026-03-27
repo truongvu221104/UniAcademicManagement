@@ -1,0 +1,66 @@
+@model IReadOnlyCollection<UniAcademic.Application.Models.Grades.GradeCategoryListItemModel>
+
+@{
+    ViewData["Title"] = "Grade Items";
+    var selectedOffering = ViewBag.SelectedOffering as UniAcademic.Application.Models.CourseOfferings.CourseOfferingListItemModel;
+    var isGradebookEditable = ViewBag.IsGradebookEditable as bool? ?? false;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="h3 mb-1">Grade Items</h1>
+        @if (selectedOffering is not null)
+        {
+            <p class="text-muted mb-0">@selectedOffering.Code - @selectedOffering.DisplayName (@selectedOffering.SemesterName)</p>
+        }
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-area="Lecturer" asp-controller="LecturerGrades" asp-action="Index" class="btn btn-outline-secondary">Back to Classes</a>
+        <a asp-area="Lecturer" asp-controller="LecturerGradeResults" asp-action="Index" asp-route-courseOfferingId="@ViewBag.CourseOfferingId" class="btn btn-outline-dark">View Final Results</a>
+    </div>
+</div>
+
+@if (isGradebookEditable)
+{
+    <div class="alert alert-info">
+        Grade category structure is read-only for lecturers. The grade book for this class is currently <strong>open</strong>, so you can use <strong>Edit Entries</strong> to update student scores and notes.
+    </div>
+}
+else
+{
+    <div class="alert alert-secondary">
+        This class grade book is already <strong>locked</strong> because final results exist. You can still review scores, but edits must be handled by academic staff.
+    </div>
+}
+
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Weight</th>
+            <th>Max Score</th>
+            <th>Active</th>
+            <th>Entries</th>
+            <th class="text-end">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Name</td>
+            <td>@item.Weight</td>
+            <td>@item.MaxScore</td>
+            <td>@(item.IsActive ? "Active" : "Inactive")</td>
+            <td>@item.EntryCount</td>
+            <td class="text-end">
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info">View Students</a>
+                @if (isGradebookEditable)
+                {
+                    <a asp-action="EditEntries" asp-route-id="@item.Id" class="btn btn-sm btn-outline-success">Edit Student Scores</a>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

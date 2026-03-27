@@ -6,7 +6,7 @@ public static class PaginationHelper
 {
     private static readonly int[] AllowedPageSizes = [5, 10, 20, 50];
 
-    public static PaginatedResult<T> Paginate<T>(IEnumerable<T> source, int? page, int? pageSize)
+    public static PaginatedResult<T> Paginate<T>(IEnumerable<T> source, int? pageNumber, int? pageSize)
     {
         var items = source as IReadOnlyCollection<T> ?? source.ToArray();
         var normalizedPageSize = AllowedPageSizes.Contains(pageSize.GetValueOrDefault())
@@ -15,7 +15,7 @@ public static class PaginationHelper
 
         var totalItems = items.Count;
         var totalPages = Math.Max(1, (int)Math.Ceiling(totalItems / (double)normalizedPageSize));
-        var normalizedPage = Math.Clamp(page.GetValueOrDefault(1), 1, totalPages);
+        var normalizedPage = Math.Clamp(pageNumber.GetValueOrDefault(1), 1, totalPages);
         var skip = (normalizedPage - 1) * normalizedPageSize;
         var pageItems = items.Skip(skip).Take(normalizedPageSize).ToArray();
 

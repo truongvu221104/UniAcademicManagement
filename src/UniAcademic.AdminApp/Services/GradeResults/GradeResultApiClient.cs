@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using System.Text;
 using UniAcademic.Contracts.GradeResults;
 
 namespace UniAcademic.AdminApp.Services.GradeResults;
@@ -12,15 +13,37 @@ public sealed class GradeResultApiClient : IGradeResultApiClient
         _httpClient = httpClient;
     }
 
-    public async Task<IReadOnlyCollection<GradeResultListItemResponse>> GetListAsync(Guid? courseOfferingId = null, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyCollection<GradeResultListItemResponse>> GetListAsync(
+        string? studentCode = null,
+        string? studentFullName = null,
+        Guid? courseOfferingId = null,
+        CancellationToken cancellationToken = default)
     {
-        var path = "api/graderesults";
-        if (courseOfferingId.HasValue)
+        var queryParts = new List<string>();
+
+        if (!string.IsNullOrWhiteSpace(studentCode))
         {
-            path += $"?courseOfferingId={courseOfferingId.Value}";
+            queryParts.Add($"studentCode={Uri.EscapeDataString(studentCode)}");
         }
 
-        return (await _httpClient.GetFromJsonAsync<IReadOnlyCollection<GradeResultListItemResponse>>(path, cancellationToken)) ?? [];
+        if (!string.IsNullOrWhiteSpace(studentFullName))
+        {
+            queryParts.Add($"studentFullName={Uri.EscapeDataString(studentFullName)}");
+        }
+
+        if (courseOfferingId.HasValue)
+        {
+            queryParts.Add($"courseOfferingId={courseOfferingId.Value}");
+        }
+
+        var path = new StringBuilder("api/graderesults");
+        if (queryParts.Count > 0)
+        {
+            path.Append('?');
+            path.Append(string.Join("&", queryParts));
+        }
+
+        return (await _httpClient.GetFromJsonAsync<IReadOnlyCollection<GradeResultListItemResponse>>(path.ToString(), cancellationToken)) ?? [];
     }
 
     public async Task<GradeResultResponse> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)

@@ -31,7 +31,7 @@ public sealed class IndexModel : PageModel
     [BindProperty(SupportsGet = true)]
     public string? Keyword { get; set; }
 
-    public async Task<IActionResult> OnGetAsync(int? page, int? pageSize, CancellationToken cancellationToken)
+    public async Task<IActionResult> OnGetAsync(int? pageNumber, int? pageSize, CancellationToken cancellationToken)
     {
         try
         {
@@ -40,7 +40,7 @@ public sealed class IndexModel : PageModel
             {
                 Keyword = Keyword
             }, cancellationToken);
-            var pagedOfferings = PaginationHelper.Paginate(offerings, page, pageSize);
+            var pagedOfferings = PaginationHelper.Paginate(offerings, pageNumber, pageSize);
             Offerings = pagedOfferings.Items;
             ViewData["Pagination"] = pagedOfferings.Pagination;
 

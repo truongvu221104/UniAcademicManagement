@@ -6,6 +6,12 @@ public sealed class UpdateAttendanceRecordsCommand
 {
     public Guid Id { get; set; }
 
+    public int SessionNo { get; set; }
+
+    public string? Title { get; set; }
+
+    public string? Note { get; set; }
+
     public IReadOnlyCollection<UpdateAttendanceRecordItemCommand> Records { get; set; } = [];
 }
 

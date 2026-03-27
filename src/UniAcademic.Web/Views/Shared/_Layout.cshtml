@@ -89,7 +89,7 @@
                         <span class="portal-user-label">Current User</span>
                         <strong>@username</strong>
                     </div>
-                    <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                    <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
                         @Html.AntiForgeryToken()
                         <button type="submit" class="btn btn-outline-secondary portal-topbar-button">Logout</button>
                     </form>
@@ -97,7 +97,7 @@
                 else
                 {
                     <span class="portal-chip portal-chip-soft">Guest</span>
-                    <a class="btn btn-primary portal-topbar-button" asp-controller="Account" asp-action="Login">Login</a>
+                    <a class="btn btn-primary portal-topbar-button" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
                 }
             </div>
         </header>
@@ -107,8 +107,7 @@
                 <section class="portal-nav-group">
                     <div class="portal-nav-title">General</div>
                     <nav class="portal-nav-list">
-                        <a class="@(requestPath == "/" ? "portal-nav-link active" : "portal-nav-link")" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        <a class="@(string.Equals(routeController, "Home", StringComparison.OrdinalIgnoreCase) && requestPath.Contains("/Home/Privacy", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        <a class="@((requestPath == "/" || requestPath.StartsWith("/Home", StringComparison.OrdinalIgnoreCase)) ? "portal-nav-link active" : "portal-nav-link")" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                     </nav>
                 </section>
 
@@ -194,11 +193,7 @@
                             }
                             @if (HasPermission(UniAcademic.Application.Security.PermissionConstants.Grades.View))
                             {
-                                <a class="@(string.Equals(routeArea, "Student", StringComparison.OrdinalIgnoreCase) && string.Equals(routeController, "StudentGrades", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-area="Student" asp-controller="StudentGrades" asp-action="Index">My Grades</a>
-                            }
-                            @if (HasPermission(UniAcademic.Application.Security.PermissionConstants.GradeResults.View))
-                            {
-                                <a class="@(string.Equals(routeArea, "Student", StringComparison.OrdinalIgnoreCase) && string.Equals(routeController, "StudentGradeResults", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-area="Student" asp-controller="StudentGradeResults" asp-action="Index">My Grade Results</a>
+                                <a class="@((string.Equals(routeArea, "Student", StringComparison.OrdinalIgnoreCase) && (string.Equals(routeController, "StudentGrades", StringComparison.OrdinalIgnoreCase) || string.Equals(routeController, "StudentGradeResults", StringComparison.OrdinalIgnoreCase))) ? "portal-nav-link active" : "portal-nav-link")" asp-area="Student" asp-controller="StudentGrades" asp-action="Index">My Grades &amp; Results</a>
                             }
                             @if (HasPermission(UniAcademic.Application.Security.PermissionConstants.Transcripts.View))
                             {
@@ -208,6 +203,8 @@
                             {
                                 <a class="@(string.Equals(routeArea, "Student", StringComparison.OrdinalIgnoreCase) && string.Equals(routeController, "StudentMaterials", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-area="Student" asp-controller="StudentMaterials" asp-action="Index">My Materials</a>
                             }
+                            <a class="@(string.Equals(routeArea, "Student", StringComparison.OrdinalIgnoreCase) && string.Equals(routeController, "StudentMessages", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-area="Student" asp-controller="StudentMessages" asp-action="Index">Messages</a>
+                            <a class="@(string.Equals(routeArea, "Student", StringComparison.OrdinalIgnoreCase) && string.Equals(routeController, "StudentProfile", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-area="Student" asp-controller="StudentProfile" asp-action="Index">My Profile</a>
                         </nav>
                     </section>
                 }
@@ -224,16 +221,14 @@
                             }
                             @if (HasPermission(UniAcademic.Application.Security.PermissionConstants.Grades.View))
                             {
-                                <a class="@(string.Equals(routeArea, "Lecturer", StringComparison.OrdinalIgnoreCase) && string.Equals(routeController, "LecturerGrades", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-area="Lecturer" asp-controller="LecturerGrades" asp-action="Index">Grades</a>
-                            }
-                            @if (HasPermission(UniAcademic.Application.Security.PermissionConstants.GradeResults.View))
-                            {
-                                <a class="@(string.Equals(routeArea, "Lecturer", StringComparison.OrdinalIgnoreCase) && string.Equals(routeController, "LecturerGradeResults", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-area="Lecturer" asp-controller="LecturerGradeResults" asp-action="Index">Grade Results</a>
+                                <a class="@((string.Equals(routeArea, "Lecturer", StringComparison.OrdinalIgnoreCase) && (string.Equals(routeController, "LecturerGrades", StringComparison.OrdinalIgnoreCase) || string.Equals(routeController, "LecturerGradeResults", StringComparison.OrdinalIgnoreCase))) ? "portal-nav-link active" : "portal-nav-link")" asp-area="Lecturer" asp-controller="LecturerGrades" asp-action="Index">Grades &amp; Results</a>
                             }
                             @if (HasPermission(UniAcademic.Application.Security.PermissionConstants.CourseMaterials.View))
                             {
                                 <a class="@(string.Equals(routeArea, "Lecturer", StringComparison.OrdinalIgnoreCase) && string.Equals(routeController, "LecturerMaterials", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-area="Lecturer" asp-controller="LecturerMaterials" asp-action="Index">Course Materials</a>
                             }
+                            <a class="@(string.Equals(routeArea, "Lecturer", StringComparison.OrdinalIgnoreCase) && string.Equals(routeController, "LecturerMessages", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-area="Lecturer" asp-controller="LecturerMessages" asp-action="Index">Class Messages</a>
+                            <a class="@(string.Equals(routeArea, "Lecturer", StringComparison.OrdinalIgnoreCase) && string.Equals(routeController, "LecturerProfile", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-area="Lecturer" asp-controller="LecturerProfile" asp-action="Index">My Profile</a>
                         </nav>
                     </section>
                 }
@@ -278,7 +273,7 @@
 
         <footer class="portal-footer">
             <span>&copy; @currentYear UniAcademic</span>
-            <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <span>Academic portal for students, lecturers, and academic operations.</span>
         </footer>
     </div>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

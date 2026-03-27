@@ -6,6 +6,8 @@ public interface IEnrollmentApiClient
 {
     Task<IReadOnlyCollection<EnrollmentListItemResponse>> GetListAsync(
         string? keyword = null,
+        string? studentCode = null,
+        string? studentFullName = null,
         Guid? studentProfileId = null,
         Guid? courseOfferingId = null,
         string? status = null,

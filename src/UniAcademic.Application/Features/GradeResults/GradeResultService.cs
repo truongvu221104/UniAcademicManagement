@@ -126,6 +126,20 @@ public sealed class GradeResultService : IGradeResultService
             results = results.Where(x => x.CourseOfferingId == query.CourseOfferingId.Value);
         }
 
+        if (!string.IsNullOrWhiteSpace(query.StudentCode))
+        {
+            var studentCode = query.StudentCode.Trim();
+            results = results.Where(x =>
+                x.RosterItem != null && x.RosterItem.StudentCode.Contains(studentCode));
+        }
+
+        if (!string.IsNullOrWhiteSpace(query.StudentFullName))
+        {
+            var studentFullName = query.StudentFullName.Trim();
+            results = results.Where(x =>
+                x.RosterItem != null && x.RosterItem.StudentFullName.Contains(studentFullName));
+        }
+
         return await results
             .OrderBy(x => x.RosterItem!.StudentCode)
             .Select(x => new GradeResultListItemModel

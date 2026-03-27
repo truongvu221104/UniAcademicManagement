@@ -22,7 +22,11 @@ public sealed class CourseOfferingResponse
 
     public string DisplayName { get; set; } = string.Empty;
 
+    public int EnrolledCount { get; set; }
+
     public int Capacity { get; set; }
+
+    public string CapacityDisplay => $"{EnrolledCount} / {Capacity}";
 
     public int DayOfWeek { get; set; }
 

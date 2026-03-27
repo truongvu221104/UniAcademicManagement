@@ -16,12 +16,16 @@ public sealed class UpdateAttendanceRecordsViewModel
     public string SemesterName { get; set; } = string.Empty;
 
     [DataType(DataType.Date)]
+    [Display(Name = "Session Date")]
     public DateTime SessionDate { get; set; }
 
+    [Display(Name = "Session No")]
     public int SessionNo { get; set; }
 
+    [Display(Name = "Session Title")]
     public string? Title { get; set; }
 
+    [Display(Name = "Session Note")]
     public string? Note { get; set; }
 
     public List<UpdateAttendanceRecordItemViewModel> Records { get; set; } = [];

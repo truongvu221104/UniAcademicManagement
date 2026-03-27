@@ -512,7 +512,36 @@ public sealed class AdminModuleCatalog
 
     private ModulePageViewModel CreateEnrollmentModule()
     {
-        var module = CreateModule("Enrollments", ct => LoadObjectsAsync(_enrollmentApiClient.GetListAsync(cancellationToken: ct)), (item, ct) => AsObjectTask(_enrollmentApiClient.GetByIdAsync(GetId(item), ct)!));
+        var studentCodeFilter = ModuleFilterFieldViewModel.CreateText("StudentCode", "Student code");
+        var studentFullNameFilter = ModuleFilterFieldViewModel.CreateText("StudentFullName", "Full name");
+        var courseOfferingFilter = ModuleFilterFieldViewModel.CreateLookup("CourseOfferingId", "Course offering", []);
+
+        var module = CreateModule(
+            "Enrollments",
+            ct => LoadObjectsAsync(_enrollmentApiClient.GetListAsync(
+                studentCode: studentCodeFilter.TextValue,
+                studentFullName: studentFullNameFilter.TextValue,
+                courseOfferingId: courseOfferingFilter.SelectedGuidValue,
+                cancellationToken: ct)),
+            (item, ct) => AsObjectTask(_enrollmentApiClient.GetByIdAsync(GetId(item), ct)!));
+
+        module.AddFilter(studentCodeFilter);
+        module.AddFilter(studentFullNameFilter);
+        module.AddFilter(courseOfferingFilter);
+        module.SetBeforeRefreshAsync(async ct =>
+        {
+            if (courseOfferingFilter.Options.Count > 0)
+            {
+                return;
+            }
+
+            var offerings = await _courseOfferingApiClient.GetListAsync(cancellationToken: ct);
+            foreach (var offering in offerings)
+            {
+                courseOfferingFilter.Options.Add(new ModuleFilterOptionViewModel($"{offering.Code} - {offering.CourseName}", offering.Id));
+            }
+        });
+
         module.AddAction(new ModuleActionViewModel("Enroll", module, async vm =>
         {
             var fields = new List<FormFieldViewModel>
@@ -522,6 +551,12 @@ public sealed class AdminModuleCatalog
                 new("Note", typeof(string), (object?)null, true)
             };
             if (!_formDialogService.Show("Enroll Student", fields)) return;
+            var selectedStudentLabel = fields
+                .First(x => x.Label == "StudentProfileId")
+                .SelectedLookupOption?.Label ?? "selected student";
+            var selectedOfferingLabel = fields
+                .First(x => x.Label == "CourseOfferingId")
+                .SelectedLookupOption?.Label ?? "selected course offering";
             await _enrollmentApiClient.CreateAsync(new CreateEnrollmentRequest
             {
                 StudentProfileId = Get<Guid>(fields, "StudentProfileId"),
@@ -529,7 +564,7 @@ public sealed class AdminModuleCatalog
                 Note = Get<string?>(fields, "Note")
             });
             await vm.RefreshAsync();
-            vm.NotifySuccess("Enrollment created.");
+            vm.NotifySuccess($"Enrollment created successfully for {selectedStudentLabel} in {selectedOfferingLabel}.");
         }));
         module.AddAction(new ModuleActionViewModel("Drop", module, async vm =>
         {
@@ -537,7 +572,7 @@ public sealed class AdminModuleCatalog
             if (!_messageDialogService.Confirm($"Drop enrollment for {selected.StudentFullName}?")) return;
             await _enrollmentApiClient.DeleteAsync(selected.Id);
             await vm.RefreshAsync();
-            vm.NotifySuccess("Enrollment dropped.");
+            vm.NotifySuccess($"Enrollment dropped successfully for {selected.StudentFullName} in {selected.CourseOfferingCode}.");
         }, vm => vm.SelectedItem is EnrollmentListItemResponse));
         module.AddAction(new ModuleActionViewModel("Reactivate", module, async vm =>
         {
@@ -549,7 +584,7 @@ public sealed class AdminModuleCatalog
                 Note = "Reactivated from AdminApp"
             });
             await vm.RefreshAsync();
-            vm.NotifySuccess("Enrollment reactivated.");
+            vm.NotifySuccess($"Enrollment reactivated successfully for {selected.StudentFullName} in {selected.CourseOfferingCode}.");
         }, vm => vm.SelectedItem is EnrollmentListItemResponse selected && selected.Status == UniAcademic.Domain.Enums.EnrollmentStatus.Dropped));
         return module;
     }
@@ -559,15 +594,15 @@ public sealed class AdminModuleCatalog
         var module = CreateModule("Rosters", ct => LoadObjectsAsync(_courseOfferingApiClient.GetListAsync(cancellationToken: ct)), (item, ct) => AsObjectTask(_rosterApiClient.GetAsync(GetId(item), ct)!));
         module.AddAction(new ModuleActionViewModel("Finalize", module, async vm =>
         {
-            if (vm.SelectedItem is null) return;
+            if (vm.SelectedItem is not CourseOfferingListItemResponse selected) return;
             var fields = Fields(("Note", typeof(string), (object?)null, true));
             if (!_formDialogService.Show("Finalize Roster", fields)) return;
-            await _rosterApiClient.FinalizeAsync(GetId(vm.SelectedItem), new FinalizeCourseOfferingRosterRequest
+            await _rosterApiClient.FinalizeAsync(selected.Id, new FinalizeCourseOfferingRosterRequest
             {
                 Note = Get<string?>(fields, "Note")
             });
             await vm.RefreshAsync();
-            vm.NotifySuccess("Roster finalized.");
+            vm.NotifySuccess($"Roster finalized successfully for {selected.Code}.");
         }, vm => vm.SelectedItem is CourseOfferingListItemResponse));
 
         if (IsCurrentAdminUser())
@@ -583,7 +618,7 @@ public sealed class AdminModuleCatalog
                     Reason = Get<string?>(fields, "Reason")
                 });
                 await vm.RefreshAsync();
-                vm.NotifySuccess("Roster reopened.");
+                vm.NotifySuccess($"Roster reopened successfully for {selected.Code}.");
             }, vm => vm.SelectedItem is CourseOfferingListItemResponse));
         }
 
@@ -616,7 +651,7 @@ public sealed class AdminModuleCatalog
                 Note = Get<string?>(fields, "Note")
             });
             await vm.RefreshAsync();
-            vm.NotifySuccess("Attendance session created.");
+            vm.NotifySuccess("Attendance session created successfully.");
         }));
         module.AddAction(new ModuleActionViewModel("Edit Records", module, async vm =>
         {
@@ -624,7 +659,7 @@ public sealed class AdminModuleCatalog
             var detail = await _attendanceApiClient.GetByIdAsync(selected.Id);
             if (detail.Records.Count == 0)
             {
-                _messageDialogService.ShowError("This attendance session has no records. This usually means the roster snapshot was finalized before students were enrolled. Recreate the flow in this order: enroll students -> finalize roster -> create attendance session.");
+                vm.NotifyError("This attendance session has no records. This usually means the roster snapshot was finalized before students were enrolled. Recreate the flow in this order: enroll students -> finalize roster -> create attendance session.");
                 return;
             }
             var request = new UpdateAttendanceRecordsRequest
@@ -640,7 +675,7 @@ public sealed class AdminModuleCatalog
             if (!_textEditorDialogService.Edit("Edit Attendance Records JSON", ref json)) return;
             await _attendanceApiClient.UpdateRecordsAsync(selected.Id, UniAcademic.AdminApp.Infrastructure.JsonFormatter.Deserialize<UpdateAttendanceRecordsRequest>(json));
             await vm.RefreshAsync();
-            vm.NotifySuccess("Attendance records updated.");
+            vm.NotifySuccess($"Attendance records updated successfully for {selected.CourseOfferingCode} session {selected.SessionNo}.");
         }, vm => vm.SelectedItem is AttendanceSessionListItemResponse));
         return module;
     }
@@ -670,7 +705,7 @@ public sealed class AdminModuleCatalog
                 IsActive = Get<bool>(fields, "IsActive")
             });
             await vm.RefreshAsync();
-            vm.NotifySuccess("Grade category created.");
+            vm.NotifySuccess("Grade category created successfully.");
         }));
         module.AddAction(new ModuleActionViewModel("Edit Category", module, async vm =>
         {
@@ -687,7 +722,7 @@ public sealed class AdminModuleCatalog
                 IsActive = Get<bool>(fields, "IsActive")
             });
             await vm.RefreshAsync();
-            vm.NotifySuccess("Grade category updated.");
+            vm.NotifySuccess($"Grade category '{selected.Name}' updated successfully.");
         }, vm => vm.SelectedItem is GradeCategoryListItemResponse));
         module.AddAction(new ModuleActionViewModel("Edit Entries", module, async vm =>
         {
@@ -706,14 +741,43 @@ public sealed class AdminModuleCatalog
             if (!_textEditorDialogService.Edit("Edit Grade Entries JSON", ref json)) return;
             await _gradeApiClient.UpdateEntriesAsync(selected.Id, UniAcademic.AdminApp.Infrastructure.JsonFormatter.Deserialize<UpdateGradeEntriesRequest>(json));
             await vm.RefreshAsync();
-            vm.NotifySuccess("Grade entries updated.");
+            vm.NotifySuccess($"Grade entries updated successfully for category '{selected.Name}'.");
         }, vm => vm.SelectedItem is GradeCategoryListItemResponse));
         return module;
     }
 
     private ModulePageViewModel CreateGradeResultModule()
     {
-        var module = CreateModule("Grade Results", ct => LoadObjectsAsync(_gradeResultApiClient.GetListAsync(cancellationToken: ct)), (item, ct) => AsObjectTask(_gradeResultApiClient.GetByIdAsync(GetId(item), ct)!));
+        var studentCodeFilter = ModuleFilterFieldViewModel.CreateText("StudentCode", "Student code");
+        var studentFullNameFilter = ModuleFilterFieldViewModel.CreateText("StudentFullName", "Full name");
+        var courseOfferingFilter = ModuleFilterFieldViewModel.CreateLookup("CourseOfferingId", "Course offering", []);
+
+        var module = CreateModule(
+            "Grade Results",
+            ct => LoadObjectsAsync(_gradeResultApiClient.GetListAsync(
+                studentCode: studentCodeFilter.TextValue,
+                studentFullName: studentFullNameFilter.TextValue,
+                courseOfferingId: courseOfferingFilter.SelectedGuidValue,
+                cancellationToken: ct)),
+            (item, ct) => AsObjectTask(_gradeResultApiClient.GetByIdAsync(GetId(item), ct)!));
+
+        module.AddFilter(studentCodeFilter);
+        module.AddFilter(studentFullNameFilter);
+        module.AddFilter(courseOfferingFilter);
+        module.SetBeforeRefreshAsync(async ct =>
+        {
+            if (courseOfferingFilter.Options.Count > 0)
+            {
+                return;
+            }
+
+            var offerings = await _courseOfferingApiClient.GetListAsync(cancellationToken: ct);
+            foreach (var offering in offerings)
+            {
+                courseOfferingFilter.Options.Add(new ModuleFilterOptionViewModel($"{offering.Code} - {offering.CourseName}", offering.Id));
+            }
+        });
+
         module.AddAction(new ModuleActionViewModel("Calculate", module, async vm =>
         {
             var fields = new List<FormFieldViewModel>
@@ -728,7 +792,7 @@ public sealed class AdminModuleCatalog
                 PassingScore = Get<decimal>(fields, "PassingScore")
             });
             await vm.RefreshAsync();
-            vm.NotifySuccess("Grade results calculated.");
+            vm.NotifySuccess("Grade results calculated successfully.");
         }));
         return module;
     }
@@ -760,7 +824,7 @@ public sealed class AdminModuleCatalog
                 IsPublished = Get<bool>(fields, "IsPublished")
             }, filePath);
             await vm.RefreshAsync();
-            vm.NotifySuccess("Material uploaded.");
+            vm.NotifySuccess($"Material '{Get<string>(fields, "Title")}' uploaded successfully.");
         }));
         module.AddAction(new ModuleActionViewModel("Edit", module, async vm =>
         {
@@ -776,7 +840,7 @@ public sealed class AdminModuleCatalog
                 SortOrder = Get<int>(fields, "SortOrder")
             });
             await vm.RefreshAsync();
-            vm.NotifySuccess("Material updated.");
+            vm.NotifySuccess($"Material '{Get<string>(fields, "Title")}' updated successfully.");
         }, vm => vm.SelectedItem is CourseMaterialListItemResponse));
         module.AddAction(new ModuleActionViewModel("Publish/Unpublish", module, async vm =>
         {
@@ -786,7 +850,7 @@ public sealed class AdminModuleCatalog
                 IsPublished = !selected.IsPublished
             });
             await vm.RefreshAsync();
-            vm.NotifySuccess("Publish state updated.");
+            vm.NotifySuccess($"Publish state updated successfully for '{selected.Title}'.");
         }, vm => vm.SelectedItem is CourseMaterialListItemResponse));
         module.AddAction(new ModuleActionViewModel("Download", module, async vm =>
         {
@@ -795,7 +859,7 @@ public sealed class AdminModuleCatalog
             if (string.IsNullOrWhiteSpace(targetPath)) return;
             var bytes = await _courseMaterialApiClient.DownloadAsync(selected.Id);
             await File.WriteAllBytesAsync(targetPath, bytes);
-            vm.NotifySuccess($"Saved to {targetPath}");
+            vm.NotifySuccess($"Material downloaded successfully to {targetPath}.");
         }, vm => vm.SelectedItem is CourseMaterialListItemResponse));
         return module;
     }
@@ -819,7 +883,7 @@ public sealed class AdminModuleCatalog
                 IsPrimary = Get<bool>(fields, "IsPrimary")
             });
             await vm.RefreshAsync();
-            vm.NotifySuccess("Lecturer assigned.");
+            vm.NotifySuccess("Lecturer assigned successfully.");
         }));
         module.AddAction(new ModuleActionViewModel("Unassign", module, async vm =>
         {
@@ -827,7 +891,7 @@ public sealed class AdminModuleCatalog
             if (!_messageDialogService.Confirm($"Unassign {selected.LecturerFullName} from {selected.CourseOfferingCode}?")) return;
             await _lecturerAssignmentApiClient.UnassignAsync(selected.Id);
             await vm.RefreshAsync();
-            vm.NotifySuccess("Lecturer unassigned.");
+            vm.NotifySuccess($"Lecturer unassigned successfully from {selected.CourseOfferingCode}.");
         }, vm => vm.SelectedItem is LecturerAssignmentResponse));
         return module;
     }

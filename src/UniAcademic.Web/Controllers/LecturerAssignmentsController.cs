@@ -33,14 +33,14 @@ public sealed class LecturerAssignmentsController : Controller
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.LecturerAssignments.View)]
     [HttpGet]
-    public async Task<IActionResult> Index(Guid? courseOfferingId, Guid? lecturerProfileId, int? page, int? pageSize, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(Guid? courseOfferingId, Guid? lecturerProfileId, int? pageNumber, int? pageSize, CancellationToken cancellationToken)
     {
         var assignments = await _lecturerAssignmentService.GetListAsync(new GetLecturerAssignmentsQuery
         {
             CourseOfferingId = courseOfferingId,
             LecturerProfileId = lecturerProfileId
         }, cancellationToken);
-        var pagedAssignments = PaginationHelper.Paginate(assignments, page, pageSize);
+        var pagedAssignments = PaginationHelper.Paginate(assignments, pageNumber, pageSize);
 
         ViewBag.CourseOfferingId = courseOfferingId;
         ViewBag.LecturerProfileId = lecturerProfileId;

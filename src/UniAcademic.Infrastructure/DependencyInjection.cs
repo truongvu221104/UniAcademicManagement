@@ -31,6 +31,7 @@ public static class DependencyInjection
         services.Configure<SeedDataOptions>(configuration.GetSection(SeedDataOptions.SectionName));
         services.Configure<LocalFileStorageOptions>(configuration.GetSection(LocalFileStorageOptions.SectionName));
         services.Configure<UniTestSystemOptions>(configuration.GetSection(UniTestSystemOptions.SectionName));
+        services.Configure<SmtpEmailOptions>(configuration.GetSection(SmtpEmailOptions.SectionName));
 
         services.AddHttpContextAccessor();
 
@@ -53,6 +54,7 @@ public static class DependencyInjection
         services.AddScoped<IRefreshTokenService, RefreshTokenService>();
         services.AddScoped<IPermissionService, PermissionService>();
         services.AddScoped<IAuditService, AuditService>();
+        services.AddScoped<IEmailSender, SmtpEmailSender>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IExamHandoffService, ExamHandoffService>();
         services.AddScoped<ILocalFileStorage, LocalFileStorage>();

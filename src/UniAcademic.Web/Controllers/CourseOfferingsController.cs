@@ -33,7 +33,7 @@ public sealed class CourseOfferingsController : Controller
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.CourseOfferings.View)]
     [HttpGet]
-    public async Task<IActionResult> Index(string? keyword, Guid? courseId, Guid? semesterId, CourseOfferingStatus? status, int? page, int? pageSize, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(string? keyword, Guid? courseId, Guid? semesterId, CourseOfferingStatus? status, int? pageNumber, int? pageSize, CancellationToken cancellationToken)
     {
         var offerings = await _courseOfferingService.GetListAsync(new GetCourseOfferingsQuery
         {
@@ -42,7 +42,7 @@ public sealed class CourseOfferingsController : Controller
             SemesterId = semesterId,
             Status = status
         }, cancellationToken);
-        var pagedOfferings = UniAcademic.Web.Helpers.PaginationHelper.Paginate(offerings, page, pageSize);
+        var pagedOfferings = UniAcademic.Web.Helpers.PaginationHelper.Paginate(offerings, pageNumber, pageSize);
 
         ViewBag.Keyword = keyword;
         ViewBag.CourseId = courseId;

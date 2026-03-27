@@ -1,0 +1,1671 @@
+﻿{
+    "offerings":  [
+                      {
+                          "courseOfferingCode":  "SE101-2025T1-02",
+                          "finalizedAtUtc":  "2025-09-10T08:00:00Z",
+                          "finalizeNote":  "Demo live dataset for FIT course offering (full capacity)",
+                          "passingScore":  50,
+                          "students":  [
+                                           "STU001",
+                                           "STU002",
+                                           "STU003",
+                                           "STU004",
+                                           "STU005",
+                                           "STU006",
+                                           "STU007",
+                                           "STU008",
+                                           "STU009",
+                                           "STU010",
+                                           "STU011",
+                                           "STU012",
+                                           "STU013",
+                                           "STU014",
+                                           "STU015",
+                                           "STU016",
+                                           "STU017",
+                                           "STU018",
+                                           "STU019",
+                                           "STU020",
+                                           "STU021",
+                                           "STU022",
+                                           "STU023",
+                                           "STU024",
+                                           "STU025",
+                                           "STU026",
+                                           "STU027",
+                                           "STU028",
+                                           "STU029",
+                                           "STU030",
+                                           "STU031",
+                                           "STU032",
+                                           "STU033",
+                                           "STU034",
+                                           "STU035",
+                                           "STU036",
+                                           "STU037",
+                                           "STU038",
+                                           "STU039",
+                                           "STU040"
+                                       ],
+                          "attendanceSessions":  [
+                                                     {
+                                                         "sessionDate":  "2025-09-12T00:00:00Z",
+                                                         "sessionNo":  1,
+                                                         "title":  "Buoi 1",
+                                                         "note":  "Demo attendance session 1",
+                                                         "records":  [
+                                                                         {
+                                                                             "studentCode":  "STU001",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU002",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU003",
+                                                                             "status":  "Late",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU004",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU005",
+                                                                             "status":  "Excused",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU006",
+                                                                             "status":  "Absent",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU007",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU008",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU009",
+                                                                             "status":  "Late",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU010",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU011",
+                                                                             "status":  "Excused",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU012",
+                                                                             "status":  "Absent",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU013",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU014",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU015",
+                                                                             "status":  "Late",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU016",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU017",
+                                                                             "status":  "Excused",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU018",
+                                                                             "status":  "Absent",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU019",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU020",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU021",
+                                                                             "status":  "Late",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU022",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU023",
+                                                                             "status":  "Excused",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU024",
+                                                                             "status":  "Absent",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU025",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU026",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU027",
+                                                                             "status":  "Late",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU028",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU029",
+                                                                             "status":  "Excused",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU030",
+                                                                             "status":  "Absent",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU031",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU032",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU033",
+                                                                             "status":  "Late",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU034",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU035",
+                                                                             "status":  "Excused",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU036",
+                                                                             "status":  "Absent",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU037",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU038",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU039",
+                                                                             "status":  "Late",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU040",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         }
+                                                                     ]
+                                                     },
+                                                     {
+                                                         "sessionDate":  "2025-09-19T00:00:00Z",
+                                                         "sessionNo":  2,
+                                                         "title":  "Buoi 2",
+                                                         "note":  "Demo attendance session 2",
+                                                         "records":  [
+                                                                         {
+                                                                             "studentCode":  "STU001",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU002",
+                                                                             "status":  "Late",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU003",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU004",
+                                                                             "status":  "Excused",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU005",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU006",
+                                                                             "status":  "Absent",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU007",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU008",
+                                                                             "status":  "Late",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU009",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU010",
+                                                                             "status":  "Excused",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU011",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU012",
+                                                                             "status":  "Absent",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU013",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU014",
+                                                                             "status":  "Late",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU015",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU016",
+                                                                             "status":  "Excused",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU017",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU018",
+                                                                             "status":  "Absent",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU019",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU020",
+                                                                             "status":  "Late",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU021",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU022",
+                                                                             "status":  "Excused",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU023",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU024",
+                                                                             "status":  "Absent",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU025",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU026",
+                                                                             "status":  "Late",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU027",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU028",
+                                                                             "status":  "Excused",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU029",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU030",
+                                                                             "status":  "Absent",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU031",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU032",
+                                                                             "status":  "Late",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU033",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU034",
+                                                                             "status":  "Excused",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU035",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU036",
+                                                                             "status":  "Absent",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU037",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU038",
+                                                                             "status":  "Late",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU039",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU040",
+                                                                             "status":  "Excused",
+                                                                             "note":  null
+                                                                         }
+                                                                     ]
+                                                     }
+                                                 ],
+                          "gradeCategories":  [
+                                                  {
+                                                      "name":  "Assignment",
+                                                      "weight":  40,
+                                                      "maxScore":  10,
+                                                      "orderIndex":  1,
+                                                      "isActive":  true,
+                                                      "entries":  [
+                                                                      {
+                                                                          "studentCode":  "STU001",
+                                                                          "score":  6,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU002",
+                                                                          "score":  6.35,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU003",
+                                                                          "score":  6.7,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU004",
+                                                                          "score":  7.05,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU005",
+                                                                          "score":  7.4,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU006",
+                                                                          "score":  7.75,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU007",
+                                                                          "score":  8.1,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU008",
+                                                                          "score":  8.45,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU009",
+                                                                          "score":  8.8,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU010",
+                                                                          "score":  9.15,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU011",
+                                                                          "score":  6,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU012",
+                                                                          "score":  6.35,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU013",
+                                                                          "score":  6.7,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU014",
+                                                                          "score":  7.05,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU015",
+                                                                          "score":  7.4,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU016",
+                                                                          "score":  7.75,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU017",
+                                                                          "score":  8.1,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU018",
+                                                                          "score":  8.45,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU019",
+                                                                          "score":  8.8,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU020",
+                                                                          "score":  9.15,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU021",
+                                                                          "score":  6,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU022",
+                                                                          "score":  6.35,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU023",
+                                                                          "score":  6.7,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU024",
+                                                                          "score":  7.05,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU025",
+                                                                          "score":  7.4,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU026",
+                                                                          "score":  7.75,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU027",
+                                                                          "score":  8.1,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU028",
+                                                                          "score":  8.45,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU029",
+                                                                          "score":  8.8,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU030",
+                                                                          "score":  9.15,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU031",
+                                                                          "score":  6,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU032",
+                                                                          "score":  6.35,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU033",
+                                                                          "score":  6.7,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU034",
+                                                                          "score":  7.05,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU035",
+                                                                          "score":  7.4,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU036",
+                                                                          "score":  7.75,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU037",
+                                                                          "score":  8.1,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU038",
+                                                                          "score":  8.45,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU039",
+                                                                          "score":  8.8,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU040",
+                                                                          "score":  9.15,
+                                                                          "note":  null
+                                                                      }
+                                                                  ]
+                                                  },
+                                                  {
+                                                      "name":  "Final Exam",
+                                                      "weight":  60,
+                                                      "maxScore":  10,
+                                                      "orderIndex":  2,
+                                                      "isActive":  true,
+                                                      "entries":  [
+                                                                      {
+                                                                          "studentCode":  "STU001",
+                                                                          "score":  5.5,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU002",
+                                                                          "score":  5.85,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU003",
+                                                                          "score":  6.2,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU004",
+                                                                          "score":  6.55,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU005",
+                                                                          "score":  6.9,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU006",
+                                                                          "score":  7.25,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU007",
+                                                                          "score":  7.6,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU008",
+                                                                          "score":  7.95,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU009",
+                                                                          "score":  8.3,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU010",
+                                                                          "score":  8.65,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU011",
+                                                                          "score":  9,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU012",
+                                                                          "score":  9.35,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU013",
+                                                                          "score":  5.5,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU014",
+                                                                          "score":  5.85,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU015",
+                                                                          "score":  6.2,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU016",
+                                                                          "score":  6.55,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU017",
+                                                                          "score":  6.9,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU018",
+                                                                          "score":  7.25,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU019",
+                                                                          "score":  7.6,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU020",
+                                                                          "score":  7.95,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU021",
+                                                                          "score":  8.3,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU022",
+                                                                          "score":  8.65,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU023",
+                                                                          "score":  9,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU024",
+                                                                          "score":  9.35,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU025",
+                                                                          "score":  5.5,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU026",
+                                                                          "score":  5.85,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU027",
+                                                                          "score":  6.2,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU028",
+                                                                          "score":  6.55,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU029",
+                                                                          "score":  6.9,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU030",
+                                                                          "score":  7.25,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU031",
+                                                                          "score":  7.6,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU032",
+                                                                          "score":  7.95,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU033",
+                                                                          "score":  8.3,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU034",
+                                                                          "score":  8.65,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU035",
+                                                                          "score":  9,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU036",
+                                                                          "score":  9.35,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU037",
+                                                                          "score":  5.5,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU038",
+                                                                          "score":  5.85,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU039",
+                                                                          "score":  6.2,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU040",
+                                                                          "score":  6.55,
+                                                                          "note":  null
+                                                                      }
+                                                                  ]
+                                                  }
+                                              ]
+                      },
+                      {
+                          "courseOfferingCode":  "BA101-2025T1-01",
+                          "finalizedAtUtc":  "2025-09-11T08:00:00Z",
+                          "finalizeNote":  "Demo live dataset for FBA course offering (full capacity)",
+                          "passingScore":  50,
+                          "students":  [
+                                           "STU026",
+                                           "STU027",
+                                           "STU028",
+                                           "STU029",
+                                           "STU030",
+                                           "STU031",
+                                           "STU032",
+                                           "STU033",
+                                           "STU034",
+                                           "STU035",
+                                           "STU036",
+                                           "STU037",
+                                           "STU038",
+                                           "STU039",
+                                           "STU040",
+                                           "STU041",
+                                           "STU042",
+                                           "STU043",
+                                           "STU044",
+                                           "STU045",
+                                           "STU046",
+                                           "STU047",
+                                           "STU048",
+                                           "STU049",
+                                           "STU050",
+                                           "STU051",
+                                           "STU052",
+                                           "STU053",
+                                           "STU054",
+                                           "STU055",
+                                           "STU056",
+                                           "STU057",
+                                           "STU058",
+                                           "STU059",
+                                           "STU060"
+                                       ],
+                          "attendanceSessions":  [
+                                                     {
+                                                         "sessionDate":  "2025-09-13T00:00:00Z",
+                                                         "sessionNo":  1,
+                                                         "title":  "Buoi 1",
+                                                         "note":  "Demo attendance session 1",
+                                                         "records":  [
+                                                                         {
+                                                                             "studentCode":  "STU026",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU027",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU028",
+                                                                             "status":  "Late",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU029",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU030",
+                                                                             "status":  "Excused",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU031",
+                                                                             "status":  "Absent",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU032",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU033",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU034",
+                                                                             "status":  "Late",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU035",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU036",
+                                                                             "status":  "Excused",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU037",
+                                                                             "status":  "Absent",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU038",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU039",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU040",
+                                                                             "status":  "Late",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU041",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU042",
+                                                                             "status":  "Excused",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU043",
+                                                                             "status":  "Absent",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU044",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU045",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU046",
+                                                                             "status":  "Late",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU047",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU048",
+                                                                             "status":  "Excused",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU049",
+                                                                             "status":  "Absent",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU050",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU051",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU052",
+                                                                             "status":  "Late",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU053",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU054",
+                                                                             "status":  "Excused",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU055",
+                                                                             "status":  "Absent",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU056",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU057",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU058",
+                                                                             "status":  "Late",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU059",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU060",
+                                                                             "status":  "Excused",
+                                                                             "note":  null
+                                                                         }
+                                                                     ]
+                                                     },
+                                                     {
+                                                         "sessionDate":  "2025-09-20T00:00:00Z",
+                                                         "sessionNo":  2,
+                                                         "title":  "Buoi 2",
+                                                         "note":  "Demo attendance session 2",
+                                                         "records":  [
+                                                                         {
+                                                                             "studentCode":  "STU026",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU027",
+                                                                             "status":  "Late",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU028",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU029",
+                                                                             "status":  "Excused",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU030",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU031",
+                                                                             "status":  "Absent",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU032",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU033",
+                                                                             "status":  "Late",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU034",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU035",
+                                                                             "status":  "Excused",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU036",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU037",
+                                                                             "status":  "Absent",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU038",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU039",
+                                                                             "status":  "Late",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU040",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU041",
+                                                                             "status":  "Excused",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU042",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU043",
+                                                                             "status":  "Absent",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU044",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU045",
+                                                                             "status":  "Late",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU046",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU047",
+                                                                             "status":  "Excused",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU048",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU049",
+                                                                             "status":  "Absent",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU050",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU051",
+                                                                             "status":  "Late",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU052",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU053",
+                                                                             "status":  "Excused",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU054",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU055",
+                                                                             "status":  "Absent",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU056",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU057",
+                                                                             "status":  "Late",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU058",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU059",
+                                                                             "status":  "Excused",
+                                                                             "note":  null
+                                                                         },
+                                                                         {
+                                                                             "studentCode":  "STU060",
+                                                                             "status":  "Present",
+                                                                             "note":  null
+                                                                         }
+                                                                     ]
+                                                     }
+                                                 ],
+                          "gradeCategories":  [
+                                                  {
+                                                      "name":  "Midterm",
+                                                      "weight":  40,
+                                                      "maxScore":  10,
+                                                      "orderIndex":  1,
+                                                      "isActive":  true,
+                                                      "entries":  [
+                                                                      {
+                                                                          "studentCode":  "STU026",
+                                                                          "score":  5.8,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU027",
+                                                                          "score":  6.12,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU028",
+                                                                          "score":  6.44,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU029",
+                                                                          "score":  6.76,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU030",
+                                                                          "score":  7.08,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU031",
+                                                                          "score":  7.4,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU032",
+                                                                          "score":  7.72,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU033",
+                                                                          "score":  8.04,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU034",
+                                                                          "score":  8.36,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU035",
+                                                                          "score":  8.68,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU036",
+                                                                          "score":  5.8,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU037",
+                                                                          "score":  6.12,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU038",
+                                                                          "score":  6.44,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU039",
+                                                                          "score":  6.76,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU040",
+                                                                          "score":  7.08,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU041",
+                                                                          "score":  7.4,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU042",
+                                                                          "score":  7.72,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU043",
+                                                                          "score":  8.04,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU044",
+                                                                          "score":  8.36,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU045",
+                                                                          "score":  8.68,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU046",
+                                                                          "score":  5.8,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU047",
+                                                                          "score":  6.12,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU048",
+                                                                          "score":  6.44,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU049",
+                                                                          "score":  6.76,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU050",
+                                                                          "score":  7.08,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU051",
+                                                                          "score":  7.4,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU052",
+                                                                          "score":  7.72,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU053",
+                                                                          "score":  8.04,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU054",
+                                                                          "score":  8.36,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU055",
+                                                                          "score":  8.68,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU056",
+                                                                          "score":  5.8,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU057",
+                                                                          "score":  6.12,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU058",
+                                                                          "score":  6.44,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU059",
+                                                                          "score":  6.76,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU060",
+                                                                          "score":  7.08,
+                                                                          "note":  null
+                                                                      }
+                                                                  ]
+                                                  },
+                                                  {
+                                                      "name":  "Final Exam",
+                                                      "weight":  60,
+                                                      "maxScore":  10,
+                                                      "orderIndex":  2,
+                                                      "isActive":  true,
+                                                      "entries":  [
+                                                                      {
+                                                                          "studentCode":  "STU026",
+                                                                          "score":  5.2,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU027",
+                                                                          "score":  5.54,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU028",
+                                                                          "score":  5.88,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU029",
+                                                                          "score":  6.22,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU030",
+                                                                          "score":  6.56,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU031",
+                                                                          "score":  6.9,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU032",
+                                                                          "score":  7.24,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU033",
+                                                                          "score":  7.58,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU034",
+                                                                          "score":  7.92,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU035",
+                                                                          "score":  8.26,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU036",
+                                                                          "score":  8.6,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU037",
+                                                                          "score":  5.2,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU038",
+                                                                          "score":  5.54,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU039",
+                                                                          "score":  5.88,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU040",
+                                                                          "score":  6.22,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU041",
+                                                                          "score":  6.56,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU042",
+                                                                          "score":  6.9,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU043",
+                                                                          "score":  7.24,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU044",
+                                                                          "score":  7.58,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU045",
+                                                                          "score":  7.92,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU046",
+                                                                          "score":  8.26,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU047",
+                                                                          "score":  8.6,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU048",
+                                                                          "score":  5.2,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU049",
+                                                                          "score":  5.54,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU050",
+                                                                          "score":  5.88,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU051",
+                                                                          "score":  6.22,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU052",
+                                                                          "score":  6.56,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU053",
+                                                                          "score":  6.9,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU054",
+                                                                          "score":  7.24,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU055",
+                                                                          "score":  7.58,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU056",
+                                                                          "score":  7.92,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU057",
+                                                                          "score":  8.26,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU058",
+                                                                          "score":  8.6,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU059",
+                                                                          "score":  5.2,
+                                                                          "note":  null
+                                                                      },
+                                                                      {
+                                                                          "studentCode":  "STU060",
+                                                                          "score":  5.54,
+                                                                          "note":  null
+                                                                      }
+                                                                  ]
+                                                  }
+                                              ]
+                      }
+                  ]
+}

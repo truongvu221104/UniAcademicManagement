@@ -46,6 +46,8 @@ public sealed class AppDbContext : DbContext, IAppDbContext
 
     public DbSet<AttendanceRecord> AttendanceRecordsSet => Set<AttendanceRecord>();
 
+    public DbSet<CourseChatMessage> CourseChatMessagesSet => Set<CourseChatMessage>();
+
     public DbSet<GradeCategory> GradeCategoriesSet => Set<GradeCategory>();
 
     public DbSet<GradeEntry> GradeEntriesSet => Set<GradeEntry>();
@@ -103,6 +105,8 @@ public sealed class AppDbContext : DbContext, IAppDbContext
     IQueryable<AttendanceSession> IAppDbContext.AttendanceSessions => AttendanceSessionsSet;
 
     IQueryable<AttendanceRecord> IAppDbContext.AttendanceRecords => AttendanceRecordsSet;
+
+    IQueryable<CourseChatMessage> IAppDbContext.CourseChatMessages => CourseChatMessagesSet;
 
     IQueryable<GradeCategory> IAppDbContext.GradeCategories => GradeCategoriesSet;
 

@@ -27,6 +27,8 @@ public sealed class EnrollmentsController : ControllerBase
     [ProducesResponseType(typeof(IReadOnlyCollection<EnrollmentListItemResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetList(
         [FromQuery] string? keyword,
+        [FromQuery] string? studentCode,
+        [FromQuery] string? studentFullName,
         [FromQuery] Guid? studentProfileId,
         [FromQuery] Guid? courseOfferingId,
         [FromQuery] EnrollmentStatus? status,
@@ -35,6 +37,8 @@ public sealed class EnrollmentsController : ControllerBase
         var result = await _enrollmentService.GetListAsync(new GetEnrollmentsQuery
         {
             Keyword = keyword,
+            StudentCode = studentCode,
+            StudentFullName = studentFullName,
             StudentProfileId = studentProfileId,
             CourseOfferingId = courseOfferingId,
             Status = status

@@ -21,14 +21,14 @@ public sealed class FacultiesController : Controller
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.Faculties.View)]
     [HttpGet]
-    public async Task<IActionResult> Index(string? keyword, FacultyStatus? status, int? page, int? pageSize, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(string? keyword, FacultyStatus? status, int? pageNumber, int? pageSize, CancellationToken cancellationToken)
     {
         var faculties = await _facultyService.GetListAsync(new GetFacultiesQuery
         {
             Keyword = keyword,
             Status = status
         }, cancellationToken);
-        var pagedFaculties = UniAcademic.Web.Helpers.PaginationHelper.Paginate(faculties, page, pageSize);
+        var pagedFaculties = UniAcademic.Web.Helpers.PaginationHelper.Paginate(faculties, pageNumber, pageSize);
 
         ViewBag.Keyword = keyword;
         ViewBag.Status = status;

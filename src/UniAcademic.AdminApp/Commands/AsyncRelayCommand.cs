@@ -7,12 +7,14 @@ public sealed class AsyncRelayCommand : ICommand
 {
     private readonly Func<Task> _executeAsync;
     private readonly Func<bool>? _canExecute;
+    private readonly Action<Exception>? _onError;
     private bool _isExecuting;
 
-    public AsyncRelayCommand(Func<Task> executeAsync, Func<bool>? canExecute = null)
+    public AsyncRelayCommand(Func<Task> executeAsync, Func<bool>? canExecute = null, Action<Exception>? onError = null)
     {
         _executeAsync = executeAsync;
         _canExecute = canExecute;
+        _onError = onError;
     }
 
     public event EventHandler? CanExecuteChanged;
@@ -34,7 +36,14 @@ public sealed class AsyncRelayCommand : ICommand
         }
         catch (Exception ex)
         {
-            MessageBox.Show(ex.Message, "Action Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+            if (_onError is not null)
+            {
+                _onError(ex);
+            }
+            else
+            {
+                MessageBox.Show(ex.Message, "Action Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
         finally
         {

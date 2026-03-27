@@ -1,8 +1,56 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="portal-home-hero">
+    <div class="portal-home-copy">
+        <span class="portal-home-kicker">UniAcademic Portal</span>
+        <h1>Learning is not a race. It is a disciplined journey of showing up, improving, and growing with purpose.</h1>
+        <p>
+            UniAcademicManagement brings together the practical academic flows of the university:
+            course offerings, enrollments, attendance, grades, results, and course materials for students,
+            lecturers, and academic staff.
+        </p>
+        <div class="portal-home-actions">
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Open Workspace</a>
+            }
+            else
+            {
+                <a class="btn btn-primary" asp-controller="Account" asp-action="Login">Sign In</a>
+            }
+        </div>
+    </div>
+    <div class="portal-home-quote">
+        <div class="portal-home-quote-card">
+            <span class="portal-home-quote-label">Academic Focus</span>
+            <blockquote>
+                “Study steadily. Understand deeply. Build results that last.”
+            </blockquote>
+            <p>This portal is designed to support a clear, practical, and reliable academic experience in daily use.</p>
+        </div>
+    </div>
+</section>
+
+<section class="portal-home-grid">
+    <article class="portal-home-card">
+        <h2>For Students</h2>
+        <p>Browse course offerings, manage enrollments, review attendance, follow grades and results, and download materials from one portal.</p>
+    </article>
+    <article class="portal-home-card">
+        <h2>For Lecturers</h2>
+        <p>Work with teaching offerings, attendance, grade components, result views, and course materials in a focused teaching workspace.</p>
+    </article>
+    <article class="portal-home-card">
+        <h2>For Academic Staff</h2>
+        <p>Maintain academic master data, manage course offerings and rosters, and keep academic operations consistent across the system.</p>
+    </article>
+</section>
+
+<section class="portal-home-banner">
+    <div>
+        <h2>Built for practical academic operations</h2>
+        <p>The web experience is designed around clarity first: clean navigation, visible status, and role-based access that matches real academic workflows.</p>
+    </div>
+</section>

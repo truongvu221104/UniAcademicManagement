@@ -1,6 +1,7 @@
 using Xunit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using UniAcademic.Application.Models.Common;
 using UniAcademic.Application.Abstractions.Common;
 using UniAcademic.Application.Common;
 using UniAcademic.Application.Models.Auth;
@@ -245,6 +246,7 @@ public sealed class AuthServiceTests
             new RefreshTokenService(),
             new PermissionService(dbContext),
             new AuditService(dbContext, new FakeClientContextAccessor()),
+            new FakeEmailSender(),
             currentUser ?? new FakeCurrentUser(),
             new FakeDateTimeProvider(),
             new FakeClientContextAccessor(),
@@ -283,5 +285,13 @@ public sealed class AuthServiceTests
         public string? IpAddress => "127.0.0.1";
         public string? UserAgent => "IntegrationTests";
         public string ClientType => "Tests";
+    }
+
+    private sealed class FakeEmailSender : IEmailSender
+    {
+        public Task SendAsync(EmailMessage message, CancellationToken cancellationToken = default)
+        {
+            return Task.CompletedTask;
+        }
     }
 }

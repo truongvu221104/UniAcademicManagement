@@ -48,6 +48,7 @@ public sealed class DemoFoundationDatasetSynchronizer
         var facultiesByCode = await LoadFacultiesAsync(data, cancellationToken);
         var studentClassesByCode = await SynchronizeStudentClassesAsync(data.StudentClasses, facultiesByCode, cancellationToken);
         var coursesByCode = await SynchronizeCoursesAsync(data.Courses, facultiesByCode, cancellationToken);
+        await SynchronizeCoursePrerequisitesAsync(data.CoursePrerequisites, coursesByCode, cancellationToken);
         var semestersByCode = await SynchronizeSemestersAsync(data.Semesters, cancellationToken);
         var studentProfilesByCode = await SynchronizeStudentProfilesAsync(data.StudentProfiles, studentClassesByCode, cancellationToken);
         var lecturerProfilesByCode = await SynchronizeLecturerProfilesAsync(data.LecturerProfiles, facultiesByCode, cancellationToken);
@@ -225,6 +226,55 @@ public sealed class DemoFoundationDatasetSynchronizer
         }
 
         return entitiesByCode;
+    }
+
+    private async Task SynchronizeCoursePrerequisitesAsync(
+        IReadOnlyCollection<CoursePrerequisiteSeedItem> items,
+        IReadOnlyDictionary<string, Course> coursesByCode,
+        CancellationToken cancellationToken)
+    {
+        var courseIds = items
+            .Select(x => coursesByCode[NormalizeRequired(x.CourseCode, "CoursePrerequisite.CourseCode")].Id)
+            .Distinct()
+            .ToList();
+
+        var existingEntities = courseIds.Count == 0
+            ? new List<CoursePrerequisite>()
+            : await _dbContext.CoursePrerequisitesSet
+                .Where(x => courseIds.Contains(x.CourseId))
+                .ToListAsync(cancellationToken);
+
+        var existingByKey = existingEntities.ToDictionary(
+            x => BuildCoursePrerequisiteKey(x.CourseId, x.PrerequisiteCourseId),
+            StringComparer.OrdinalIgnoreCase);
+
+        var desiredKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var item in items)
+        {
+            var course = coursesByCode[NormalizeRequired(item.CourseCode, "CoursePrerequisite.CourseCode")];
+            var prerequisiteCourse = coursesByCode[NormalizeRequired(item.PrerequisiteCourseCode, "CoursePrerequisite.PrerequisiteCourseCode")];
+            var key = BuildCoursePrerequisiteKey(course.Id, prerequisiteCourse.Id);
+            desiredKeys.Add(key);
+
+            if (existingByKey.TryGetValue(key, out var existing))
+            {
+                existing.ModifiedBy = "seed-data";
+                continue;
+            }
+
+            await _dbContext.CoursePrerequisitesSet.AddAsync(new CoursePrerequisite
+            {
+                CourseId = course.Id,
+                PrerequisiteCourseId = prerequisiteCourse.Id,
+                CreatedBy = "seed-data"
+            }, cancellationToken);
+        }
+
+        foreach (var entity in existingEntities.Where(x => !desiredKeys.Contains(BuildCoursePrerequisiteKey(x.CourseId, x.PrerequisiteCourseId))))
+        {
+            _dbContext.CoursePrerequisitesSet.Remove(entity);
+        }
     }
 
     private async Task<Dictionary<string, StudentProfile>> SynchronizeStudentProfilesAsync(
@@ -537,6 +587,9 @@ public sealed class DemoFoundationDatasetSynchronizer
         EnsureNoDuplicates(data.Users.Select(x => x.Username), "User.Username");
         EnsureNoDuplicates(data.StudentClasses.Select(x => x.Code), "StudentClass.Code");
         EnsureNoDuplicates(data.Courses.Select(x => x.Code), "Course.Code");
+        EnsureNoDuplicates(
+            data.CoursePrerequisites.Select(x => $"{x.CourseCode}::{x.PrerequisiteCourseCode}"),
+            "CoursePrerequisite.CourseCode::PrerequisiteCourseCode");
         EnsureNoDuplicates(data.Semesters.Select(x => x.Code), "Semester.Code");
         EnsureNoDuplicates(data.StudentProfiles.Select(x => x.StudentCode), "StudentProfile.StudentCode");
         EnsureNoDuplicates(data.LecturerProfiles.Select(x => x.Code), "LecturerProfile.Code");
@@ -564,6 +617,9 @@ public sealed class DemoFoundationDatasetSynchronizer
 
     private static string BuildAssignmentKey(Guid courseOfferingId, Guid lecturerProfileId)
         => $"{courseOfferingId:N}:{lecturerProfileId:N}";
+
+    private static string BuildCoursePrerequisiteKey(Guid courseId, Guid prerequisiteCourseId)
+        => $"{courseId:N}:{prerequisiteCourseId:N}";
 
     private static string NormalizeRequired(string value, string fieldName)
     {

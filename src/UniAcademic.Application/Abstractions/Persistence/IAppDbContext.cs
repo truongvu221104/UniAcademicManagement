@@ -35,6 +35,8 @@ public interface IAppDbContext
 
     IQueryable<AttendanceRecord> AttendanceRecords { get; }
 
+    IQueryable<CourseChatMessage> CourseChatMessages { get; }
+
     IQueryable<GradeCategory> GradeCategories { get; }
 
     IQueryable<GradeEntry> GradeEntries { get; }

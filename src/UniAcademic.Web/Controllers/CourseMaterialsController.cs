@@ -28,13 +28,13 @@ public sealed class CourseMaterialsController : Controller
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.CourseMaterials.View)]
     [HttpGet]
-    public async Task<IActionResult> Index(Guid? courseOfferingId, int? page, int? pageSize, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(Guid? courseOfferingId, int? pageNumber, int? pageSize, CancellationToken cancellationToken)
     {
         var materials = await _courseMaterialService.GetListAsync(new GetCourseMaterialsQuery
         {
             CourseOfferingId = courseOfferingId
         }, cancellationToken);
-        var pagedMaterials = PaginationHelper.Paginate(materials, page, pageSize);
+        var pagedMaterials = PaginationHelper.Paginate(materials, pageNumber, pageSize);
 
         ViewBag.CourseOfferingId = courseOfferingId;
         ViewBag.CourseOfferingOptions = await BuildCourseOfferingOptionsAsync(cancellationToken, courseOfferingId, includeEmpty: true);
@@ -193,7 +193,8 @@ public sealed class CourseMaterialsController : Controller
     {
         try
         {
-            await using var result = await _courseMaterialService.DownloadAsync(new DownloadCourseMaterialQuery { Id = id }, cancellationToken);
+            var result = await _courseMaterialService.DownloadAsync(new DownloadCourseMaterialQuery { Id = id }, cancellationToken);
+            HttpContext.Response.RegisterForDispose(result.Content);
             return File(result.Content, result.ContentType, result.FileName);
         }
         catch (AuthException ex)

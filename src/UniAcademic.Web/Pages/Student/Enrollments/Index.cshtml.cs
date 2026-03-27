@@ -36,13 +36,13 @@ public sealed class IndexModel : PageModel
 
     public IReadOnlyCollection<StudentCurrentEnrollmentItemModel> Enrollments { get; private set; } = [];
 
-    public async Task<IActionResult> OnGetAsync(int? page, int? pageSize, CancellationToken cancellationToken)
+    public async Task<IActionResult> OnGetAsync(int? pageNumber, int? pageSize, CancellationToken cancellationToken)
     {
         try
         {
             await _currentStudentContext.GetRequiredStudentProfileIdAsync(cancellationToken);
             var enrollments = await _studentPortalService.GetMyCurrentEnrollmentsAsync(cancellationToken);
-            var pagedEnrollments = PaginationHelper.Paginate(enrollments, page, pageSize);
+            var pagedEnrollments = PaginationHelper.Paginate(enrollments, pageNumber, pageSize);
             Enrollments = pagedEnrollments.Items;
             ViewData["Pagination"] = pagedEnrollments.Pagination;
             return Page();

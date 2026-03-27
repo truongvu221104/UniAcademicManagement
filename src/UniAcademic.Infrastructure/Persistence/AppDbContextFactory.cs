@@ -8,7 +8,7 @@ public sealed class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbConte
     public AppDbContext CreateDbContext(string[] args)
     {
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-        optionsBuilder.UseSqlServer("server=localhost;database=UniAcademicManagementDb;uid=sa;pwd=123;TrustServerCertificate=True");
+        optionsBuilder.UseSqlServer("server=localhost;database=UniAcademicManagementDb;uid=sa;pwd=123;Encrypt=False;TrustServerCertificate=True");
         return new AppDbContext(optionsBuilder.Options);
     }
 }

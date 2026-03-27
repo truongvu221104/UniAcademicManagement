@@ -25,7 +25,7 @@ public sealed class LecturerProfilesController : Controller
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.LecturerProfiles.View)]
     [HttpGet]
-    public async Task<IActionResult> Index(string? keyword, Guid? facultyId, bool? isActive, int? page, int? pageSize, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(string? keyword, Guid? facultyId, bool? isActive, int? pageNumber, int? pageSize, CancellationToken cancellationToken)
     {
         var lecturerProfiles = await _lecturerProfileService.GetListAsync(new GetLecturerProfilesQuery
         {
@@ -33,7 +33,7 @@ public sealed class LecturerProfilesController : Controller
             FacultyId = facultyId,
             IsActive = isActive
         }, cancellationToken);
-        var pagedLecturerProfiles = UniAcademic.Web.Helpers.PaginationHelper.Paginate(lecturerProfiles, page, pageSize);
+        var pagedLecturerProfiles = UniAcademic.Web.Helpers.PaginationHelper.Paginate(lecturerProfiles, pageNumber, pageSize);
 
         ViewBag.Keyword = keyword;
         ViewBag.FacultyId = facultyId;

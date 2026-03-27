@@ -1,0 +1,238 @@
+@model UniAcademic.Web.Models.Chat.CourseChatPageViewModel
+@using System.Globalization
+
+<div class="portal-chat">
+    <aside class="portal-chat-sidebar">
+        <div class="portal-chat-sidebar-header">
+            <h2 class="h4 mb-1">@Model.EmptyStateTitle</h2>
+            <p class="text-muted mb-0">@Model.EmptyStateDescription</p>
+        </div>
+
+        @if (Model.Rooms.Count == 0)
+        {
+            <div class="alert alert-info mb-0">
+                You do not have any class conversations available yet.
+            </div>
+        }
+        else
+        {
+            <nav class="portal-chat-room-list" aria-label="Class conversations">
+                @foreach (var room in Model.Rooms)
+                {
+                    var isActive = Model.Conversation?.CourseOfferingId == room.CourseOfferingId;
+                    <a class="portal-chat-room @(isActive ? "active" : string.Empty)"
+                       asp-area="@Model.RoomArea"
+                       asp-controller="@Model.RoomController"
+                       asp-action="Index"
+                       asp-route-courseOfferingId="@room.CourseOfferingId">
+                        <div class="portal-chat-room-top">
+                            <span class="portal-chat-room-code">@room.CourseOfferingCode</span>
+                            @if (room.MessageCount > 0)
+                            {
+                                <span class="portal-chat-room-count">@room.MessageCount</span>
+                            }
+                        </div>
+                        <div class="portal-chat-room-name">@room.CourseName</div>
+                        <div class="portal-chat-room-meta">@room.SemesterName</div>
+                        @if (!string.IsNullOrWhiteSpace(room.LatestMessagePreview))
+                        {
+                            var preview = room.LatestMessagePreview!.Length > 72
+                                ? $"{room.LatestMessagePreview[..72]}..."
+                                : room.LatestMessagePreview;
+                            <div class="portal-chat-room-preview">
+                                @if (!string.IsNullOrWhiteSpace(room.LatestSenderDisplayName))
+                                {
+                                    <strong>@room.LatestSenderDisplayName:</strong>
+                                }
+                                @preview
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="portal-chat-room-preview portal-chat-room-preview-empty">No messages yet.</div>
+                        }
+                    </a>
+                }
+            </nav>
+        }
+    </aside>
+
+    <section class="portal-chat-main">
+        @if (Model.Conversation is null)
+        {
+            <div class="portal-chat-empty">
+                <h2 class="h4">No class selected</h2>
+                <p class="text-muted mb-0">Choose a class from the left side to open its conversation.</p>
+            </div>
+        }
+        else
+        {
+            <div class="portal-chat-card" data-chat-root="true" data-course-offering-id="@Model.Conversation.CourseOfferingId" data-current-user-id="@Model.Conversation.CurrentUserId">
+                <header class="portal-chat-header">
+                    <div>
+                        <div class="portal-chat-header-code">@Model.Conversation.CourseOfferingCode</div>
+                        <h2 class="portal-chat-header-title">@Model.Conversation.CourseName</h2>
+                        <div class="portal-chat-header-meta">@Model.Conversation.DisplayName · @Model.Conversation.SemesterName</div>
+                    </div>
+                    <div class="portal-chat-header-badges">
+                        <span class="portal-chip portal-chip-soft">@Model.Conversation.CurrentUserRole</span>
+                        <span class="portal-chip">@Model.Conversation.CurrentUserDisplayName</span>
+                    </div>
+                </header>
+
+                <div class="portal-chat-status" id="chat-status">Connecting real-time chat...</div>
+
+                <div class="portal-chat-thread" id="chat-thread">
+                    @if (Model.Conversation.Messages.Count == 0)
+                    {
+                        <div class="portal-chat-thread-empty" id="chat-empty-state">
+                            No messages yet. Start the conversation for this class.
+                        </div>
+                    }
+
+                    @foreach (var message in Model.Conversation.Messages)
+                    {
+                        var bubbleClass = message.IsMine ? "mine" : "theirs";
+                        <article class="portal-chat-bubble @bubbleClass">
+                            <div class="portal-chat-bubble-meta">
+                                <strong>@message.SenderDisplayName</strong>
+                                <span>@message.SenderRole</span>
+                                <time datetime="@message.SentAtUtc.ToString("O", CultureInfo.InvariantCulture)">@message.SentAtUtc.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</time>
+                            </div>
+                            <div class="portal-chat-bubble-body">@message.MessageText</div>
+                        </article>
+                    }
+                </div>
+
+                <form class="portal-chat-composer" id="chat-form">
+                    <label class="form-label mb-2" for="chat-message-text">Message</label>
+                    <div class="portal-chat-composer-row">
+                        <textarea id="chat-message-text" class="form-control" rows="3" maxlength="2000" placeholder="Write a message for this class..."></textarea>
+                        <button type="submit" class="btn btn-primary">Send</button>
+                    </div>
+                </form>
+            </div>
+        }
+    </section>
+</div>
+
+@if (Model.Conversation is not null)
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        (() => {
+            const root = document.querySelector('[data-chat-root="true"]');
+            if (!root) {
+                return;
+            }
+
+            const roomId = root.dataset.courseOfferingId;
+            const currentUserId = root.dataset.currentUserId;
+            const thread = document.getElementById('chat-thread');
+            const form = document.getElementById('chat-form');
+            const input = document.getElementById('chat-message-text');
+            const status = document.getElementById('chat-status');
+            const emptyState = document.getElementById('chat-empty-state');
+
+            const setStatus = (text, kind) => {
+                status.textContent = text;
+                status.classList.remove('is-success', 'is-error');
+                if (kind) {
+                    status.classList.add(kind);
+                }
+            };
+
+            const scrollToBottom = () => {
+                thread.scrollTop = thread.scrollHeight;
+            };
+
+            const appendMessage = (message) => {
+                if (emptyState) {
+                    emptyState.remove();
+                }
+
+                const article = document.createElement('article');
+                article.className = 'portal-chat-bubble ' + (message.senderUserId === currentUserId ? 'mine' : 'theirs');
+
+                const meta = document.createElement('div');
+                meta.className = 'portal-chat-bubble-meta';
+
+                const sender = document.createElement('strong');
+                sender.textContent = message.senderDisplayName;
+
+                const role = document.createElement('span');
+                role.textContent = message.senderRole;
+
+                const time = document.createElement('time');
+                const sentAt = new Date(message.sentAtUtc);
+                time.dateTime = sentAt.toISOString();
+                time.textContent = sentAt.toLocaleString();
+
+                meta.appendChild(sender);
+                meta.appendChild(role);
+                meta.appendChild(time);
+
+                const body = document.createElement('div');
+                body.className = 'portal-chat-bubble-body';
+                body.textContent = message.messageText;
+
+                article.appendChild(meta);
+                article.appendChild(body);
+                thread.appendChild(article);
+                scrollToBottom();
+            };
+
+            if (!window.signalR) {
+                setStatus('Real-time chat client could not be loaded. Check internet access for the SignalR browser script.', 'is-error');
+                return;
+            }
+
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl('/hubs/course-chat')
+                .withAutomaticReconnect()
+                .build();
+
+            connection.on('messageReceived', appendMessage);
+            connection.onreconnecting(() => setStatus('Reconnecting chat...', null));
+            connection.onreconnected(async () => {
+                await connection.invoke('JoinCourseOffering', roomId);
+                setStatus('Connected', 'is-success');
+            });
+            connection.onclose(() => setStatus('Chat disconnected.', 'is-error'));
+
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const text = input.value.trim();
+                if (!text) {
+                    return;
+                }
+
+                input.disabled = true;
+                form.querySelector('button[type="submit"]').disabled = true;
+
+                try {
+                    await connection.invoke('SendMessage', roomId, text);
+                    input.value = '';
+                    setStatus('Message sent.', 'is-success');
+                } catch (error) {
+                    setStatus(error?.message || 'Message could not be sent.', 'is-error');
+                } finally {
+                    input.disabled = false;
+                    form.querySelector('button[type="submit"]').disabled = false;
+                    input.focus();
+                }
+            });
+
+            (async () => {
+                try {
+                    await connection.start();
+                    await connection.invoke('JoinCourseOffering', roomId);
+                    setStatus('Connected', 'is-success');
+                    scrollToBottom();
+                } catch (error) {
+                    setStatus(error?.message || 'Chat connection could not be established.', 'is-error');
+                }
+            })();
+        })();
+    </script>
+}

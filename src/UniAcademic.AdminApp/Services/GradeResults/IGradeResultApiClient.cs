@@ -4,7 +4,11 @@ namespace UniAcademic.AdminApp.Services.GradeResults;
 
 public interface IGradeResultApiClient
 {
-    Task<IReadOnlyCollection<GradeResultListItemResponse>> GetListAsync(Guid? courseOfferingId = null, CancellationToken cancellationToken = default);
+    Task<IReadOnlyCollection<GradeResultListItemResponse>> GetListAsync(
+        string? studentCode = null,
+        string? studentFullName = null,
+        Guid? courseOfferingId = null,
+        CancellationToken cancellationToken = default);
 
     Task<GradeResultResponse> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 

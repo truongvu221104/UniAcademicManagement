@@ -198,8 +198,10 @@ public sealed class DemoLiveDatasetSynchronizer
         IReadOnlyDictionary<string, StudentProfile> studentsByCode,
         CancellationToken cancellationToken)
     {
-        var finalizedAtUtc = EnsureUtc(offeringSeed.FinalizedAtUtc, "Offering.FinalizedAtUtc");
-        var enrollmentTime = finalizedAtUtc.AddDays(-3);
+        var finalizedAtUtc = offeringSeed.FinalizedAtUtc.HasValue
+            ? EnsureUtc(offeringSeed.FinalizedAtUtc.Value, "Offering.FinalizedAtUtc")
+            : (DateTime?)null;
+        var enrollmentTime = (finalizedAtUtc ?? DateTime.UtcNow).AddDays(-3);
 
         var enrollmentByStudentCode = new Dictionary<string, Enrollment>(StringComparer.OrdinalIgnoreCase);
 
@@ -222,10 +224,15 @@ public sealed class DemoLiveDatasetSynchronizer
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
+        if (!finalizedAtUtc.HasValue)
+        {
+            return;
+        }
+
         var snapshot = new CourseOfferingRosterSnapshot
         {
             CourseOfferingId = offering.Id,
-            FinalizedAtUtc = finalizedAtUtc,
+            FinalizedAtUtc = finalizedAtUtc.Value,
             FinalizedBy = "seed-data",
             ItemCount = offeringSeed.Students.Count,
             Note = NormalizeOptional(offeringSeed.FinalizeNote),
@@ -254,7 +261,7 @@ public sealed class DemoLiveDatasetSynchronizer
         await _dbContext.CourseOfferingRosterSnapshotsSet.AddAsync(snapshot, cancellationToken);
 
         offering.IsRosterFinalized = true;
-        offering.RosterFinalizedAtUtc = finalizedAtUtc;
+        offering.RosterFinalizedAtUtc = finalizedAtUtc.Value;
         offering.ModifiedBy = "seed-data";
 
         await _dbContext.SaveChangesAsync(cancellationToken);
@@ -263,6 +270,11 @@ public sealed class DemoLiveDatasetSynchronizer
 
         foreach (var sessionSeed in offeringSeed.AttendanceSessions)
         {
+            var recordSeedByStudentCode = sessionSeed.Records
+                .ToDictionary(
+                    x => NormalizeRequired(x.StudentCode, "Attendance.Record.StudentCode"),
+                    StringComparer.OrdinalIgnoreCase);
+
             var attendanceSession = new AttendanceSession
             {
                 CourseOfferingId = offering.Id,
@@ -274,14 +286,16 @@ public sealed class DemoLiveDatasetSynchronizer
                 CreatedBy = "seed-data"
             };
 
-            foreach (var recordSeed in sessionSeed.Records)
+            foreach (var studentCode in offeringSeed.Students.Select(x => NormalizeRequired(x, "Offering.Students")))
             {
-                var studentCode = NormalizeRequired(recordSeed.StudentCode, "Attendance.Record.StudentCode");
+                recordSeedByStudentCode.TryGetValue(studentCode, out var recordSeed);
                 attendanceSession.Records.Add(new AttendanceRecord
                 {
                     RosterItemId = rosterItemsByStudentCode[studentCode].Id,
-                    Status = ParseEnum<AttendanceStatus>(recordSeed.Status, "Attendance.Record.Status"),
-                    Note = NormalizeOptional(recordSeed.Note),
+                    Status = recordSeed is null
+                        ? GenerateDefaultAttendanceStatus(studentCode, sessionSeed.SessionNo)
+                        : ParseEnum<AttendanceStatus>(recordSeed.Status, "Attendance.Record.Status"),
+                    Note = NormalizeOptional(recordSeed?.Note),
                     CreatedBy = "seed-data"
                 });
             }
@@ -292,6 +306,11 @@ public sealed class DemoLiveDatasetSynchronizer
         var activeCategories = new List<GradeCategory>();
         foreach (var categorySeed in offeringSeed.GradeCategories.OrderBy(x => x.OrderIndex))
         {
+            var entrySeedByStudentCode = categorySeed.Entries
+                .ToDictionary(
+                    x => NormalizeRequired(x.StudentCode, "GradeEntry.StudentCode"),
+                    StringComparer.OrdinalIgnoreCase);
+
             var category = new GradeCategory
             {
                 CourseOfferingId = offering.Id,
@@ -304,14 +323,14 @@ public sealed class DemoLiveDatasetSynchronizer
                 CreatedBy = "seed-data"
             };
 
-            foreach (var entrySeed in categorySeed.Entries)
+            foreach (var studentCode in offeringSeed.Students.Select(x => NormalizeRequired(x, "Offering.Students")))
             {
-                var studentCode = NormalizeRequired(entrySeed.StudentCode, "GradeEntry.StudentCode");
+                entrySeedByStudentCode.TryGetValue(studentCode, out var entrySeed);
                 category.Entries.Add(new GradeEntry
                 {
                     RosterItemId = rosterItemsByStudentCode[studentCode].Id,
-                    Score = entrySeed.Score,
-                    Note = NormalizeOptional(entrySeed.Note),
+                    Score = entrySeed?.Score ?? GenerateDefaultScore(studentCode, categorySeed.OrderIndex, categorySeed.MaxScore),
+                    Note = NormalizeOptional(entrySeed?.Note),
                     CreatedBy = "seed-data"
                 });
             }
@@ -326,7 +345,13 @@ public sealed class DemoLiveDatasetSynchronizer
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        var calculatedAtUtc = finalizedAtUtc.AddDays(21);
+        if (!offeringSeed.GenerateGradeResults)
+        {
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            return;
+        }
+
+        var calculatedAtUtc = finalizedAtUtc.Value.AddDays(21);
         foreach (var rosterItem in snapshot.Items.OrderBy(x => x.StudentCode))
         {
             var weightedFinalScore = CalculateWeightedFinalScore(activeCategories, rosterItem.Id);
@@ -362,6 +387,34 @@ public sealed class DemoLiveDatasetSynchronizer
         return decimal.Round(total, 4, MidpointRounding.AwayFromZero);
     }
 
+    private static AttendanceStatus GenerateDefaultAttendanceStatus(string studentCode, int sessionNo)
+    {
+        var seed = ExtractStudentSequence(studentCode) + sessionNo;
+        return (seed % 6) switch
+        {
+            0 => AttendanceStatus.Absent,
+            1 => AttendanceStatus.Present,
+            2 => AttendanceStatus.Present,
+            3 => AttendanceStatus.Late,
+            4 => AttendanceStatus.Present,
+            _ => AttendanceStatus.Excused
+        };
+    }
+
+    private static decimal GenerateDefaultScore(string studentCode, int orderIndex, decimal maxScore)
+    {
+        var seed = ExtractStudentSequence(studentCode) + (orderIndex * 3);
+        var ratio = 0.58m + ((seed % 8) * 0.045m);
+        var score = maxScore * ratio;
+        return decimal.Round(score, 2, MidpointRounding.AwayFromZero);
+    }
+
+    private static int ExtractStudentSequence(string studentCode)
+    {
+        var digits = new string(studentCode.Where(char.IsDigit).ToArray());
+        return int.TryParse(digits, out var sequence) ? sequence : 0;
+    }
+
     private static void Validate(DemoLiveSeedData data)
     {
         EnsureNoDuplicates(data.Offerings.Select(x => x.CourseOfferingCode), "Offering.CourseOfferingCode");
@@ -369,6 +422,13 @@ public sealed class DemoLiveDatasetSynchronizer
         foreach (var offering in data.Offerings)
         {
             EnsureNoDuplicates(offering.Students, $"Offering({offering.CourseOfferingCode}).Students");
+
+            if (!offering.FinalizedAtUtc.HasValue
+                && (offering.AttendanceSessions.Count > 0 || offering.GradeCategories.Count > 0))
+            {
+                throw new InvalidOperationException($"Offering({offering.CourseOfferingCode}) must define FinalizedAtUtc when attendance or grade data is provided.");
+            }
+
             EnsureNoDuplicates(
                 offering.AttendanceSessions.Select(x => $"{x.SessionDate:O}::{x.SessionNo}"),
                 $"Offering({offering.CourseOfferingCode}).AttendanceSessions");

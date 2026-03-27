@@ -1,0 +1,89 @@
+@model UniAcademic.Web.Models.StudentPortal.StudentGradeDetailsViewModel
+
+@{
+    ViewData["Title"] = "Grade Details";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="h3 mb-1">@Model.CourseOfferingCode</h1>
+        <p class="text-muted mb-0">@Model.CourseName (@Model.SemesterName)</p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">Back to Grades &amp; Results</a>
+</div>
+
+@if (Model.IsPassed.HasValue)
+{
+    <div class="row g-3 mb-3">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="text-muted small text-uppercase fw-semibold mb-2">Final Score</div>
+                    <div class="h3 mb-0">@Model.FinalScore?.ToString("0.00")</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="text-muted small text-uppercase fw-semibold mb-2">Passing Score</div>
+                    <div class="h3 mb-0">@Model.PassingScore?.ToString("0.00")</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="text-muted small text-uppercase fw-semibold mb-2">Result</div>
+                    <div class="h5 mb-2">
+                        <span class="badge @(Model.IsPassed.Value ? "bg-success" : "bg-danger")">
+                            @(Model.IsPassed.Value ? "Passed" : "Not Passed")
+                        </span>
+                    </div>
+                    <div class="text-muted small">Calculated at @Model.CalculatedAtUtc?.ToString("yyyy-MM-dd HH:mm")</div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (Model.GradeItems.Count == 0)
+{
+    <div class="alert alert-info">No grade components have been recorded for this course offering yet.</div>
+}
+else
+{
+    <p class="text-muted">The table below shows each grade component recorded for this subject, including weight, maximum score, and your achieved score.</p>
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Weight</th>
+                    <th>Max Score</th>
+                    <th>Score</th>
+                    <th>Status</th>
+                    <th>Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.GradeItems)
+                {
+                    var isScored = item.Score.HasValue;
+                    <tr>
+                        <td class="fw-semibold">@item.CategoryName</td>
+                        <td>@item.Weight.ToString("0.#")%</td>
+                        <td>@item.MaxScore.ToString("0.#")</td>
+                        <td class="fw-semibold">@(item.Score?.ToString("0.##") ?? "Pending")</td>
+                        <td>
+                            <span class="badge @(isScored ? "bg-success" : "bg-secondary")">
+                                @(isScored ? "Recorded" : "Pending")
+                            </span>
+                        </td>
+                        <td>@(string.IsNullOrWhiteSpace(item.Note) ? "-" : item.Note)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

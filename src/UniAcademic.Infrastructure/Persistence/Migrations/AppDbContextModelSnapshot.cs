@@ -262,6 +262,69 @@ namespace UniAcademic.Infrastructure.Persistence.Migrations
                     b.ToTable("CourseMaterials", (string)null);
                 });
 
+            modelBuilder.Entity("UniAcademic.Domain.Entities.Academic.CourseChatMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CourseOfferingId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("MessageText")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<DateTime?>("ModifiedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<string>("SenderDisplayName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("SenderRole")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<Guid>("SenderUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("SenderUsername")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseOfferingId");
+
+                    b.HasIndex("SenderUserId");
+
+                    b.HasIndex("CourseOfferingId", "CreatedAtUtc");
+
+                    b.ToTable("CourseChatMessages", (string)null);
+                });
+
             modelBuilder.Entity("UniAcademic.Domain.Entities.Academic.CourseOffering", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1816,6 +1879,25 @@ namespace UniAcademic.Infrastructure.Persistence.Migrations
                     b.Navigation("CourseOffering");
 
                     b.Navigation("FileMetadata");
+                });
+
+            modelBuilder.Entity("UniAcademic.Domain.Entities.Academic.CourseChatMessage", b =>
+                {
+                    b.HasOne("UniAcademic.Domain.Entities.Academic.CourseOffering", "CourseOffering")
+                        .WithMany()
+                        .HasForeignKey("CourseOfferingId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("UniAcademic.Domain.Entities.Identity.User", "SenderUser")
+                        .WithMany()
+                        .HasForeignKey("SenderUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("CourseOffering");
+
+                    b.Navigation("SenderUser");
                 });
 
             modelBuilder.Entity("UniAcademic.Domain.Entities.Academic.CourseOffering", b =>

@@ -108,4 +108,80 @@ public sealed class AccountController : Controller
     {
         return View();
     }
+
+    [AllowAnonymous]
+    [HttpGet]
+    public IActionResult ForgotPassword()
+    {
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            return RedirectToAction("Index", "Home");
+        }
+
+        return View(new ForgotPasswordViewModel());
+    }
+
+    [AllowAnonymous]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model, CancellationToken cancellationToken)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
+        try
+        {
+            await _authService.ForgotPasswordAsync(new AuthForgotPasswordRequest
+            {
+                Email = model.Email
+            }, cancellationToken);
+
+            TempData["SuccessMessage"] = "If the email exists in the system, a new temporary password has been sent.";
+            return RedirectToAction(nameof(Login));
+        }
+        catch (AuthException ex)
+        {
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return View(model);
+        }
+    }
+
+    [Authorize]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model, CancellationToken cancellationToken)
+    {
+        var returnUrl = !string.IsNullOrWhiteSpace(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl)
+            ? model.ReturnUrl
+            : Url.Action("Index", "Home");
+
+        if (!ModelState.IsValid)
+        {
+            TempData["ErrorMessage"] = ModelState.Values
+                .SelectMany(x => x.Errors)
+                .Select(x => x.ErrorMessage)
+                .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x))
+                ?? "Password change request is invalid.";
+            return Redirect(returnUrl!);
+        }
+
+        try
+        {
+            await _authService.ChangePasswordAsync(new AuthChangePasswordRequest
+            {
+                CurrentPassword = model.CurrentPassword,
+                NewPassword = model.NewPassword
+            }, cancellationToken);
+
+            TempData["SuccessMessage"] = "Password changed successfully. Please sign in again on other devices if needed.";
+            return Redirect(returnUrl!);
+        }
+        catch (AuthException ex)
+        {
+            TempData["ErrorMessage"] = ex.Message;
+            return Redirect(returnUrl!);
+        }
+    }
 }

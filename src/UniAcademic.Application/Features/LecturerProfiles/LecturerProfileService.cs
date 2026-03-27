@@ -93,6 +93,20 @@ public sealed class LecturerProfileService : ILecturerProfileService
             throw new AuthException("Lecturer profile code already exists.");
         }
 
+        if (!string.IsNullOrWhiteSpace(email))
+        {
+            var normalizedUserEmail = email.ToUpperInvariant();
+            var duplicateUserEmail = await _dbContext.Users
+                .AnyAsync(
+                    x => x.LecturerProfileId != lecturerProfile.Id
+                         && x.NormalizedEmail == normalizedUserEmail,
+                    cancellationToken);
+            if (duplicateUserEmail)
+            {
+                throw new AuthException("Email address is already used by another account.");
+            }
+        }
+
         lecturerProfile.Code = code;
         lecturerProfile.FullName = fullName;
         lecturerProfile.Email = email;
@@ -101,6 +115,18 @@ public sealed class LecturerProfileService : ILecturerProfileService
         lecturerProfile.IsActive = command.IsActive;
         lecturerProfile.Note = NormalizeNote(command.Note);
         lecturerProfile.ModifiedBy = _currentUser.Username ?? "system";
+
+        if (!string.IsNullOrWhiteSpace(email))
+        {
+            var linkedUser = await _dbContext.Users
+                .FirstOrDefaultAsync(x => x.LecturerProfileId == lecturerProfile.Id, cancellationToken);
+            if (linkedUser is not null)
+            {
+                linkedUser.Email = email;
+                linkedUser.NormalizedEmail = email.ToUpperInvariant();
+                linkedUser.ModifiedBy = _currentUser.Username ?? "system";
+            }
+        }
 
         await _dbContext.SaveChangesAsync(cancellationToken);
         await _auditService.WriteAsync("lecturerprofile.update", nameof(LecturerProfile), lecturerProfile.Id.ToString(), new

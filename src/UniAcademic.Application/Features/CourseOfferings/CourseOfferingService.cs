@@ -77,7 +77,7 @@ public sealed class CourseOfferingService : ICourseOfferingService
             courseOffering.Status
         }, _currentUser.UserId, cancellationToken);
 
-        return Map(courseOffering, course, semester);
+        return Map(courseOffering, course, semester, 0);
     }
 
     public async Task<CourseOfferingModel> UpdateAsync(UpdateCourseOfferingCommand command, CancellationToken cancellationToken = default)
@@ -130,7 +130,8 @@ public sealed class CourseOfferingService : ICourseOfferingService
             courseOffering.Status
         }, _currentUser.UserId, cancellationToken);
 
-        return Map(courseOffering, course, semester);
+        var enrolledCount = await GetEnrolledCountAsync(courseOffering.Id, cancellationToken);
+        return Map(courseOffering, course, semester, enrolledCount);
     }
 
     public async Task DeleteAsync(DeleteCourseOfferingCommand command, CancellationToken cancellationToken = default)
@@ -161,7 +162,8 @@ public sealed class CourseOfferingService : ICourseOfferingService
             .FirstOrDefaultAsync(x => x.Id == query.Id, cancellationToken)
             ?? throw new AuthException("Course offering was not found.");
 
-        return Map(courseOffering, courseOffering.Course, courseOffering.Semester);
+        var enrolledCount = await GetEnrolledCountAsync(courseOffering.Id, cancellationToken);
+        return Map(courseOffering, courseOffering.Course, courseOffering.Semester, enrolledCount);
     }
 
     public async Task<IReadOnlyCollection<CourseOfferingListItemModel>> GetListAsync(GetCourseOfferingsQuery query, CancellationToken cancellationToken = default)
@@ -208,6 +210,7 @@ public sealed class CourseOfferingService : ICourseOfferingService
                 SemesterId = x.SemesterId,
                 SemesterName = x.Semester != null ? x.Semester.Name : string.Empty,
                 DisplayName = x.DisplayName,
+                EnrolledCount = _dbContext.Enrollments.Count(e => e.CourseOfferingId == x.Id && e.Status == EnrollmentStatus.Enrolled),
                 Capacity = x.Capacity,
                 DayOfWeek = x.DayOfWeek,
                 StartPeriod = x.StartPeriod,
@@ -255,7 +258,11 @@ public sealed class CourseOfferingService : ICourseOfferingService
         return semester;
     }
 
-    private static CourseOfferingModel Map(CourseOffering courseOffering, Course? course, Semester? semester)
+    private async Task<int> GetEnrolledCountAsync(Guid courseOfferingId, CancellationToken cancellationToken)
+        => await _dbContext.Enrollments
+            .CountAsync(x => x.CourseOfferingId == courseOfferingId && x.Status == EnrollmentStatus.Enrolled, cancellationToken);
+
+    private static CourseOfferingModel Map(CourseOffering courseOffering, Course? course, Semester? semester, int enrolledCount)
     {
         return new CourseOfferingModel
         {
@@ -268,6 +275,7 @@ public sealed class CourseOfferingService : ICourseOfferingService
             SemesterCode = semester?.Code ?? string.Empty,
             SemesterName = semester?.Name ?? string.Empty,
             DisplayName = courseOffering.DisplayName,
+            EnrolledCount = enrolledCount,
             Capacity = courseOffering.Capacity,
             DayOfWeek = courseOffering.DayOfWeek,
             StartPeriod = courseOffering.StartPeriod,

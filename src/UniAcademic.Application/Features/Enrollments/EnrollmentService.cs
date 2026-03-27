@@ -59,9 +59,10 @@ public sealed class EnrollmentService : IEnrollmentService
             throw new AuthException("Enrollment already exists.");
         }
 
+        await CheckPrerequisiteAsync(studentProfile, courseOffering, cancellationToken);
+
         if (!command.IsOverride)
         {
-            await CheckPrerequisiteAsync(studentProfile, courseOffering, cancellationToken);
             await CheckTimeConflictAsync(studentProfile, courseOffering, cancellationToken);
             await CheckCreditLimitAsync(studentProfile, courseOffering, cancellationToken);
             await CheckRepeatRuleAsync(studentProfile, courseOffering, cancellationToken);
@@ -168,6 +169,20 @@ public sealed class EnrollmentService : IEnrollmentService
                 (x.StudentProfile != null && (x.StudentProfile.StudentCode.Contains(keyword) || x.StudentProfile.FullName.Contains(keyword))) ||
                 (x.CourseOffering != null && (x.CourseOffering.Code.Contains(keyword) ||
                     (x.CourseOffering.Course != null && x.CourseOffering.Course.Name.Contains(keyword)))));
+        }
+
+        if (!string.IsNullOrWhiteSpace(query.StudentCode))
+        {
+            var studentCode = query.StudentCode.Trim();
+            enrollments = enrollments.Where(x =>
+                x.StudentProfile != null && x.StudentProfile.StudentCode.Contains(studentCode));
+        }
+
+        if (!string.IsNullOrWhiteSpace(query.StudentFullName))
+        {
+            var studentFullName = query.StudentFullName.Trim();
+            enrollments = enrollments.Where(x =>
+                x.StudentProfile != null && x.StudentProfile.FullName.Contains(studentFullName));
         }
 
         if (query.StudentProfileId.HasValue)

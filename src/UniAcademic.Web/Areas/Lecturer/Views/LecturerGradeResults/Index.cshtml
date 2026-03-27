@@ -2,11 +2,24 @@
 @model IReadOnlyCollection<UniAcademic.Application.Models.GradeResults.GradeResultListItemModel>
 
 @{
-    ViewData["Title"] = "View Grade Results";
+    ViewData["Title"] = "Final Grade Results";
     var courseOfferingOptions = ViewBag.CourseOfferingOptions as IReadOnlyCollection<SelectListItem> ?? Array.Empty<SelectListItem>();
 }
 
-<h1 class="h3 mb-3">View Grade Results</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="h3 mb-1">Final Grade Results</h1>
+        <p class="text-muted mb-0">Review the final calculated outcomes after grade components have been entered.</p>
+    </div>
+    @if (ViewBag.CourseOfferingId is Guid selectedCourseOfferingId)
+    {
+        <a asp-area="Lecturer" asp-controller="LecturerGrades" asp-action="Categories" asp-route-courseOfferingId="@selectedCourseOfferingId" class="btn btn-outline-secondary">Back to Grade Items</a>
+    }
+    else
+    {
+        <a asp-area="Lecturer" asp-controller="LecturerGrades" asp-action="Index" class="btn btn-outline-secondary">Back to Classes</a>
+    }
+</div>
 
 <form method="get" class="row g-3 mb-3">
     <div class="col-md-4">

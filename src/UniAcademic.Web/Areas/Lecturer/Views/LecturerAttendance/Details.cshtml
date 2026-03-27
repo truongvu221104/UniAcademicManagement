@@ -11,7 +11,18 @@
     Session: @Model.SessionDate.ToString("yyyy-MM-dd") / #@Model.SessionNo / @Model.Title
 </div>
 
-<table class="table table-striped">
+@if (!string.IsNullOrWhiteSpace(Model.Note))
+{
+    <div class="alert alert-light border">
+        <strong>Session note:</strong> @Model.Note
+    </div>
+}
+
+<div class="alert alert-info">
+    Review the session here first. Use <strong>Edit Session and Records</strong> if you need to change the session title, the session note, the session number, or each student's attendance status.
+</div>
+
+<table class="table table-striped align-middle">
     <thead>
         <tr>
             <th>Student Code</th>
@@ -35,5 +46,5 @@
     </tbody>
 </table>
 
-<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
-<a asp-action="Index" class="btn btn-secondary">Back</a>
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit Session and Records</a>
+<a asp-action="Sessions" asp-route-courseOfferingId="@Model.CourseOfferingId" class="btn btn-secondary">Back</a>

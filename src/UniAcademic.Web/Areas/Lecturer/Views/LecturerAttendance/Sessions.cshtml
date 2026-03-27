@@ -1,0 +1,51 @@
+@model IReadOnlyCollection<UniAcademic.Application.Models.Attendance.AttendanceSessionListItemModel>
+
+@{
+    ViewData["Title"] = "Attendance Sessions";
+    var selectedOffering = ViewBag.SelectedOffering as UniAcademic.Application.Models.CourseOfferings.CourseOfferingListItemModel;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="h3 mb-1">Attendance Sessions</h1>
+        @if (selectedOffering is not null)
+        {
+            <p class="text-muted mb-0">@selectedOffering.Code - @selectedOffering.DisplayName (@selectedOffering.SemesterName)</p>
+        }
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-area="Lecturer" asp-controller="LecturerAttendance" asp-action="Index" class="btn btn-outline-secondary">Back to Classes</a>
+        <a asp-area="Lecturer" asp-controller="LecturerAttendance" asp-action="Create" asp-route-courseOfferingId="@ViewBag.CourseOfferingId" class="btn btn-primary">Create Session</a>
+    </div>
+</div>
+
+<div class="alert alert-info">
+    Start from a class, then open a session to review details or edit attendance. New sessions are allowed only when their session number does not duplicate an existing session in the same class.
+</div>
+
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            <th>Session Date</th>
+            <th>Session No</th>
+            <th>Title</th>
+            <th>Records</th>
+            <th class="text-end">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.SessionDate.ToString("yyyy-MM-dd")</td>
+            <td>@item.SessionNo</td>
+            <td>@item.Title</td>
+            <td>@item.RecordCount</td>
+            <td class="text-end">
+                <a asp-area="Lecturer" asp-controller="LecturerAttendance" asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info">Open Session</a>
+                <a asp-area="Lecturer" asp-controller="LecturerAttendance" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

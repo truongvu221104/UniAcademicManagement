@@ -1,39 +1,39 @@
-@using Microsoft.AspNetCore.Mvc.Rendering
-@model IReadOnlyCollection<UniAcademic.Application.Models.Grades.GradeCategoryListItemModel>
+@model IReadOnlyCollection<UniAcademic.Web.Models.LecturerPortal.LecturerGradeOfferingOverviewItemViewModel>
 
 @{
-    ViewData["Title"] = "Enter Grades";
-    var courseOfferingOptions = ViewBag.CourseOfferingOptions as IReadOnlyCollection<SelectListItem> ?? Array.Empty<SelectListItem>();
+    ViewData["Title"] = "Grades & Results";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="h3 mb-0">Enter Grades</h1>
-    <a asp-area="Lecturer" asp-controller="LecturerGrades" asp-action="Create" asp-route-courseOfferingId="@ViewBag.CourseOfferingId" class="btn btn-primary">Create Category</a>
+    <div>
+        <h1 class="h3 mb-1">Grades &amp; Results</h1>
+        <p class="text-muted mb-0">Open a teaching class first, then update student scores inside the grade items prepared by academic staff.</p>
+    </div>
 </div>
 
 <form method="get" class="row g-3 mb-3">
-    <div class="col-md-4">
-        <label class="form-label">Course Offering</label>
-        <select name="courseOfferingId" class="form-select">
-            @foreach (var option in courseOfferingOptions)
-            {
-                <option value="@option.Value" selected="@option.Selected">@option.Text</option>
-            }
-        </select>
+    <div class="col-md-6">
+        <label class="form-label">Keyword</label>
+        <input type="text" name="keyword" value="@ViewBag.Keyword" class="form-control" placeholder="Search by offering code, course code, or course name" />
     </div>
     <div class="col-md-2 d-flex align-items-end">
         <button type="submit" class="btn btn-secondary w-100">Filter</button>
     </div>
 </form>
 
-<table class="table table-striped">
+<div class="alert alert-info">
+    Open a class first. If the grade book is still open, you can go inside and edit each student's score and note for every grade item. Once final results exist, that class becomes review-only for lecturers.
+</div>
+
+<table class="table table-striped align-middle">
     <thead>
         <tr>
-            <th>Course Offering</th>
-            <th>Name</th>
-            <th>Weight</th>
-            <th>Max Score</th>
-            <th>Active</th>
+            <th>Offering</th>
+            <th>Course</th>
+            <th>Semester</th>
+            <th>Grade Items</th>
+            <th>Final Results</th>
+            <th>Grade Book</th>
             <th class="text-end">Actions</th>
         </tr>
     </thead>
@@ -41,15 +41,29 @@
     @foreach (var item in Model)
     {
         <tr>
-            <td>@item.CourseOfferingCode - @item.CourseName (@item.SemesterName)</td>
-            <td>@item.Name</td>
-            <td>@item.Weight</td>
-            <td>@item.MaxScore</td>
-            <td>@item.IsActive</td>
+            <td>
+                <div class="fw-semibold">@item.CourseOfferingCode</div>
+                <div class="text-muted small">@item.DisplayName</div>
+            </td>
+            <td>@item.CourseCode - @item.CourseName</td>
+            <td>@item.SemesterName</td>
+            <td>@item.CategoryCount</td>
+            <td>@item.ResultCount</td>
+            <td>
+                @if (item.IsGradebookEditable)
+                {
+                    <span class="badge bg-success">Open for entry</span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary">Locked after final results</span>
+                }
+            </td>
             <td class="text-end">
-                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info">Details</a>
-                <a asp-action="EditCategory" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Edit Category</a>
-                <a asp-action="EditEntries" asp-route-id="@item.Id" class="btn btn-sm btn-outline-success">Edit Entries</a>
+                <a asp-area="Lecturer" asp-controller="LecturerGrades" asp-action="Categories" asp-route-courseOfferingId="@item.CourseOfferingId" class="btn btn-sm btn-outline-success">
+                    @(item.IsGradebookEditable ? "Manage Scores" : "Review Scores")
+                </a>
+                <a asp-area="Lecturer" asp-controller="LecturerGradeResults" asp-action="Index" asp-route-courseOfferingId="@item.CourseOfferingId" class="btn btn-sm btn-outline-secondary">View Final Results</a>
             </td>
         </tr>
     }

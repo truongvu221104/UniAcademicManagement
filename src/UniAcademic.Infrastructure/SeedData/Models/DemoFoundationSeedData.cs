@@ -8,6 +8,8 @@ public sealed class DemoFoundationSeedData
 
     public IReadOnlyCollection<CourseSeedItem> Courses { get; set; } = [];
 
+    public IReadOnlyCollection<CoursePrerequisiteSeedItem> CoursePrerequisites { get; set; } = [];
+
     public IReadOnlyCollection<SemesterSeedItem> Semesters { get; set; } = [];
 
     public IReadOnlyCollection<StudentProfileSeedItem> StudentProfiles { get; set; } = [];
@@ -83,6 +85,13 @@ public sealed class SemesterSeedItem
     public string Status { get; set; } = string.Empty;
 
     public string? Description { get; set; }
+}
+
+public sealed class CoursePrerequisiteSeedItem
+{
+    public string CourseCode { get; set; } = string.Empty;
+
+    public string PrerequisiteCourseCode { get; set; } = string.Empty;
 }
 
 public sealed class StudentProfileSeedItem

@@ -1,50 +1,69 @@
-@using Microsoft.AspNetCore.Mvc.Rendering
-@model IReadOnlyCollection<UniAcademic.Application.Models.StudentPortal.StudentAttendanceItemModel>
+@model IReadOnlyCollection<UniAcademic.Web.Models.StudentPortal.StudentAttendanceOverviewItemViewModel>
 
 @{
     ViewData["Title"] = "My Attendance";
-    var courseOfferingOptions = ViewBag.CourseOfferingOptions as IReadOnlyCollection<SelectListItem> ?? Array.Empty<SelectListItem>();
+    var keyword = ViewBag.Keyword as string;
 }
 
-<h1 class="h3 mb-3">My Attendance</h1>
-
-<form method="get" class="row g-3 mb-3">
-    <div class="col-md-4">
-        <label class="form-label">Course Offering</label>
-        <select name="courseOfferingId" class="form-select">
-            @foreach (var option in courseOfferingOptions)
-            {
-                <option value="@option.Value" selected="@option.Selected">@option.Text</option>
-            }
-        </select>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="h3 mb-1">My Attendance</h1>
+        <p class="text-muted mb-0">Choose a course offering to review attendance status by session.</p>
     </div>
-    <div class="col-md-2 d-flex align-items-end">
-        <button type="submit" class="btn btn-secondary w-100">Filter</button>
+</div>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-6">
+        <input type="text" name="keyword" value="@keyword" class="form-control" placeholder="Search by offering code or course name" />
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </div>
+    <div class="col-auto">
+        <a asp-action="Index" class="btn btn-outline-secondary">Reset</a>
     </div>
 </form>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Course Offering</th>
-            <th>Session Date</th>
-            <th>Session No</th>
-            <th>Title</th>
-            <th>Status</th>
-            <th>Note</th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>@item.CourseOfferingCode - @item.CourseName (@item.SemesterName)</td>
-            <td>@item.SessionDate.ToString("yyyy-MM-dd")</td>
-            <td>@item.SessionNo</td>
-            <td>@item.Title</td>
-            <td>@item.Status</td>
-            <td>@item.Note</td>
-        </tr>
-    }
-    </tbody>
-</table>
+@if (Model.Count == 0)
+{
+    <div class="alert alert-info">No attendance-enabled course offerings are available for this account yet.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Course Offering</th>
+                    <th>Semester</th>
+                    <th>Sessions</th>
+                    <th>Present</th>
+                    <th>Late</th>
+                    <th>Absent</th>
+                    <th>Excused</th>
+                    <th class="text-end">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <div class="fw-semibold">@item.CourseOfferingCode</div>
+                            <div class="text-muted small">@item.CourseName</div>
+                        </td>
+                        <td>@item.SemesterName</td>
+                        <td>@item.SessionCount</td>
+                        <td><span class="badge bg-success">@item.PresentCount</span></td>
+                        <td><span class="badge bg-warning text-dark">@item.LateCount</span></td>
+                        <td><span class="badge bg-danger">@item.AbsentCount</span></td>
+                        <td><span class="badge bg-secondary">@item.ExcusedCount</span></td>
+                        <td class="text-end">
+                            <a asp-action="Details" asp-route-courseOfferingId="@item.CourseOfferingId" class="btn btn-sm btn-outline-primary">View Sessions</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

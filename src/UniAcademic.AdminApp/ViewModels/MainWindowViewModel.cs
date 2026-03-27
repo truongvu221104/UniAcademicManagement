@@ -15,6 +15,9 @@ public sealed class MainWindowViewModel : ObservableObject
     private readonly LoginViewModel _loginViewModel;
     private ModulePageViewModel? _currentModule;
     private string _currentUserDisplay = "Not signed in";
+    private string _currentUserRoleSummary = "Guest";
+    private string _currentSectionTitle = "Workspace";
+    private string _currentModuleTitle = "Welcome";
     private bool _isAuthenticated;
 
     public MainWindowViewModel(
@@ -48,6 +51,24 @@ public sealed class MainWindowViewModel : ObservableObject
         set => SetProperty(ref _currentUserDisplay, value);
     }
 
+    public string CurrentUserRoleSummary
+    {
+        get => _currentUserRoleSummary;
+        set => SetProperty(ref _currentUserRoleSummary, value);
+    }
+
+    public string CurrentSectionTitle
+    {
+        get => _currentSectionTitle;
+        set => SetProperty(ref _currentSectionTitle, value);
+    }
+
+    public string CurrentModuleTitle
+    {
+        get => _currentModuleTitle;
+        set => SetProperty(ref _currentModuleTitle, value);
+    }
+
     public bool IsAuthenticated
     {
         get => _isAuthenticated;
@@ -69,14 +90,19 @@ public sealed class MainWindowViewModel : ObservableObject
 
     public async Task OpenModuleAsync(ModuleDefinition definition)
     {
+        SetSelectedNavigation(definition);
         var module = definition.Create();
         CurrentModule = module;
+        CurrentModuleTitle = definition.Title;
         await module.RefreshAsync();
     }
 
     private void OnLoggedIn(object? sender, AuthTokenSnapshot snapshot)
     {
         CurrentUserDisplay = $"{snapshot.User?.DisplayName} ({snapshot.User?.Username})";
+        CurrentUserRoleSummary = snapshot.User?.Roles is { Count: > 0 }
+            ? string.Join(" / ", snapshot.User.Roles)
+            : "Authenticated";
         IsAuthenticated = true;
         BuildNavigation(snapshot.User?.Username);
         _ = OpenFirstModuleAsync();
@@ -100,6 +126,18 @@ public sealed class MainWindowViewModel : ObservableObject
         }
     }
 
+    private void SetSelectedNavigation(ModuleDefinition definition)
+    {
+        foreach (var item in Groups.SelectMany(x => x.Items))
+        {
+            item.IsSelected = ReferenceEquals(item.Definition, definition);
+            if (item.IsSelected)
+            {
+                CurrentSectionTitle = item.GroupTitle;
+            }
+        }
+    }
+
     private async Task LogoutAsync()
     {
         try
@@ -114,6 +152,9 @@ public sealed class MainWindowViewModel : ObservableObject
         Groups.Clear();
         CurrentModule = null;
         CurrentUserDisplay = "Not signed in";
+        CurrentUserRoleSummary = "Guest";
+        CurrentSectionTitle = "Workspace";
+        CurrentModuleTitle = "Welcome";
         IsAuthenticated = false;
     }
 }
@@ -131,8 +172,10 @@ public sealed class NavigationGroupViewModel
     public IReadOnlyCollection<NavigationItemViewModel> Items { get; }
 }
 
-public sealed class NavigationItemViewModel
+public sealed class NavigationItemViewModel : ObservableObject
 {
+    private bool _isSelected;
+
     public NavigationItemViewModel(ModuleDefinition definition, MainWindowViewModel mainWindowViewModel)
     {
         Definition = definition;
@@ -142,6 +185,14 @@ public sealed class NavigationItemViewModel
     public ModuleDefinition Definition { get; }
 
     public string Title => Definition.Title;
+
+    public string GroupTitle => Definition.Group;
+
+    public bool IsSelected
+    {
+        get => _isSelected;
+        set => SetProperty(ref _isSelected, value);
+    }
 
     public AsyncRelayCommand OpenCommand { get; }
 }

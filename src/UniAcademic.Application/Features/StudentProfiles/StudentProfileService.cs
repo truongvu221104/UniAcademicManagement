@@ -105,6 +105,20 @@ public sealed class StudentProfileService : IStudentProfileService
             throw new AuthException("Student profile code already exists.");
         }
 
+        if (!string.IsNullOrWhiteSpace(email))
+        {
+            var normalizedUserEmail = email.ToUpperInvariant();
+            var duplicateUserEmail = await _dbContext.Users
+                .AnyAsync(
+                    x => x.StudentProfileId != studentProfile.Id
+                         && x.NormalizedEmail == normalizedUserEmail,
+                    cancellationToken);
+            if (duplicateUserEmail)
+            {
+                throw new AuthException("Email address is already used by another account.");
+            }
+        }
+
         studentProfile.StudentCode = studentCode;
         studentProfile.FullName = fullName;
         studentProfile.StudentClassId = studentClass.Id;
@@ -116,6 +130,18 @@ public sealed class StudentProfileService : IStudentProfileService
         studentProfile.Status = command.Status;
         studentProfile.Note = NormalizeNote(command.Note);
         studentProfile.ModifiedBy = _currentUser.Username ?? "system";
+
+        if (!string.IsNullOrWhiteSpace(email))
+        {
+            var linkedUser = await _dbContext.Users
+                .FirstOrDefaultAsync(x => x.StudentProfileId == studentProfile.Id, cancellationToken);
+            if (linkedUser is not null)
+            {
+                linkedUser.Email = email;
+                linkedUser.NormalizedEmail = email.ToUpperInvariant();
+                linkedUser.ModifiedBy = _currentUser.Username ?? "system";
+            }
+        }
 
         await _dbContext.SaveChangesAsync(cancellationToken);
         await _auditService.WriteAsync("studentprofile.update", nameof(StudentProfile), studentProfile.Id.ToString(), new

@@ -6,27 +6,64 @@
 
 <h1 class="h3 mb-3">Edit Attendance</h1>
 
+<div class="mb-3">
+    <strong>@Model.CourseOfferingCode</strong> - @Model.CourseName (@Model.SemesterName)<br />
+    Session: @Model.SessionDate.ToString("yyyy-MM-dd") / #@Model.SessionNo / @Model.Title
+</div>
+
+@if (!string.IsNullOrWhiteSpace(Model.Note))
+{
+    <div class="alert alert-light border">
+        <strong>Session note:</strong> @Model.Note
+    </div>
+}
+
 <form method="post">
     @Html.AntiForgeryToken()
     <input asp-for="Id" type="hidden" />
     <input asp-for="CourseOfferingId" type="hidden" />
-    <input asp-for="CourseOfferingCode" type="hidden" />
-    <input asp-for="CourseName" type="hidden" />
-    <input asp-for="SemesterName" type="hidden" />
-    <input asp-for="SessionDate" type="hidden" />
-    <input asp-for="SessionNo" type="hidden" />
-    <input asp-for="Title" type="hidden" />
-    <input asp-for="Note" type="hidden" />
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-    <table class="table table-bordered table-striped">
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label asp-for="SessionDate" class="form-label"></label>
+                    <input asp-for="SessionDate" class="form-control" readonly />
+                </div>
+                <div class="col-md-2">
+                    <label asp-for="SessionNo" class="form-label"></label>
+                    <input asp-for="SessionNo" class="form-control" type="number" min="1" />
+                    <div class="form-text">Must be unique within this class.</div>
+                </div>
+                <div class="col-md-7">
+                    <label asp-for="Title" class="form-label"></label>
+                    <input asp-for="Title" class="form-control" placeholder="Example: Week 4 lab and review" />
+                </div>
+                <div class="col-12">
+                    <label asp-for="Note" class="form-label"></label>
+                    <textarea asp-for="Note" class="form-control" rows="3" placeholder="Session-wide note for the class"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h2 class="h5 mb-1">Student Attendance Records</h2>
+            <p class="text-muted mb-0">Update each student's status and add notes only when they are useful.</p>
+        </div>
+    </div>
+
+    <div class="table-responsive mb-3">
+    <table class="table table-bordered table-striped align-middle">
         <thead>
             <tr>
                 <th>Student Code</th>
                 <th>Full Name</th>
                 <th>Class</th>
                 <th>Status</th>
-                <th>Note</th>
+                <th>Attendance Note</th>
             </tr>
         </thead>
         <tbody>
@@ -35,21 +72,24 @@
             <tr>
                 <td>
                     @Model.Records[i].StudentCode
-                    <input asp-for="Records[@i].RosterItemId" type="hidden" />
-                    <input asp-for="Records[@i].StudentCode" type="hidden" />
-                    <input asp-for="Records[@i].StudentFullName" type="hidden" />
-                    <input asp-for="Records[@i].StudentClassName" type="hidden" />
+                    <input asp-for="Records[i].RosterItemId" type="hidden" />
+                    <input asp-for="Records[i].StudentCode" type="hidden" />
+                    <input asp-for="Records[i].StudentFullName" type="hidden" />
+                    <input asp-for="Records[i].StudentClassName" type="hidden" />
                 </td>
                 <td>@Model.Records[i].StudentFullName</td>
                 <td>@Model.Records[i].StudentClassName</td>
-                <td>
-                    <select asp-for="Records[@i].Status" class="form-select" asp-items="Html.GetEnumSelectList<UniAcademic.Domain.Enums.AttendanceStatus>()"></select>
+                <td style="min-width: 180px;">
+                    <select asp-for="Records[i].Status" class="form-select" asp-items="Html.GetEnumSelectList<UniAcademic.Domain.Enums.AttendanceStatus>()"></select>
                 </td>
-                <td><input asp-for="Records[@i].Note" class="form-control" /></td>
+                <td style="min-width: 260px;">
+                    <textarea asp-for="Records[i].Note" class="form-control" rows="2" placeholder="Optional note for this student's attendance"></textarea>
+                </td>
             </tr>
         }
         </tbody>
     </table>
+    </div>
 
     <button type="submit" class="btn btn-primary">Save</button>
     <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Cancel</a>

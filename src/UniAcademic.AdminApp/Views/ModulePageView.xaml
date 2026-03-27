@@ -2,72 +2,462 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModels="clr-namespace:UniAcademic.AdminApp.ViewModels"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d">
-    <Grid Margin="16">
+    <UserControl.Resources>
+        <Style x:Key="SecondaryActionButtonStyle"
+               TargetType="Button"
+               BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="#18324A" />
+            <Setter Property="BorderBrush" Value="#D6DEE8" />
+        </Style>
+
+        <Style x:Key="ActionButtonStyle"
+               TargetType="Button"
+               BasedOn="{StaticResource {x:Type Button}}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Kind}" Value="{x:Static viewModels:ModuleActionKind.Secondary}">
+                    <Setter Property="Background" Value="White" />
+                    <Setter Property="Foreground" Value="#18324A" />
+                    <Setter Property="BorderBrush" Value="#D6DEE8" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Kind}" Value="{x:Static viewModels:ModuleActionKind.Warning}">
+                    <Setter Property="Background" Value="#FFF2E2" />
+                    <Setter Property="Foreground" Value="#A45B12" />
+                    <Setter Property="BorderBrush" Value="#F5C68D" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Kind}" Value="{x:Static viewModels:ModuleActionKind.Danger}">
+                    <Setter Property="Background" Value="#FDECEC" />
+                    <Setter Property="Foreground" Value="#B42318" />
+                    <Setter Property="BorderBrush" Value="#F2B8B3" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="StatusChipBorderStyle" TargetType="Border">
+            <Setter Property="Padding" Value="10,4" />
+            <Setter Property="Margin" Value="0,0,8,8" />
+            <Setter Property="CornerRadius" Value="999" />
+            <Setter Property="Background" Value="#EFF4FA" />
+            <Setter Property="BorderBrush" Value="#DCE5F0" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Kind}" Value="{x:Static viewModels:ModuleStatusChipKind.Success}">
+                    <Setter Property="Background" Value="#E7F6EC" />
+                    <Setter Property="BorderBrush" Value="#B7DFC4" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Kind}" Value="{x:Static viewModels:ModuleStatusChipKind.Warning}">
+                    <Setter Property="Background" Value="#FFF2E2" />
+                    <Setter Property="BorderBrush" Value="#F5C68D" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Kind}" Value="{x:Static viewModels:ModuleStatusChipKind.Danger}">
+                    <Setter Property="Background" Value="#FDECEC" />
+                    <Setter Property="BorderBrush" Value="#F2B8B3" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ModuleNotificationBorderStyle" TargetType="Border">
+            <Setter Property="Padding" Value="12" />
+            <Setter Property="Background" Value="#F8FAFD" />
+            <Setter Property="BorderBrush" Value="#E3EAF2" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="Visibility" Value="Visible" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding HasStatusMessage}" Value="False">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding StatusKind}" Value="{x:Static viewModels:ModuleNotificationKind.Success}">
+                    <Setter Property="Background" Value="#E7F6EC" />
+                    <Setter Property="BorderBrush" Value="#B7DFC4" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding StatusKind}" Value="{x:Static viewModels:ModuleNotificationKind.Error}">
+                    <Setter Property="Background" Value="#FDECEC" />
+                    <Setter Property="BorderBrush" Value="#F2B8B3" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ModuleNotificationTitleStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#36526B" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Text" Value="Status" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding StatusKind}" Value="{x:Static viewModels:ModuleNotificationKind.Success}">
+                    <Setter Property="Foreground" Value="#1F7A45" />
+                    <Setter Property="Text" Value="Success" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding StatusKind}" Value="{x:Static viewModels:ModuleNotificationKind.Error}">
+                    <Setter Property="Foreground" Value="#B42318" />
+                    <Setter Property="Text" Value="Error" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ModuleNotificationMessageStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#64748B" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding StatusKind}" Value="{x:Static viewModels:ModuleNotificationKind.Success}">
+                    <Setter Property="Foreground" Value="#1B5E34" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding StatusKind}" Value="{x:Static viewModels:ModuleNotificationKind.Error}">
+                    <Setter Property="Foreground" Value="#8F2219" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <Grid Margin="18">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*" />
-            <ColumnDefinition Width="16" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Row="0"
-                   Grid.ColumnSpan="3"
-                   Text="{Binding Title}"
-                   FontSize="22"
-                   FontWeight="SemiBold" />
+        <Border Grid.Row="0"
+                Padding="18"
+                Background="#F5F8FC"
+                BorderBrush="#DCE5F0"
+                BorderThickness="1"
+                CornerRadius="16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Row="1"
-                    Grid.ColumnSpan="3"
-                    Margin="0,12,0,12">
-            <TextBox Width="280"
-                     Margin="0,0,0,8"
-                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
-            <StackPanel Orientation="Horizontal">
-                <Button Content="Refresh"
-                        Margin="0,0,8,0"
-                        Click="RefreshButton_OnClick" />
-                <ItemsControl ItemsSource="{Binding Actions}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Button Content="{Binding Label}"
-                                    Margin="0,0,8,0"
-                                    Command="{Binding Command}" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </StackPanel>
-        </StackPanel>
+                <StackPanel>
+                    <TextBlock Text="{Binding Title}"
+                               FontSize="24"
+                               FontWeight="Bold"
+                               Foreground="#18324A" />
+                    <TextBlock Text="Operational module view for browsing, editing, and validating academic data."
+                               Margin="0,6,0,0"
+                               Foreground="#64748B"
+                               TextWrapping="Wrap" />
+                </StackPanel>
 
-        <DockPanel Grid.Row="2"
-                   Grid.Column="0">
-            <TextBlock DockPanel.Dock="Top"
-                       Text="{Binding StatusMessage}"
-                       Margin="0,0,0,8"
-                       Foreground="#57606A" />
-            <DataGrid ItemsSource="{Binding FilteredItems}"
-                      SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
-                      AutoGenerateColumns="True"
-                      IsReadOnly="True" />
-        </DockPanel>
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Top">
+                    <Border Margin="0,0,10,0"
+                            Padding="14,10"
+                            Background="White"
+                            BorderBrush="#D6DEE8"
+                            BorderThickness="1"
+                            CornerRadius="14">
+                        <StackPanel>
+                            <TextBlock Text="Items"
+                                       Foreground="#64748B"
+                                       FontSize="12" />
+                            <TextBlock Text="{Binding ItemCount}"
+                                       Foreground="#18324A"
+                                       FontSize="22"
+                                       FontWeight="Bold" />
+                        </StackPanel>
+                    </Border>
+                    <Border Padding="14,10"
+                            Background="White"
+                            BorderBrush="#D6DEE8"
+                            BorderThickness="1"
+                            CornerRadius="14">
+                        <StackPanel>
+                            <TextBlock Text="Filtered"
+                                       Foreground="#64748B"
+                                       FontSize="12" />
+                            <TextBlock Text="{Binding FilteredCount}"
+                                       Foreground="#18324A"
+                                       FontSize="22"
+                                       FontWeight="Bold" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </Border>
 
-        <TextBox Grid.Row="2"
-                 Grid.Column="2"
-                 Text="{Binding DetailsText}"
-                 IsReadOnly="True"
-                 TextWrapping="NoWrap"
-                 VerticalScrollBarVisibility="Auto"
-                 HorizontalScrollBarVisibility="Auto"
-                 FontFamily="Consolas" />
+        <Border Grid.Row="1"
+                Margin="0,16,0,16"
+                Padding="16"
+                Background="White"
+                BorderBrush="#DCE5F0"
+                BorderThickness="1"
+                CornerRadius="16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2.3*" />
+                    <ColumnDefinition Width="16" />
+                    <ColumnDefinition Width="1.4*" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Search and filters"
+                               FontWeight="SemiBold"
+                               Foreground="#18324A" />
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.2*" />
+                            <ColumnDefinition Width="12" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Quick search"
+                                       Foreground="#64748B"
+                                       FontSize="12"
+                                       FontWeight="SemiBold" />
+                            <TextBox Margin="0,6,0,0"
+                                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+
+                        <ItemsControl Grid.Column="2"
+                                      ItemsSource="{Binding Filters}">
+                            <ItemsControl.Style>
+                                <Style TargetType="ItemsControl">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding HasFilters}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ItemsControl.Style>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="0,0,12,10"
+                                                Width="180"
+                                                VerticalAlignment="Top">
+                                        <TextBlock Text="{Binding Label}"
+                                                   Foreground="#64748B"
+                                                   FontSize="12"
+                                                   FontWeight="SemiBold" />
+                                        <Grid Margin="0,6,0,0">
+                                            <TextBox x:Name="TextFilterEditor"
+                                                     Text="{Binding TextValue, UpdateSourceTrigger=PropertyChanged}" />
+                                            <ComboBox x:Name="LookupFilterEditor"
+                                                      Visibility="Collapsed"
+                                                      ItemsSource="{Binding Options}"
+                                                      DisplayMemberPath="Label"
+                                                      SelectedValuePath="Value"
+                                                      SelectedValue="{Binding SelectedValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                        </Grid>
+                                    </StackPanel>
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding Type}" Value="{x:Static viewModels:ModuleFilterFieldType.Lookup}">
+                                            <Setter TargetName="TextFilterEditor" Property="Visibility" Value="Collapsed" />
+                                            <Setter TargetName="LookupFilterEditor" Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
+
+                    <TextBlock Text="Use quick search or combine module filters to narrow results."
+                               Margin="0,8,0,0"
+                               Foreground="#64748B"
+                               TextWrapping="Wrap" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="Actions"
+                               FontWeight="SemiBold"
+                               Foreground="#18324A" />
+                    <WrapPanel Margin="0,8,0,0"
+                               Orientation="Horizontal">
+                        <Button Content="Refresh"
+                                Margin="0,0,10,10"
+                                MinHeight="42"
+                                MinWidth="96"
+                                Style="{StaticResource SecondaryActionButtonStyle}"
+                                Click="RefreshButton_OnClick" />
+                        <Button Content="Apply Filters"
+                                Margin="0,0,10,10"
+                                MinHeight="42"
+                                MinWidth="110"
+                                Click="ApplyFiltersButton_OnClick">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource SecondaryActionButtonStyle}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding HasFilters}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                        <Button Content="Reset"
+                                Margin="0,0,10,10"
+                                MinHeight="42"
+                                MinWidth="96"
+                                Click="ResetFiltersButton_OnClick">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource SecondaryActionButtonStyle}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding HasFilters}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                        <ItemsControl ItemsSource="{Binding Actions}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Content="{Binding Label}"
+                                            Margin="0,0,10,10"
+                                            MinHeight="42"
+                                            MinWidth="96"
+                                            Style="{StaticResource ActionButtonStyle}"
+                                            Command="{Binding Command}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </WrapPanel>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2.25*" />
+                <ColumnDefinition Width="18" />
+                <ColumnDefinition Width="1.2*" />
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0"
+                    Padding="16"
+                    Background="White"
+                    BorderBrush="#DCE5F0"
+                    BorderThickness="1"
+                    CornerRadius="16">
+                <DockPanel>
+                    <Border DockPanel.Dock="Top"
+                            Margin="0,0,0,12"
+                            Style="{StaticResource ModuleNotificationBorderStyle}">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource ModuleNotificationTitleStyle}" />
+                            <TextBlock Margin="0,4,0,0"
+                                       Text="{Binding StatusMessage}"
+                                       Style="{StaticResource ModuleNotificationMessageStyle}" />
+                        </StackPanel>
+                    </Border>
+
+                    <DataGrid ItemsSource="{Binding FilteredItems}"
+                              SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                              AutoGenerateColumns="True"
+                              AutoGeneratingColumn="DataGrid_OnAutoGeneratingColumn"
+                              ColumnWidth="*"
+                              MinColumnWidth="110"
+                              IsReadOnly="True" />
+                </DockPanel>
+            </Border>
+
+            <Border Grid.Column="2"
+                    Padding="16"
+                    Background="#FBFCFE"
+                    BorderBrush="#DCE5F0"
+                    BorderThickness="1"
+                    CornerRadius="16">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <StackPanel>
+                        <TextBlock Text="Selected Item"
+                                   Foreground="#64748B"
+                                   FontSize="12"
+                                   FontWeight="SemiBold" />
+                        <TextBlock Text="{Binding SelectedItemTitle}"
+                                   Margin="0,4,0,0"
+                                   Foreground="#18324A"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+
+                    <Border Grid.Row="1"
+                            Margin="0,16,0,16"
+                            Padding="14"
+                            Background="White"
+                            BorderBrush="#E3EAF2"
+                            BorderThickness="1"
+                            CornerRadius="14">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel>
+                                <ItemsControl ItemsSource="{Binding StatusChips}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Style="{StaticResource StatusChipBorderStyle}">
+                                                <TextBlock Text="{Binding Label}"
+                                                           FontWeight="SemiBold" />
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <ItemsControl ItemsSource="{Binding DetailLines}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="0,0,0,10">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="1.1*" />
+                                                    <ColumnDefinition Width="1.4*" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding Label}"
+                                                           Foreground="#64748B"
+                                                           FontWeight="SemiBold"
+                                                           Margin="0,0,12,0"
+                                                           TextWrapping="Wrap" />
+                                                <TextBlock Grid.Column="1"
+                                                           Text="{Binding Value}"
+                                                           Foreground="#18324A"
+                                                           TextWrapping="Wrap" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+
+                    <Expander Grid.Row="2"
+                              Header="Raw JSON"
+                              IsExpanded="False">
+                        <TextBox Margin="0,10,0,0"
+                                 Text="{Binding DetailsText}"
+                                 IsReadOnly="True"
+                                 TextWrapping="NoWrap"
+                                 VerticalScrollBarVisibility="Auto"
+                                 HorizontalScrollBarVisibility="Auto"
+                                 FontFamily="Consolas"
+                                 MinHeight="120" />
+                    </Expander>
+                </Grid>
+            </Border>
+        </Grid>
     </Grid>
 </UserControl>

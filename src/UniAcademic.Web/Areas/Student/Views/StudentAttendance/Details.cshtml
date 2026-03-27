@@ -1,0 +1,54 @@
+@model UniAcademic.Web.Models.StudentPortal.StudentAttendanceDetailsViewModel
+
+@{
+    ViewData["Title"] = "Attendance Details";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="h3 mb-1">@Model.CourseOfferingCode</h1>
+        <p class="text-muted mb-0">@Model.CourseName (@Model.SemesterName)</p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">Back to Attendance</a>
+</div>
+
+@if (Model.Sessions.Count == 0)
+{
+    <div class="alert alert-info">No attendance sessions have been recorded for this course offering yet.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Session Date</th>
+                    <th>Session No</th>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Sessions)
+                {
+                    var badgeClass = item.Status switch
+                    {
+                        UniAcademic.Domain.Enums.AttendanceStatus.Present => "bg-success",
+                        UniAcademic.Domain.Enums.AttendanceStatus.Late => "bg-warning text-dark",
+                        UniAcademic.Domain.Enums.AttendanceStatus.Absent => "bg-danger",
+                        UniAcademic.Domain.Enums.AttendanceStatus.Excused => "bg-secondary",
+                        _ => "bg-light text-dark"
+                    };
+                    <tr>
+                        <td>@item.SessionDate.ToString("yyyy-MM-dd")</td>
+                        <td>@item.SessionNo</td>
+                        <td>@item.Title</td>
+                        <td><span class="badge @badgeClass">@item.Status</span></td>
+                        <td>@(string.IsNullOrWhiteSpace(item.Note) ? "-" : item.Note)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

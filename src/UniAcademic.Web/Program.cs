@@ -4,6 +4,7 @@ using UniAcademic.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
 
 // Add services to the container.
 builder.Services.AddApplication();
@@ -20,6 +21,13 @@ builder.Services.AddPermissionAuthorization();
 builder.Services.AddControllersWithViews()
     .AddRazorRuntimeCompilation();
 builder.Services.AddRazorPages();
+builder.Services.AddSignalR(options =>
+{
+    if (builder.Environment.IsDevelopment())
+    {
+        options.EnableDetailedErrors = true;
+    }
+});
 
 var app = builder.Build();
 
@@ -40,9 +48,14 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+app.MapHub<UniAcademic.Web.Hubs.CourseChatHub>("/hubs/course-chat");
 app.MapRazorPages();
 
 app.Run();

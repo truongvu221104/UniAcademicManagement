@@ -20,13 +20,13 @@ public sealed class LecturerOfferingsController : Controller
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.CourseOfferings.View)]
     [HttpGet]
-    public async Task<IActionResult> Index(string? keyword, int? page, int? pageSize, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(string? keyword, int? pageNumber, int? pageSize, CancellationToken cancellationToken)
     {
         var offerings = await _lecturerPortalService.GetMyTeachingOfferingsAsync(new GetMyTeachingOfferingsQuery
         {
             Keyword = keyword
         }, cancellationToken);
-        var pagedOfferings = PaginationHelper.Paginate(offerings, page, pageSize);
+        var pagedOfferings = PaginationHelper.Paginate(offerings, pageNumber, pageSize);
 
         ViewBag.Keyword = keyword;
         ViewData["Pagination"] = pagedOfferings.Pagination;

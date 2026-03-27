@@ -26,7 +26,7 @@ public sealed class CoursesController : Controller
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.Courses.View)]
     [HttpGet]
-    public async Task<IActionResult> Index(string? keyword, Guid? facultyId, CourseStatus? status, int? page, int? pageSize, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(string? keyword, Guid? facultyId, CourseStatus? status, int? pageNumber, int? pageSize, CancellationToken cancellationToken)
     {
         var courses = await _courseService.GetListAsync(new GetCoursesQuery
         {
@@ -34,7 +34,7 @@ public sealed class CoursesController : Controller
             FacultyId = facultyId,
             Status = status
         }, cancellationToken);
-        var pagedCourses = UniAcademic.Web.Helpers.PaginationHelper.Paginate(courses, page, pageSize);
+        var pagedCourses = UniAcademic.Web.Helpers.PaginationHelper.Paginate(courses, pageNumber, pageSize);
 
         ViewBag.Keyword = keyword;
         ViewBag.FacultyId = facultyId;

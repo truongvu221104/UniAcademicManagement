@@ -17,6 +17,8 @@ public interface ILecturerPortalService
 
     Task<AttendanceSessionModel> CreateAttendanceSessionAsync(CreateAttendanceSessionCommand command, CancellationToken cancellationToken = default);
 
+    Task<AttendanceSessionModel> UpdateAttendanceSessionAsync(UpdateAttendanceSessionCommand command, CancellationToken cancellationToken = default);
+
     Task<AttendanceSessionModel> UpdateAttendanceRecordsAsync(UpdateAttendanceRecordsCommand command, CancellationToken cancellationToken = default);
 
     Task<IReadOnlyCollection<GradeCategoryListItemModel>> GetGradeCategoriesAsync(GetLecturerGradeCategoriesQuery query, CancellationToken cancellationToken = default);
@@ -28,6 +30,8 @@ public interface ILecturerPortalService
     Task<GradeCategoryModel> UpdateGradeCategoryAsync(UpdateGradeCategoryCommand command, CancellationToken cancellationToken = default);
 
     Task<GradeCategoryModel> UpdateGradeEntriesAsync(UpdateGradeEntriesCommand command, CancellationToken cancellationToken = default);
+
+    Task<bool> IsGradebookEditableAsync(Guid courseOfferingId, CancellationToken cancellationToken = default);
 
     Task<IReadOnlyCollection<CourseMaterialListItemModel>> GetCourseMaterialsAsync(GetLecturerCourseMaterialsQuery query, CancellationToken cancellationToken = default);
 

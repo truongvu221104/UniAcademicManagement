@@ -35,8 +35,8 @@
             <td>@item.CourseCode - @item.CourseName</td>
             <td>@item.SemesterName</td>
             <td class="text-end">
-                <a asp-area="Lecturer" asp-controller="LecturerAttendance" asp-action="Index" asp-route-courseOfferingId="@item.Id" class="btn btn-sm btn-outline-primary">Attendance</a>
-                <a asp-area="Lecturer" asp-controller="LecturerGrades" asp-action="Index" asp-route-courseOfferingId="@item.Id" class="btn btn-sm btn-outline-success">Grades</a>
+                <a asp-area="Lecturer" asp-controller="LecturerAttendance" asp-action="Sessions" asp-route-courseOfferingId="@item.Id" class="btn btn-sm btn-outline-primary">Attendance</a>
+                <a asp-area="Lecturer" asp-controller="LecturerGrades" asp-action="Categories" asp-route-courseOfferingId="@item.Id" class="btn btn-sm btn-outline-success">Grades</a>
                 <a asp-area="Lecturer" asp-controller="LecturerMaterials" asp-action="Index" asp-route-courseOfferingId="@item.Id" class="btn btn-sm btn-outline-info">Materials</a>
                 <a asp-area="Lecturer" asp-controller="LecturerGradeResults" asp-action="Index" asp-route-courseOfferingId="@item.Id" class="btn btn-sm btn-outline-dark">Results</a>
             </td>

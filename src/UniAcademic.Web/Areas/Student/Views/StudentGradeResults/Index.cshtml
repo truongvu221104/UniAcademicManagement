@@ -6,11 +6,15 @@
     var courseOfferingOptions = ViewBag.CourseOfferingOptions as IReadOnlyCollection<SelectListItem> ?? Array.Empty<SelectListItem>();
 }
 
-<h1 class="h3 mb-3">My Grade Results</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="h3 mb-1">My Grade Results</h1>
+        <p class="text-muted mb-0">Final grade results that have been calculated for your course offerings.</p>
+    </div>
+</div>
 
-<form method="get" class="row g-3 mb-3">
+<form method="get" class="row g-2 mb-3">
     <div class="col-md-4">
-        <label class="form-label">Course Offering</label>
         <select name="courseOfferingId" class="form-select">
             @foreach (var option in courseOfferingOptions)
             {
@@ -18,31 +22,55 @@
             }
         </select>
     </div>
-    <div class="col-md-2 d-flex align-items-end">
-        <button type="submit" class="btn btn-secondary w-100">Filter</button>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </div>
+    <div class="col-auto">
+        <a asp-action="Index" class="btn btn-outline-secondary">Reset</a>
     </div>
 </form>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Course Offering</th>
-            <th>Weighted Final Score</th>
-            <th>Passing Score</th>
-            <th>Passed</th>
-            <th>Calculated At</th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>@item.CourseOfferingCode - @item.CourseName (@item.SemesterName)</td>
-            <td>@item.WeightedFinalScore.ToString("0.00")</td>
-            <td>@item.PassingScore.ToString("0.00")</td>
-            <td>@item.IsPassed</td>
-            <td>@item.CalculatedAtUtc.ToString("yyyy-MM-dd HH:mm")</td>
-        </tr>
-    }
-    </tbody>
-</table>
+@if (Model.Count == 0)
+{
+    <div class="alert alert-info">No final grade results are available for this account yet.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Course Offering</th>
+                    <th>Final Score</th>
+                    <th>Passing Score</th>
+                    <th>Result</th>
+                    <th>Calculated At</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <div class="fw-semibold">@item.CourseOfferingCode</div>
+                            <div class="text-muted small">@item.CourseName (@item.SemesterName)</div>
+                        </td>
+                        <td class="fw-semibold">@item.WeightedFinalScore.ToString("0.00")</td>
+                        <td>@item.PassingScore.ToString("0.00")</td>
+                        <td>
+                            @if (item.IsPassed)
+                            {
+                                <span class="badge bg-success">Passed</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Not Passed</span>
+                            }
+                        </td>
+                        <td>@item.CalculatedAtUtc.ToString("yyyy-MM-dd HH:mm")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

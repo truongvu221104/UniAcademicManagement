@@ -9,11 +9,13 @@ public sealed class DemoLiveOfferingSeedItem
 {
     public string CourseOfferingCode { get; set; } = string.Empty;
 
-    public DateTime FinalizedAtUtc { get; set; }
+    public DateTime? FinalizedAtUtc { get; set; }
 
     public string? FinalizeNote { get; set; }
 
     public decimal PassingScore { get; set; } = 50m;
+
+    public bool GenerateGradeResults { get; set; } = true;
 
     public IReadOnlyCollection<string> Students { get; set; } = [];
 

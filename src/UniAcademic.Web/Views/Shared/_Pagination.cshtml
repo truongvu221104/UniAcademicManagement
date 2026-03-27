@@ -9,6 +9,7 @@
 
     var baseQuery = Context.Request.Query
         .Where(x => !string.Equals(x.Key, "page", StringComparison.OrdinalIgnoreCase)
+                 && !string.Equals(x.Key, "pageNumber", StringComparison.OrdinalIgnoreCase)
                  && !string.Equals(x.Key, "pageSize", StringComparison.OrdinalIgnoreCase))
         .ToDictionary(x => x.Key, x => (string?)x.Value.ToString(), StringComparer.OrdinalIgnoreCase);
 
@@ -16,7 +17,7 @@
     {
         var query = new Dictionary<string, string?>(baseQuery, StringComparer.OrdinalIgnoreCase)
         {
-            ["page"] = page.ToString(CultureInfo.InvariantCulture),
+            ["pageNumber"] = page.ToString(CultureInfo.InvariantCulture),
             ["pageSize"] = Model.PageSize.ToString(CultureInfo.InvariantCulture)
         };
 
@@ -34,7 +35,7 @@
         {
             <input type="hidden" name="@item.Key" value="@item.Value" />
         }
-        <input type="hidden" name="page" value="1" />
+        <input type="hidden" name="pageNumber" value="1" />
         <label for="pageSize" class="portal-page-size-label">Rows per page</label>
         <select id="pageSize" name="pageSize" class="form-select portal-page-size-select" onchange="this.form.submit()">
             @foreach (var size in Model.PageSizeOptions)

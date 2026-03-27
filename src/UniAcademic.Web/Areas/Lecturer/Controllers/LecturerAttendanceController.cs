@@ -8,6 +8,7 @@ using UniAcademic.Application.Models.LecturerPortal;
 using UniAcademic.Application.Security;
 using UniAcademic.Web.Helpers;
 using UniAcademic.Web.Models.Attendance;
+using UniAcademic.Web.Models.LecturerPortal;
 
 namespace UniAcademic.Web.Areas.Lecturer.Controllers;
 
@@ -24,14 +25,66 @@ public sealed class LecturerAttendanceController : Controller
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.Attendance.View)]
     [HttpGet]
-    public async Task<IActionResult> Index(Guid? courseOfferingId, int? page, int? pageSize, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(string? keyword, int? pageNumber, int? pageSize, CancellationToken cancellationToken)
     {
-        await LoadOfferingOptionsAsync(cancellationToken, courseOfferingId, includeEmpty: true);
+        var offerings = await _lecturerPortalService.GetMyTeachingOfferingsAsync(new GetMyTeachingOfferingsQuery
+        {
+            Keyword = keyword
+        }, cancellationToken);
+        var sessions = await _lecturerPortalService.GetAttendanceSessionsAsync(new GetLecturerAttendanceSessionsQuery(), cancellationToken);
+        var sessionGroups = sessions
+            .GroupBy(x => x.CourseOfferingId)
+            .ToDictionary(
+                x => x.Key,
+                x => new
+                {
+                    Count = x.Count(),
+                    LatestSessionDate = x.Max(item => item.SessionDate)
+                });
+
+        var overview = offerings.Select(x =>
+        {
+            var hasSessions = sessionGroups.TryGetValue(x.Id, out var group);
+            return new LecturerAttendanceOfferingOverviewItemViewModel
+            {
+                CourseOfferingId = x.Id,
+                CourseOfferingCode = x.Code,
+                DisplayName = x.DisplayName,
+                CourseCode = x.CourseCode,
+                CourseName = x.CourseName,
+                SemesterName = x.SemesterName,
+                Capacity = x.Capacity,
+                SessionCount = hasSessions ? group!.Count : 0,
+                LatestSessionDate = hasSessions ? group!.LatestSessionDate : null
+            };
+        }).ToList();
+
+        var pagedOverview = PaginationHelper.Paginate(overview, pageNumber, pageSize);
+        ViewBag.Keyword = keyword;
+        ViewData["Pagination"] = pagedOverview.Pagination;
+        return View(pagedOverview.Items);
+    }
+
+    [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.Attendance.View)]
+    [HttpGet]
+    public async Task<IActionResult> Sessions(Guid courseOfferingId, int? pageNumber, int? pageSize, CancellationToken cancellationToken)
+    {
+        var offerings = await _lecturerPortalService.GetMyTeachingOfferingsAsync(new GetMyTeachingOfferingsQuery(), cancellationToken);
+        var selectedOffering = offerings.FirstOrDefault(x => x.Id == courseOfferingId);
+        if (selectedOffering is null)
+        {
+            TempData["ErrorMessage"] = "The selected teaching offering could not be found.";
+            return RedirectToAction(nameof(Index));
+        }
+
         var sessions = await _lecturerPortalService.GetAttendanceSessionsAsync(new GetLecturerAttendanceSessionsQuery
         {
             CourseOfferingId = courseOfferingId
         }, cancellationToken);
-        var pagedSessions = PaginationHelper.Paginate(sessions, page, pageSize);
+        var pagedSessions = PaginationHelper.Paginate(sessions, pageNumber, pageSize);
+
+        ViewBag.CourseOfferingId = courseOfferingId;
+        ViewBag.SelectedOffering = selectedOffering;
         ViewData["Pagination"] = pagedSessions.Pagination;
         return View(pagedSessions.Items);
     }
@@ -126,6 +179,9 @@ public sealed class LecturerAttendanceController : Controller
             await _lecturerPortalService.UpdateAttendanceRecordsAsync(new UpdateAttendanceRecordsCommand
             {
                 Id = model.Id,
+                SessionNo = model.SessionNo,
+                Title = model.Title,
+                Note = model.Note,
                 Records = model.Records.Select(x => new UpdateAttendanceRecordItemCommand
                 {
                     RosterItemId = x.RosterItemId,

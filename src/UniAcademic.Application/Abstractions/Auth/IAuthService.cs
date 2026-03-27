@@ -19,4 +19,6 @@ public interface IAuthService
     Task<IReadOnlyCollection<string>> GetMyPermissionsAsync(CancellationToken cancellationToken = default);
 
     Task ChangePasswordAsync(AuthChangePasswordRequest request, CancellationToken cancellationToken = default);
+
+    Task ForgotPasswordAsync(AuthForgotPasswordRequest request, CancellationToken cancellationToken = default);
 }
