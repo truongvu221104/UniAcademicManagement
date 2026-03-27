@@ -9,6 +9,7 @@ public sealed class ModulePageViewModel : ObservableObject
     private readonly Func<object, CancellationToken, Task<object?>>? _loadDetailAsync;
     private object? _selectedItem;
     private string _detailsText = string.Empty;
+    private string _searchText = string.Empty;
     private string _statusMessage = string.Empty;
     private bool _isBusy;
 
@@ -25,6 +26,8 @@ public sealed class ModulePageViewModel : ObservableObject
     public string Title { get; }
 
     public ObservableCollection<object> Items { get; } = [];
+
+    public ObservableCollection<object> FilteredItems { get; } = [];
 
     public ObservableCollection<ModuleActionViewModel> Actions { get; } = [];
 
@@ -45,6 +48,18 @@ public sealed class ModulePageViewModel : ObservableObject
     {
         get => _detailsText;
         set => SetProperty(ref _detailsText, value);
+    }
+
+    public string SearchText
+    {
+        get => _searchText;
+        set
+        {
+            if (SetProperty(ref _searchText, value))
+            {
+                ApplyFilter();
+            }
+        }
     }
 
     public string StatusMessage
@@ -80,10 +95,11 @@ public sealed class ModulePageViewModel : ObservableObject
                 Items.Add(item);
             }
 
+            ApplyFilter();
             StatusMessage = $"Loaded {Items.Count} item(s).";
             if (SelectedItem is null && Items.Count > 0)
             {
-                SelectedItem = Items[0];
+                SelectedItem = FilteredItems.FirstOrDefault() ?? Items[0];
             }
             else
             {
@@ -119,5 +135,50 @@ public sealed class ModulePageViewModel : ObservableObject
             : await _loadDetailAsync(SelectedItem, cancellationToken) ?? SelectedItem;
 
         DetailsText = JsonFormatter.Format(detail);
+    }
+
+    private void ApplyFilter()
+    {
+        var selectedId = _selectedItem is null ? null : TryGetEntityId(_selectedItem);
+        var filtered = string.IsNullOrWhiteSpace(SearchText)
+            ? Items.ToList()
+            : Items.Where(MatchesSearch).ToList();
+
+        FilteredItems.Clear();
+        foreach (var item in filtered)
+        {
+            FilteredItems.Add(item);
+        }
+
+        if (selectedId is not null)
+        {
+            SelectedItem = FilteredItems.FirstOrDefault(x => TryGetEntityId(x) == selectedId);
+        }
+    }
+
+    private bool MatchesSearch(object item)
+    {
+        var query = SearchText.Trim();
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            return true;
+        }
+
+        return item.GetType()
+            .GetProperties()
+            .Where(x => x.CanRead)
+            .Select(x => x.GetValue(item)?.ToString())
+            .Any(x => !string.IsNullOrWhiteSpace(x) && x.Contains(query, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static Guid? TryGetEntityId(object item)
+    {
+        var property = item.GetType().GetProperty("Id");
+        if (property?.PropertyType != typeof(Guid))
+        {
+            return null;
+        }
+
+        return (Guid)property.GetValue(item)!;
     }
 }

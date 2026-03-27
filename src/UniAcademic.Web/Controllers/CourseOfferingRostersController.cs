@@ -7,7 +7,7 @@ using UniAcademic.Application.Security;
 
 namespace UniAcademic.Web.Controllers;
 
-[Authorize]
+[Authorize(Roles = RoleConstants.AcademicManagement)]
 public sealed class CourseOfferingRostersController : Controller
 {
     private readonly ICourseOfferingRosterService _courseOfferingRosterService;

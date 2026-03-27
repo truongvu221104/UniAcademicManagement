@@ -73,6 +73,39 @@ public sealed class CourseOfferingRostersController : ControllerBase
         }
     }
 
+    [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.CourseOfferingRosters.Reopen)]
+    [HttpPost("reopen")]
+    [ProducesResponseType(typeof(CourseOfferingRosterResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Reopen(Guid courseOfferingId, [FromBody] ReopenCourseOfferingRosterRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _courseOfferingRosterService.ReopenAsync(new ReopenCourseOfferingRosterCommand
+            {
+                CourseOfferingId = courseOfferingId,
+                Reason = request.Reason
+            }, cancellationToken);
+
+            return Ok(Map(result));
+        }
+        catch (AuthException ex) when (string.Equals(ex.Message, "Course offering was not found.", StringComparison.Ordinal)
+            || string.Equals(ex.Message, "Course offering roster snapshot was not found.", StringComparison.Ordinal))
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (AuthException ex) when (string.Equals(ex.Message, "Only admin can reopen a finalized roster.", StringComparison.Ordinal))
+        {
+            return StatusCode(StatusCodes.Status403Forbidden, new { message = ex.Message });
+        }
+        catch (AuthException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.CourseOfferingRosters.RetryHandoff)]
     [HttpPost("handoff")]
     [ProducesResponseType(StatusCodes.Status202Accepted)]

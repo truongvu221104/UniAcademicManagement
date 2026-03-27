@@ -7,4 +7,6 @@ public interface ICourseOfferingRosterApiClient
     Task<CourseOfferingRosterResponse> GetAsync(Guid courseOfferingId, CancellationToken cancellationToken = default);
 
     Task<CourseOfferingRosterResponse> FinalizeAsync(Guid courseOfferingId, FinalizeCourseOfferingRosterRequest request, CancellationToken cancellationToken = default);
+
+    Task<CourseOfferingRosterResponse> ReopenAsync(Guid courseOfferingId, ReopenCourseOfferingRosterRequest request, CancellationToken cancellationToken = default);
 }

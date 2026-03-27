@@ -7,11 +7,12 @@ using UniAcademic.Application.Common;
 using UniAcademic.Application.Models.CourseOfferings;
 using UniAcademic.Application.Models.Materials;
 using UniAcademic.Application.Security;
+using UniAcademic.Web.Helpers;
 using UniAcademic.Web.Models.Materials;
 
 namespace UniAcademic.Web.Controllers;
 
-[Authorize]
+[Authorize(Roles = RoleConstants.AcademicManagement)]
 public sealed class CourseMaterialsController : Controller
 {
     private readonly ICourseMaterialService _courseMaterialService;
@@ -27,16 +28,18 @@ public sealed class CourseMaterialsController : Controller
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.CourseMaterials.View)]
     [HttpGet]
-    public async Task<IActionResult> Index(Guid? courseOfferingId, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(Guid? courseOfferingId, int? page, int? pageSize, CancellationToken cancellationToken)
     {
         var materials = await _courseMaterialService.GetListAsync(new GetCourseMaterialsQuery
         {
             CourseOfferingId = courseOfferingId
         }, cancellationToken);
+        var pagedMaterials = PaginationHelper.Paginate(materials, page, pageSize);
 
         ViewBag.CourseOfferingId = courseOfferingId;
         ViewBag.CourseOfferingOptions = await BuildCourseOfferingOptionsAsync(cancellationToken, courseOfferingId, includeEmpty: true);
-        return View(materials);
+        ViewData["Pagination"] = pagedMaterials.Pagination;
+        return View(pagedMaterials.Items);
     }
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.CourseMaterials.View)]

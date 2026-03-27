@@ -6,6 +6,7 @@ using UniAcademic.Application.Common;
 using UniAcademic.Application.Models.Attendance;
 using UniAcademic.Application.Models.LecturerPortal;
 using UniAcademic.Application.Security;
+using UniAcademic.Web.Helpers;
 using UniAcademic.Web.Models.Attendance;
 
 namespace UniAcademic.Web.Areas.Lecturer.Controllers;
@@ -23,14 +24,16 @@ public sealed class LecturerAttendanceController : Controller
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.Attendance.View)]
     [HttpGet]
-    public async Task<IActionResult> Index(Guid? courseOfferingId, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(Guid? courseOfferingId, int? page, int? pageSize, CancellationToken cancellationToken)
     {
         await LoadOfferingOptionsAsync(cancellationToken, courseOfferingId, includeEmpty: true);
         var sessions = await _lecturerPortalService.GetAttendanceSessionsAsync(new GetLecturerAttendanceSessionsQuery
         {
             CourseOfferingId = courseOfferingId
         }, cancellationToken);
-        return View(sessions);
+        var pagedSessions = PaginationHelper.Paginate(sessions, page, pageSize);
+        ViewData["Pagination"] = pagedSessions.Pagination;
+        return View(pagedSessions.Items);
     }
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.Attendance.View)]

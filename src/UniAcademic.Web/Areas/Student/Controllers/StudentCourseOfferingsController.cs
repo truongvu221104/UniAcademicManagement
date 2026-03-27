@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using UniAcademic.Application.Abstractions.StudentPortal;
 using UniAcademic.Application.Models.StudentPortal;
 using UniAcademic.Application.Security;
+using UniAcademic.Web.Helpers;
 
 namespace UniAcademic.Web.Areas.Student.Controllers;
 
@@ -19,14 +20,16 @@ public sealed class StudentCourseOfferingsController : Controller
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.CourseOfferings.View)]
     [HttpGet]
-    public async Task<IActionResult> Index(string? keyword, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(string? keyword, int? page, int? pageSize, CancellationToken cancellationToken)
     {
         var offerings = await _studentPortalService.GetMyCourseOfferingsAsync(new GetMyCourseOfferingsQuery
         {
             Keyword = keyword
         }, cancellationToken);
+        var pagedOfferings = PaginationHelper.Paginate(offerings, page, pageSize);
 
         ViewBag.Keyword = keyword;
-        return View(offerings);
+        ViewData["Pagination"] = pagedOfferings.Pagination;
+        return View(pagedOfferings.Items);
     }
 }

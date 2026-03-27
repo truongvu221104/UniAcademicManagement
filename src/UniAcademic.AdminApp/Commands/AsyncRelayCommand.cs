@@ -1,4 +1,5 @@
 using System.Windows.Input;
+using System.Windows;
 
 namespace UniAcademic.AdminApp.Commands;
 
@@ -30,6 +31,10 @@ public sealed class AsyncRelayCommand : ICommand
             _isExecuting = true;
             RaiseCanExecuteChanged();
             await _executeAsync();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message, "Action Failed", MessageBoxButton.OK, MessageBoxImage.Error);
         }
         finally
         {

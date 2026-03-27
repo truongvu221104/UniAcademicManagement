@@ -7,4 +7,6 @@ public interface ICourseOfferingRosterService
     Task<CourseOfferingRosterModel> GetByCourseOfferingIdAsync(GetCourseOfferingRosterQuery query, CancellationToken cancellationToken = default);
 
     Task<CourseOfferingRosterModel> FinalizeAsync(FinalizeCourseOfferingRosterCommand command, CancellationToken cancellationToken = default);
+
+    Task<CourseOfferingRosterModel> ReopenAsync(ReopenCourseOfferingRosterCommand command, CancellationToken cancellationToken = default);
 }

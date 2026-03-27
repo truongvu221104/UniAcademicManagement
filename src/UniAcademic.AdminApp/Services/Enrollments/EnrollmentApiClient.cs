@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using UniAcademic.AdminApp.Infrastructure;
 using UniAcademic.Contracts.Enrollments;
 
 namespace UniAcademic.AdminApp.Services.Enrollments;
@@ -52,13 +53,13 @@ public sealed class EnrollmentApiClient : IEnrollmentApiClient
     public async Task<EnrollmentResponse> CreateAsync(CreateEnrollmentRequest request, CancellationToken cancellationToken = default)
     {
         var response = await _httpClient.PostAsJsonAsync("api/enrollments", request, cancellationToken);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithMessageAsync(cancellationToken);
         return (await response.Content.ReadFromJsonAsync<EnrollmentResponse>(cancellationToken: cancellationToken))!;
     }
 
     public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var response = await _httpClient.DeleteAsync($"api/enrollments/{id}", cancellationToken);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithMessageAsync(cancellationToken);
     }
 }

@@ -34,6 +34,8 @@ namespace UniAcademic.AdminApp.Navigation;
 
 public sealed class AdminModuleCatalog
 {
+    private string? _currentUsername;
+
     private readonly IFacultyApiClient _facultyApiClient;
     private readonly IStudentClassApiClient _studentClassApiClient;
     private readonly ICourseApiClient _courseApiClient;
@@ -93,8 +95,10 @@ public sealed class AdminModuleCatalog
         _fileDialogService = fileDialogService;
     }
 
-    public IReadOnlyCollection<ModuleDefinition> GetModules()
+    public IReadOnlyCollection<ModuleDefinition> GetModules(string? username = null)
     {
+        _currentUsername = username;
+
         return
         [
             new ModuleDefinition { Group = "Master Data", Title = "Faculties", Create = CreateFacultyModule },
@@ -155,7 +159,15 @@ public sealed class AdminModuleCatalog
         var module = CreateModule("Student Classes", ct => LoadObjectsAsync(_studentClassApiClient.GetListAsync(cancellationToken: ct)), (item, ct) => AsObjectTask(_studentClassApiClient.GetByIdAsync(GetId(item), ct)!));
         module.AddAction(new ModuleActionViewModel("Create", module, async vm =>
         {
-            var fields = Fields(("Code", typeof(string)), ("Name", typeof(string)), ("FacultyId", typeof(Guid)), ("IntakeYear", typeof(int), DateTime.UtcNow.Year), ("Status", typeof(UniAcademic.Domain.Enums.StudentClassStatus)), ("Description", typeof(string), (object?)null, true));
+            var fields = new List<FormFieldViewModel>
+            {
+                new("Code", typeof(string)),
+                new("Name", typeof(string)),
+                await CreateFacultyLookupFieldAsync(),
+                new("IntakeYear", typeof(int), DateTime.UtcNow.Year),
+                new("Status", typeof(UniAcademic.Domain.Enums.StudentClassStatus)),
+                new("Description", typeof(string), (object?)null, true)
+            };
             if (!_formDialogService.Show("Create Student Class", fields)) return;
             await _studentClassApiClient.CreateAsync(new CreateStudentClassRequest
             {
@@ -173,7 +185,15 @@ public sealed class AdminModuleCatalog
         {
             if (vm.SelectedItem is not StudentClassListItemResponse selected) return;
             var detail = await _studentClassApiClient.GetByIdAsync(selected.Id);
-            var fields = Fields(("Code", typeof(string), detail.Code), ("Name", typeof(string), detail.Name), ("FacultyId", typeof(Guid), detail.FacultyId), ("IntakeYear", typeof(int), detail.IntakeYear), ("Status", typeof(UniAcademic.Domain.Enums.StudentClassStatus), detail.Status), ("Description", typeof(string), detail.Description, true));
+            var fields = new List<FormFieldViewModel>
+            {
+                new("Code", typeof(string), detail.Code),
+                new("Name", typeof(string), detail.Name),
+                await CreateFacultyLookupFieldAsync(detail.FacultyId),
+                new("IntakeYear", typeof(int), detail.IntakeYear),
+                new("Status", typeof(UniAcademic.Domain.Enums.StudentClassStatus), detail.Status),
+                new("Description", typeof(string), detail.Description, true)
+            };
             if (!_formDialogService.Show("Edit Student Class", fields)) return;
             await _studentClassApiClient.UpdateAsync(selected.Id, new UpdateStudentClassRequest
             {
@@ -195,7 +215,15 @@ public sealed class AdminModuleCatalog
         var module = CreateModule("Courses", ct => LoadObjectsAsync(_courseApiClient.GetListAsync(cancellationToken: ct)), (item, ct) => AsObjectTask(_courseApiClient.GetByIdAsync(GetId(item), ct)!));
         module.AddAction(new ModuleActionViewModel("Create", module, async vm =>
         {
-            var fields = Fields(("Code", typeof(string)), ("Name", typeof(string)), ("Credits", typeof(int), 3), ("FacultyId", typeof(Guid?)), ("Status", typeof(UniAcademic.Domain.Enums.CourseStatus)), ("Description", typeof(string), (object?)null, true));
+            var fields = new List<FormFieldViewModel>
+            {
+                new("Code", typeof(string)),
+                new("Name", typeof(string)),
+                new("Credits", typeof(int), 3),
+                await CreateFacultyLookupFieldAsync(null, true),
+                new("Status", typeof(UniAcademic.Domain.Enums.CourseStatus)),
+                new("Description", typeof(string), (object?)null, true)
+            };
             if (!_formDialogService.Show("Create Course", fields)) return;
             await _courseApiClient.CreateAsync(new CreateCourseRequest
             {
@@ -213,7 +241,15 @@ public sealed class AdminModuleCatalog
         {
             if (vm.SelectedItem is not CourseListItemResponse selected) return;
             var detail = await _courseApiClient.GetByIdAsync(selected.Id);
-            var fields = Fields(("Code", typeof(string), detail.Code), ("Name", typeof(string), detail.Name), ("Credits", typeof(int), detail.Credits), ("FacultyId", typeof(Guid?), detail.FacultyId), ("Status", typeof(UniAcademic.Domain.Enums.CourseStatus), detail.Status), ("Description", typeof(string), detail.Description, true));
+            var fields = new List<FormFieldViewModel>
+            {
+                new("Code", typeof(string), detail.Code),
+                new("Name", typeof(string), detail.Name),
+                new("Credits", typeof(int), detail.Credits),
+                await CreateFacultyLookupFieldAsync(detail.FacultyId, true),
+                new("Status", typeof(UniAcademic.Domain.Enums.CourseStatus), detail.Status),
+                new("Description", typeof(string), detail.Description, true)
+            };
             if (!_formDialogService.Show("Edit Course", fields)) return;
             await _courseApiClient.UpdateAsync(selected.Id, new UpdateCourseRequest
             {
@@ -279,7 +315,19 @@ public sealed class AdminModuleCatalog
         var module = CreateModule("Student Profiles", ct => LoadObjectsAsync(_studentProfileApiClient.GetListAsync(cancellationToken: ct)), (item, ct) => AsObjectTask(_studentProfileApiClient.GetByIdAsync(GetId(item), ct)!));
         module.AddAction(new ModuleActionViewModel("Create", module, async vm =>
         {
-            var fields = Fields(("StudentCode", typeof(string)), ("FullName", typeof(string)), ("StudentClassId", typeof(Guid)), ("Email", typeof(string)), ("Phone", typeof(string)), ("DateOfBirth", typeof(DateTime?)), ("Gender", typeof(UniAcademic.Domain.Enums.StudentGender)), ("Address", typeof(string), (object?)null, true), ("Status", typeof(UniAcademic.Domain.Enums.StudentProfileStatus)), ("Note", typeof(string), (object?)null, true));
+            var fields = new List<FormFieldViewModel>
+            {
+                new("StudentCode", typeof(string)),
+                new("FullName", typeof(string)),
+                await CreateStudentClassLookupFieldAsync(),
+                new("Email", typeof(string)),
+                new("Phone", typeof(string)),
+                new("DateOfBirth", typeof(DateTime?)),
+                new("Gender", typeof(UniAcademic.Domain.Enums.StudentGender)),
+                new("Address", typeof(string), (object?)null, true),
+                new("Status", typeof(UniAcademic.Domain.Enums.StudentProfileStatus)),
+                new("Note", typeof(string), (object?)null, true)
+            };
             if (!_formDialogService.Show("Create Student Profile", fields)) return;
             await _studentProfileApiClient.CreateAsync(new CreateStudentProfileRequest
             {
@@ -301,7 +349,19 @@ public sealed class AdminModuleCatalog
         {
             if (vm.SelectedItem is not StudentProfileListItemResponse selected) return;
             var detail = await _studentProfileApiClient.GetByIdAsync(selected.Id);
-            var fields = Fields(("StudentCode", typeof(string), detail.StudentCode), ("FullName", typeof(string), detail.FullName), ("StudentClassId", typeof(Guid), detail.StudentClassId), ("Email", typeof(string), detail.Email), ("Phone", typeof(string), detail.Phone), ("DateOfBirth", typeof(DateTime?), detail.DateOfBirth), ("Gender", typeof(UniAcademic.Domain.Enums.StudentGender), detail.Gender), ("Address", typeof(string), detail.Address, true), ("Status", typeof(UniAcademic.Domain.Enums.StudentProfileStatus), detail.Status), ("Note", typeof(string), detail.Note, true));
+            var fields = new List<FormFieldViewModel>
+            {
+                new("StudentCode", typeof(string), detail.StudentCode),
+                new("FullName", typeof(string), detail.FullName),
+                await CreateStudentClassLookupFieldAsync(detail.StudentClassId),
+                new("Email", typeof(string), detail.Email),
+                new("Phone", typeof(string), detail.Phone),
+                new("DateOfBirth", typeof(DateTime?), detail.DateOfBirth),
+                new("Gender", typeof(UniAcademic.Domain.Enums.StudentGender), detail.Gender),
+                new("Address", typeof(string), detail.Address, true),
+                new("Status", typeof(UniAcademic.Domain.Enums.StudentProfileStatus), detail.Status),
+                new("Note", typeof(string), detail.Note, true)
+            };
             if (!_formDialogService.Show("Edit Student Profile", fields)) return;
             await _studentProfileApiClient.UpdateAsync(selected.Id, new UpdateStudentProfileRequest
             {
@@ -327,7 +387,16 @@ public sealed class AdminModuleCatalog
         var module = CreateModule("Lecturer Profiles", ct => LoadObjectsAsync(_lecturerProfileApiClient.GetListAsync(cancellationToken: ct)), (item, ct) => AsObjectTask(_lecturerProfileApiClient.GetByIdAsync(GetId(item), ct)!));
         module.AddAction(new ModuleActionViewModel("Create", module, async vm =>
         {
-            var fields = Fields(("Code", typeof(string)), ("FullName", typeof(string)), ("Email", typeof(string)), ("PhoneNumber", typeof(string)), ("FacultyId", typeof(Guid)), ("IsActive", typeof(bool), true), ("Note", typeof(string), (object?)null, true));
+            var fields = new List<FormFieldViewModel>
+            {
+                new("Code", typeof(string)),
+                new("FullName", typeof(string)),
+                new("Email", typeof(string)),
+                new("PhoneNumber", typeof(string)),
+                await CreateFacultyLookupFieldAsync(),
+                new("IsActive", typeof(bool), true),
+                new("Note", typeof(string), (object?)null, true)
+            };
             if (!_formDialogService.Show("Create Lecturer Profile", fields)) return;
             await _lecturerProfileApiClient.CreateAsync(new CreateLecturerProfileRequest
             {
@@ -346,7 +415,16 @@ public sealed class AdminModuleCatalog
         {
             if (vm.SelectedItem is not LecturerProfileListItemResponse selected) return;
             var detail = await _lecturerProfileApiClient.GetByIdAsync(selected.Id);
-            var fields = Fields(("Code", typeof(string), detail.Code), ("FullName", typeof(string), detail.FullName), ("Email", typeof(string), detail.Email), ("PhoneNumber", typeof(string), detail.PhoneNumber), ("FacultyId", typeof(Guid), detail.FacultyId), ("IsActive", typeof(bool), detail.IsActive), ("Note", typeof(string), detail.Note, true));
+            var fields = new List<FormFieldViewModel>
+            {
+                new("Code", typeof(string), detail.Code),
+                new("FullName", typeof(string), detail.FullName),
+                new("Email", typeof(string), detail.Email),
+                new("PhoneNumber", typeof(string), detail.PhoneNumber),
+                await CreateFacultyLookupFieldAsync(detail.FacultyId),
+                new("IsActive", typeof(bool), detail.IsActive),
+                new("Note", typeof(string), detail.Note, true)
+            };
             if (!_formDialogService.Show("Edit Lecturer Profile", fields)) return;
             await _lecturerProfileApiClient.UpdateAsync(selected.Id, new UpdateLecturerProfileRequest
             {
@@ -377,7 +455,16 @@ public sealed class AdminModuleCatalog
         var module = CreateModule("Course Offerings", ct => LoadObjectsAsync(_courseOfferingApiClient.GetListAsync(cancellationToken: ct)), (item, ct) => AsObjectTask(_courseOfferingApiClient.GetByIdAsync(GetId(item), ct)!));
         module.AddAction(new ModuleActionViewModel("Create", module, async vm =>
         {
-            var fields = Fields(("Code", typeof(string)), ("CourseId", typeof(Guid)), ("SemesterId", typeof(Guid)), ("DisplayName", typeof(string)), ("Capacity", typeof(int), 30), ("Status", typeof(UniAcademic.Domain.Enums.CourseOfferingStatus)), ("Description", typeof(string), (object?)null, true));
+            var fields = new List<FormFieldViewModel>
+            {
+                new("Code", typeof(string)),
+                await CreateCourseLookupFieldAsync(),
+                await CreateSemesterLookupFieldAsync(),
+                new("DisplayName", typeof(string)),
+                new("Capacity", typeof(int), 30),
+                new("Status", typeof(UniAcademic.Domain.Enums.CourseOfferingStatus)),
+                new("Description", typeof(string), (object?)null, true)
+            };
             if (!_formDialogService.Show("Create Course Offering", fields)) return;
             await _courseOfferingApiClient.CreateAsync(new CreateCourseOfferingRequest
             {
@@ -396,7 +483,16 @@ public sealed class AdminModuleCatalog
         {
             if (vm.SelectedItem is not CourseOfferingListItemResponse selected) return;
             var detail = await _courseOfferingApiClient.GetByIdAsync(selected.Id);
-            var fields = Fields(("Code", typeof(string), detail.Code), ("CourseId", typeof(Guid), detail.CourseId), ("SemesterId", typeof(Guid), detail.SemesterId), ("DisplayName", typeof(string), detail.DisplayName), ("Capacity", typeof(int), detail.Capacity), ("Status", typeof(UniAcademic.Domain.Enums.CourseOfferingStatus), detail.Status), ("Description", typeof(string), detail.Description, true));
+            var fields = new List<FormFieldViewModel>
+            {
+                new("Code", typeof(string), detail.Code),
+                await CreateCourseLookupFieldAsync(detail.CourseId),
+                await CreateSemesterLookupFieldAsync(detail.SemesterId),
+                new("DisplayName", typeof(string), detail.DisplayName),
+                new("Capacity", typeof(int), detail.Capacity),
+                new("Status", typeof(UniAcademic.Domain.Enums.CourseOfferingStatus), detail.Status),
+                new("Description", typeof(string), detail.Description, true)
+            };
             if (!_formDialogService.Show("Edit Course Offering", fields)) return;
             await _courseOfferingApiClient.UpdateAsync(selected.Id, new UpdateCourseOfferingRequest
             {
@@ -419,7 +515,12 @@ public sealed class AdminModuleCatalog
         var module = CreateModule("Enrollments", ct => LoadObjectsAsync(_enrollmentApiClient.GetListAsync(cancellationToken: ct)), (item, ct) => AsObjectTask(_enrollmentApiClient.GetByIdAsync(GetId(item), ct)!));
         module.AddAction(new ModuleActionViewModel("Enroll", module, async vm =>
         {
-            var fields = Fields(("StudentProfileId", typeof(Guid)), ("CourseOfferingId", typeof(Guid)), ("Note", typeof(string), (object?)null, true));
+            var fields = new List<FormFieldViewModel>
+            {
+                await CreateStudentProfileLookupFieldAsync(),
+                await CreateCourseOfferingLookupFieldAsync(),
+                new("Note", typeof(string), (object?)null, true)
+            };
             if (!_formDialogService.Show("Enroll Student", fields)) return;
             await _enrollmentApiClient.CreateAsync(new CreateEnrollmentRequest
             {
@@ -468,15 +569,43 @@ public sealed class AdminModuleCatalog
             await vm.RefreshAsync();
             vm.NotifySuccess("Roster finalized.");
         }, vm => vm.SelectedItem is CourseOfferingListItemResponse));
+
+        if (IsCurrentAdminUser())
+        {
+            module.AddAction(new ModuleActionViewModel("Reopen", module, async vm =>
+            {
+                if (vm.SelectedItem is not CourseOfferingListItemResponse selected) return;
+                if (!_messageDialogService.Confirm($"Reopen roster for {selected.Code}? This is only allowed when attendance, grades, grade results, and successful exam handoff do not exist.")) return;
+                var fields = Fields(("Reason", typeof(string), (object?)null, true));
+                if (!_formDialogService.Show("Reopen Roster", fields)) return;
+                await _rosterApiClient.ReopenAsync(selected.Id, new ReopenCourseOfferingRosterRequest
+                {
+                    Reason = Get<string?>(fields, "Reason")
+                });
+                await vm.RefreshAsync();
+                vm.NotifySuccess("Roster reopened.");
+            }, vm => vm.SelectedItem is CourseOfferingListItemResponse));
+        }
+
         return module;
     }
+
+    private bool IsCurrentAdminUser()
+        => string.Equals(_currentUsername, "admin", StringComparison.OrdinalIgnoreCase);
 
     private ModulePageViewModel CreateAttendanceModule()
     {
         var module = CreateModule("Attendance", ct => LoadObjectsAsync(_attendanceApiClient.GetListAsync(cancellationToken: ct)), (item, ct) => AsObjectTask(_attendanceApiClient.GetByIdAsync(GetId(item), ct)!));
         module.AddAction(new ModuleActionViewModel("Create Session", module, async vm =>
         {
-            var fields = Fields(("CourseOfferingId", typeof(Guid)), ("SessionDate", typeof(DateTime), DateTime.Today), ("SessionNo", typeof(int), 1), ("Title", typeof(string)), ("Note", typeof(string), (object?)null, true));
+            var fields = new List<FormFieldViewModel>
+            {
+                await CreateCourseOfferingLookupFieldAsync(),
+                new("SessionDate", typeof(DateTime), DateTime.Today),
+                new("SessionNo", typeof(int), 1),
+                new("Title", typeof(string)),
+                new("Note", typeof(string), (object?)null, true)
+            };
             if (!_formDialogService.Show("Create Attendance Session", fields)) return;
             await _attendanceApiClient.CreateAsync(new CreateAttendanceSessionRequest
             {
@@ -493,6 +622,11 @@ public sealed class AdminModuleCatalog
         {
             if (vm.SelectedItem is not AttendanceSessionListItemResponse selected) return;
             var detail = await _attendanceApiClient.GetByIdAsync(selected.Id);
+            if (detail.Records.Count == 0)
+            {
+                _messageDialogService.ShowError("This attendance session has no records. This usually means the roster snapshot was finalized before students were enrolled. Recreate the flow in this order: enroll students -> finalize roster -> create attendance session.");
+                return;
+            }
             var request = new UpdateAttendanceRecordsRequest
             {
                 Records = detail.Records.Select(x => new UpdateAttendanceRecordItemRequest
@@ -516,7 +650,15 @@ public sealed class AdminModuleCatalog
         var module = CreateModule("Grades", ct => LoadObjectsAsync(_gradeApiClient.GetListAsync(cancellationToken: ct)), (item, ct) => AsObjectTask(_gradeApiClient.GetByIdAsync(GetId(item), ct)!));
         module.AddAction(new ModuleActionViewModel("Create Category", module, async vm =>
         {
-            var fields = Fields(("CourseOfferingId", typeof(Guid)), ("Name", typeof(string)), ("Weight", typeof(decimal), 10m), ("MaxScore", typeof(decimal), 10m), ("OrderIndex", typeof(int), 1), ("IsActive", typeof(bool), true));
+            var fields = new List<FormFieldViewModel>
+            {
+                await CreateCourseOfferingLookupFieldAsync(),
+                new("Name", typeof(string)),
+                new("Weight", typeof(decimal), 10m),
+                new("MaxScore", typeof(decimal), 10m),
+                new("OrderIndex", typeof(int), 1),
+                new("IsActive", typeof(bool), true)
+            };
             if (!_formDialogService.Show("Create Grade Category", fields)) return;
             await _gradeApiClient.CreateCategoryAsync(new CreateGradeCategoryRequest
             {
@@ -574,7 +716,11 @@ public sealed class AdminModuleCatalog
         var module = CreateModule("Grade Results", ct => LoadObjectsAsync(_gradeResultApiClient.GetListAsync(cancellationToken: ct)), (item, ct) => AsObjectTask(_gradeResultApiClient.GetByIdAsync(GetId(item), ct)!));
         module.AddAction(new ModuleActionViewModel("Calculate", module, async vm =>
         {
-            var fields = Fields(("CourseOfferingId", typeof(Guid)), ("PassingScore", typeof(decimal), 50m));
+            var fields = new List<FormFieldViewModel>
+            {
+                await CreateCourseOfferingLookupFieldAsync(),
+                new("PassingScore", typeof(decimal), 50m)
+            };
             if (!_formDialogService.Show("Calculate Grade Results", fields)) return;
             await _gradeResultApiClient.CalculateAsync(new CalculateGradeResultsRequest
             {
@@ -594,7 +740,15 @@ public sealed class AdminModuleCatalog
         {
             var filePath = _fileDialogService.SelectOpenFile();
             if (string.IsNullOrWhiteSpace(filePath)) return;
-            var fields = Fields(("CourseOfferingId", typeof(Guid)), ("Title", typeof(string), Path.GetFileNameWithoutExtension(filePath), false), ("Description", typeof(string), (object?)null, true), ("MaterialType", typeof(UniAcademic.Domain.Enums.CourseMaterialType), (object?)null, false), ("SortOrder", typeof(int), 0, false), ("IsPublished", typeof(bool), false, false));
+            var fields = new List<FormFieldViewModel>
+            {
+                await CreateCourseOfferingLookupFieldAsync(),
+                new("Title", typeof(string), Path.GetFileNameWithoutExtension(filePath)),
+                new("Description", typeof(string), (object?)null, true),
+                new("MaterialType", typeof(UniAcademic.Domain.Enums.CourseMaterialType)),
+                new("SortOrder", typeof(int), 0),
+                new("IsPublished", typeof(bool), false)
+            };
             if (!_formDialogService.Show("Upload Material", fields)) return;
             await _courseMaterialApiClient.UploadAsync(new UploadCourseMaterialRequest
             {
@@ -651,7 +805,12 @@ public sealed class AdminModuleCatalog
         var module = CreateModule("Lecturer Assignments", ct => LoadObjectsAsync(_lecturerAssignmentApiClient.GetListAsync(cancellationToken: ct)));
         module.AddAction(new ModuleActionViewModel("Assign", module, async vm =>
         {
-            var fields = Fields(("CourseOfferingId", typeof(Guid)), ("LecturerProfileId", typeof(Guid)), ("IsPrimary", typeof(bool), false));
+            var fields = new List<FormFieldViewModel>
+            {
+                await CreateCourseOfferingLookupFieldAsync(),
+                await CreateLecturerProfileLookupFieldAsync(),
+                new("IsPrimary", typeof(bool), false)
+            };
             if (!_formDialogService.Show("Assign Lecturer", fields)) return;
             await _lecturerAssignmentApiClient.AssignAsync(new AssignLecturerRequest
             {
@@ -713,6 +872,55 @@ public sealed class AdminModuleCatalog
 
         return fields;
     }
+
+    private async Task<FormFieldViewModel> CreateFacultyLookupFieldAsync(Guid? initialValue = null, bool nullable = false)
+        => FormFieldViewModel.CreateLookup(
+            "FacultyId",
+            nullable ? typeof(Guid?) : typeof(Guid),
+            (await _facultyApiClient.GetListAsync()).Select(x => new FormOptionViewModel($"{x.Code} - {x.Name}", x.Id)),
+            initialValue);
+
+    private async Task<FormFieldViewModel> CreateStudentClassLookupFieldAsync(Guid? initialValue = null)
+        => FormFieldViewModel.CreateLookup(
+            "StudentClassId",
+            typeof(Guid),
+            (await _studentClassApiClient.GetListAsync()).Select(x => new FormOptionViewModel($"{x.Code} - {x.Name}", x.Id)),
+            initialValue);
+
+    private async Task<FormFieldViewModel> CreateCourseLookupFieldAsync(Guid? initialValue = null)
+        => FormFieldViewModel.CreateLookup(
+            "CourseId",
+            typeof(Guid),
+            (await _courseApiClient.GetListAsync()).Select(x => new FormOptionViewModel($"{x.Code} - {x.Name}", x.Id)),
+            initialValue);
+
+    private async Task<FormFieldViewModel> CreateSemesterLookupFieldAsync(Guid? initialValue = null)
+        => FormFieldViewModel.CreateLookup(
+            "SemesterId",
+            typeof(Guid),
+            (await _semesterApiClient.GetListAsync()).Select(x => new FormOptionViewModel($"{x.Code} - {x.Name}", x.Id)),
+            initialValue);
+
+    private async Task<FormFieldViewModel> CreateStudentProfileLookupFieldAsync(Guid? initialValue = null)
+        => FormFieldViewModel.CreateLookup(
+            "StudentProfileId",
+            typeof(Guid),
+            (await _studentProfileApiClient.GetListAsync()).Select(x => new FormOptionViewModel($"{x.StudentCode} - {x.FullName}", x.Id)),
+            initialValue);
+
+    private async Task<FormFieldViewModel> CreateCourseOfferingLookupFieldAsync(Guid? initialValue = null)
+        => FormFieldViewModel.CreateLookup(
+            "CourseOfferingId",
+            typeof(Guid),
+            (await _courseOfferingApiClient.GetListAsync()).Select(x => new FormOptionViewModel($"{x.Code} - {x.CourseName}", x.Id)),
+            initialValue);
+
+    private async Task<FormFieldViewModel> CreateLecturerProfileLookupFieldAsync(Guid? initialValue = null)
+        => FormFieldViewModel.CreateLookup(
+            "LecturerProfileId",
+            typeof(Guid),
+            (await _lecturerProfileApiClient.GetListAsync()).Select(x => new FormOptionViewModel($"{x.Code} - {x.FullName}", x.Id)),
+            initialValue);
 
     private static async Task<object?> AsObjectTask<T>(Task<T> task)
         => await task;

@@ -5,6 +5,7 @@ using UniAcademic.Application.Abstractions.StudentPortal;
 using UniAcademic.Application.Common;
 using UniAcademic.Application.Models.StudentPortal;
 using UniAcademic.Application.Security;
+using UniAcademic.Web.Helpers;
 
 namespace UniAcademic.Web.Areas.Student.Controllers;
 
@@ -21,13 +22,14 @@ public sealed class StudentMaterialsController : Controller
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.CourseMaterials.View)]
     [HttpGet]
-    public async Task<IActionResult> Index(Guid? courseOfferingId, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(Guid? courseOfferingId, int? page, int? pageSize, CancellationToken cancellationToken)
     {
         var offerings = await _studentPortalService.GetMyCourseOfferingsAsync(new GetMyCourseOfferingsQuery(), cancellationToken);
         var materials = await _studentPortalService.GetMyMaterialsAsync(new GetMyMaterialsQuery
         {
             CourseOfferingId = courseOfferingId
         }, cancellationToken);
+        var pagedMaterials = PaginationHelper.Paginate(materials, page, pageSize);
 
         ViewBag.CourseOfferingId = courseOfferingId;
         ViewBag.CourseOfferingOptions = offerings
@@ -45,7 +47,8 @@ public sealed class StudentMaterialsController : Controller
             })
             .ToList();
 
-        return View(materials);
+        ViewData["Pagination"] = pagedMaterials.Pagination;
+        return View(pagedMaterials.Items);
     }
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.CourseMaterials.Download)]

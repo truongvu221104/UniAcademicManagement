@@ -1,0 +1,136 @@
+{
+  "offerings": [
+    {
+      "courseOfferingCode": "SE101-2025T1-02",
+      "finalizedAtUtc": "2025-09-10T08:00:00Z",
+      "finalizeNote": "Demo live dataset for FIT course offering",
+      "passingScore": 50,
+      "students": [
+        "STU001",
+        "STU002",
+        "STU003",
+        "STU004"
+      ],
+      "attendanceSessions": [
+        {
+          "sessionDate": "2025-09-12T00:00:00Z",
+          "sessionNo": 1,
+          "title": "Buoi 1",
+          "note": "Demo attendance session 1",
+          "records": [
+            { "studentCode": "STU001", "status": "Present", "note": null },
+            { "studentCode": "STU002", "status": "Late", "note": "Den muon 10 phut" },
+            { "studentCode": "STU003", "status": "Present", "note": null },
+            { "studentCode": "STU004", "status": "Absent", "note": "Nghi co phep" }
+          ]
+        },
+        {
+          "sessionDate": "2025-09-19T00:00:00Z",
+          "sessionNo": 2,
+          "title": "Buoi 2",
+          "note": "Demo attendance session 2",
+          "records": [
+            { "studentCode": "STU001", "status": "Present", "note": null },
+            { "studentCode": "STU002", "status": "Present", "note": null },
+            { "studentCode": "STU003", "status": "Late", "note": "Den muon 5 phut" },
+            { "studentCode": "STU004", "status": "Excused", "note": "Xin vang da duoc duyet" }
+          ]
+        }
+      ],
+      "gradeCategories": [
+        {
+          "name": "Assignment",
+          "weight": 40,
+          "maxScore": 10,
+          "orderIndex": 1,
+          "isActive": true,
+          "entries": [
+            { "studentCode": "STU001", "score": 8.5, "note": null },
+            { "studentCode": "STU002", "score": 7.0, "note": null },
+            { "studentCode": "STU003", "score": 9.0, "note": null },
+            { "studentCode": "STU004", "score": 6.0, "note": "Can cai thien" }
+          ]
+        },
+        {
+          "name": "Final Exam",
+          "weight": 60,
+          "maxScore": 10,
+          "orderIndex": 2,
+          "isActive": true,
+          "entries": [
+            { "studentCode": "STU001", "score": 8.0, "note": null },
+            { "studentCode": "STU002", "score": 6.5, "note": null },
+            { "studentCode": "STU003", "score": 9.5, "note": null },
+            { "studentCode": "STU004", "score": 5.0, "note": "Sat diem liet" }
+          ]
+        }
+      ]
+    },
+    {
+      "courseOfferingCode": "BA101-2025T1-01",
+      "finalizedAtUtc": "2025-09-11T08:00:00Z",
+      "finalizeNote": "Demo live dataset for FBA course offering",
+      "passingScore": 50,
+      "students": [
+        "STU031",
+        "STU032",
+        "STU033",
+        "STU034"
+      ],
+      "attendanceSessions": [
+        {
+          "sessionDate": "2025-09-13T00:00:00Z",
+          "sessionNo": 1,
+          "title": "Buoi 1",
+          "note": "Demo attendance session 1",
+          "records": [
+            { "studentCode": "STU031", "status": "Present", "note": null },
+            { "studentCode": "STU032", "status": "Present", "note": null },
+            { "studentCode": "STU033", "status": "Late", "note": "Den muon 15 phut" },
+            { "studentCode": "STU034", "status": "Present", "note": null }
+          ]
+        },
+        {
+          "sessionDate": "2025-09-20T00:00:00Z",
+          "sessionNo": 2,
+          "title": "Buoi 2",
+          "note": "Demo attendance session 2",
+          "records": [
+            { "studentCode": "STU031", "status": "Excused", "note": "Xin vang" },
+            { "studentCode": "STU032", "status": "Present", "note": null },
+            { "studentCode": "STU033", "status": "Present", "note": null },
+            { "studentCode": "STU034", "status": "Absent", "note": "Khong ly do" }
+          ]
+        }
+      ],
+      "gradeCategories": [
+        {
+          "name": "Midterm",
+          "weight": 40,
+          "maxScore": 10,
+          "orderIndex": 1,
+          "isActive": true,
+          "entries": [
+            { "studentCode": "STU031", "score": 7.5, "note": null },
+            { "studentCode": "STU032", "score": 8.0, "note": null },
+            { "studentCode": "STU033", "score": 6.5, "note": null },
+            { "studentCode": "STU034", "score": 5.5, "note": "Can on tap them" }
+          ]
+        },
+        {
+          "name": "Final Exam",
+          "weight": 60,
+          "maxScore": 10,
+          "orderIndex": 2,
+          "isActive": true,
+          "entries": [
+            { "studentCode": "STU031", "score": 8.0, "note": null },
+            { "studentCode": "STU032", "score": 8.5, "note": null },
+            { "studentCode": "STU033", "score": 6.0, "note": null },
+            { "studentCode": "STU034", "score": 4.5, "note": "Chua dat yeu cau" }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -19,6 +19,7 @@ public sealed class SeedDataBootstrapService
     private readonly DatasetHashService _hashService;
     private readonly FacultyDatasetSynchronizer _facultyDatasetSynchronizer;
     private readonly DemoFoundationDatasetSynchronizer _demoFoundationDatasetSynchronizer;
+    private readonly DemoLiveDatasetSynchronizer _demoLiveDatasetSynchronizer;
 
     public SeedDataBootstrapService(
         AppDbContext dbContext,
@@ -28,7 +29,8 @@ public sealed class SeedDataBootstrapService
         JsonSeedDataFileReader fileReader,
         DatasetHashService hashService,
         FacultyDatasetSynchronizer facultyDatasetSynchronizer,
-        DemoFoundationDatasetSynchronizer demoFoundationDatasetSynchronizer)
+        DemoFoundationDatasetSynchronizer demoFoundationDatasetSynchronizer,
+        DemoLiveDatasetSynchronizer demoLiveDatasetSynchronizer)
     {
         _dbContext = dbContext;
         _authSeedData = authSeedData;
@@ -38,6 +40,7 @@ public sealed class SeedDataBootstrapService
         _hashService = hashService;
         _facultyDatasetSynchronizer = facultyDatasetSynchronizer;
         _demoFoundationDatasetSynchronizer = demoFoundationDatasetSynchronizer;
+        _demoLiveDatasetSynchronizer = demoLiveDatasetSynchronizer;
     }
 
     public async Task RunAsync(CancellationToken cancellationToken = default)
@@ -77,6 +80,17 @@ public sealed class SeedDataBootstrapService
         var demoDataset = await _fileReader.ReadAsync<DemoFoundationSeedData>(demoFoundationFilePath, cancellationToken)
             ?? new DemoFoundationSeedData();
         await _demoFoundationDatasetSynchronizer.SynchronizeAsync(demoFoundationFilePath, demoFileHash, demoDataset, cancellationToken);
+
+        var demoLiveFilePath = Path.Combine(rootPath, "academic", "demo-live.json");
+        if (!File.Exists(demoLiveFilePath))
+        {
+            return;
+        }
+
+        var demoLiveFileHash = await _hashService.ComputeFileHashAsync(demoLiveFilePath, cancellationToken);
+        var demoLiveDataset = await _fileReader.ReadAsync<DemoLiveSeedData>(demoLiveFilePath, cancellationToken)
+            ?? new DemoLiveSeedData();
+        await _demoLiveDatasetSynchronizer.SynchronizeAsync(demoLiveFilePath, demoLiveFileHash, demoLiveDataset, cancellationToken);
     }
 
     private string ResolveRootPath()

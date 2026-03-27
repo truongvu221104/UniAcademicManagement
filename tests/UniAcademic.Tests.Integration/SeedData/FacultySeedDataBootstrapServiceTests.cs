@@ -200,7 +200,8 @@ public sealed class FacultySeedDataBootstrapServiceTests
             new JsonSeedDataFileReader(),
             new DatasetHashService(),
             new FacultyDatasetSynchronizer(dbContext),
-            new DemoFoundationDatasetSynchronizer(dbContext, passwordHasher));
+            new DemoFoundationDatasetSynchronizer(dbContext, passwordHasher),
+            new DemoLiveDatasetSynchronizer(dbContext));
     }
 
     private static string CreateSeedRoot(string facultiesJson)

@@ -7,11 +7,12 @@ using UniAcademic.Application.Common;
 using UniAcademic.Application.Models.CourseOfferings;
 using UniAcademic.Application.Models.GradeResults;
 using UniAcademic.Application.Security;
+using UniAcademic.Web.Helpers;
 using UniAcademic.Web.Models.GradeResults;
 
 namespace UniAcademic.Web.Controllers;
 
-[Authorize]
+[Authorize(Roles = RoleConstants.AcademicManagement)]
 public sealed class GradeResultsController : Controller
 {
     private readonly IGradeResultService _gradeResultService;
@@ -27,16 +28,18 @@ public sealed class GradeResultsController : Controller
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.GradeResults.View)]
     [HttpGet]
-    public async Task<IActionResult> Index(Guid? courseOfferingId, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(Guid? courseOfferingId, int? page, int? pageSize, CancellationToken cancellationToken)
     {
         var results = await _gradeResultService.GetListAsync(new GetGradeResultsQuery
         {
             CourseOfferingId = courseOfferingId
         }, cancellationToken);
+        var pagedResults = PaginationHelper.Paginate(results, page, pageSize);
 
         ViewBag.CourseOfferingId = courseOfferingId;
         ViewBag.CourseOfferingOptions = await BuildCourseOfferingOptionsAsync(cancellationToken, courseOfferingId, includeEmpty: true);
-        return View(results);
+        ViewData["Pagination"] = pagedResults.Pagination;
+        return View(pagedResults.Items);
     }
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.GradeResults.View)]

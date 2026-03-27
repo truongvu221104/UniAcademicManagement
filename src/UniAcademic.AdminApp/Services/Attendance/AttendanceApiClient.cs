@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using UniAcademic.AdminApp.Infrastructure;
 using UniAcademic.Contracts.Attendance;
 
 namespace UniAcademic.AdminApp.Services.Attendance;
@@ -31,14 +32,14 @@ public sealed class AttendanceApiClient : IAttendanceApiClient
     public async Task<AttendanceSessionResponse> CreateAsync(CreateAttendanceSessionRequest request, CancellationToken cancellationToken = default)
     {
         var response = await _httpClient.PostAsJsonAsync("api/attendance", request, cancellationToken);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithMessageAsync(cancellationToken);
         return (await response.Content.ReadFromJsonAsync<AttendanceSessionResponse>(cancellationToken: cancellationToken))!;
     }
 
     public async Task<AttendanceSessionResponse> UpdateRecordsAsync(Guid id, UpdateAttendanceRecordsRequest request, CancellationToken cancellationToken = default)
     {
         var response = await _httpClient.PutAsJsonAsync($"api/attendance/{id}/records", request, cancellationToken);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessWithMessageAsync(cancellationToken);
         return (await response.Content.ReadFromJsonAsync<AttendanceSessionResponse>(cancellationToken: cancellationToken))!;
     }
 }

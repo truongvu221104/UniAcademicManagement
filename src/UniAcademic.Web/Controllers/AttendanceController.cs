@@ -7,11 +7,12 @@ using UniAcademic.Application.Common;
 using UniAcademic.Application.Models.Attendance;
 using UniAcademic.Application.Models.CourseOfferings;
 using UniAcademic.Application.Security;
+using UniAcademic.Web.Helpers;
 using UniAcademic.Web.Models.Attendance;
 
 namespace UniAcademic.Web.Controllers;
 
-[Authorize]
+[Authorize(Roles = RoleConstants.AcademicManagement)]
 public sealed class AttendanceController : Controller
 {
     private readonly IAttendanceService _attendanceService;
@@ -27,16 +28,18 @@ public sealed class AttendanceController : Controller
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.Attendance.View)]
     [HttpGet]
-    public async Task<IActionResult> Index(Guid? courseOfferingId, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(Guid? courseOfferingId, int? page, int? pageSize, CancellationToken cancellationToken)
     {
         var sessions = await _attendanceService.GetListAsync(new GetAttendanceSessionsQuery
         {
             CourseOfferingId = courseOfferingId
         }, cancellationToken);
+        var pagedSessions = PaginationHelper.Paginate(sessions, page, pageSize);
 
         ViewBag.CourseOfferingId = courseOfferingId;
         ViewBag.CourseOfferingOptions = await BuildCourseOfferingOptionsAsync(cancellationToken, courseOfferingId, includeEmpty: true);
-        return View(sessions);
+        ViewData["Pagination"] = pagedSessions.Pagination;
+        return View(pagedSessions.Items);
     }
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.Attendance.View)]

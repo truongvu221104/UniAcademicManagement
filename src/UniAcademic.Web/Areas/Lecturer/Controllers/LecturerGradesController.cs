@@ -6,6 +6,7 @@ using UniAcademic.Application.Common;
 using UniAcademic.Application.Models.Grades;
 using UniAcademic.Application.Models.LecturerPortal;
 using UniAcademic.Application.Security;
+using UniAcademic.Web.Helpers;
 using UniAcademic.Web.Models.Grades;
 
 namespace UniAcademic.Web.Areas.Lecturer.Controllers;
@@ -23,14 +24,16 @@ public sealed class LecturerGradesController : Controller
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.Grades.View)]
     [HttpGet]
-    public async Task<IActionResult> Index(Guid? courseOfferingId, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(Guid? courseOfferingId, int? page, int? pageSize, CancellationToken cancellationToken)
     {
         await LoadOfferingOptionsAsync(cancellationToken, courseOfferingId, includeEmpty: true);
         var categories = await _lecturerPortalService.GetGradeCategoriesAsync(new GetLecturerGradeCategoriesQuery
         {
             CourseOfferingId = courseOfferingId
         }, cancellationToken);
-        return View(categories);
+        var pagedCategories = PaginationHelper.Paginate(categories, page, pageSize);
+        ViewData["Pagination"] = pagedCategories.Pagination;
+        return View(pagedCategories.Items);
     }
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.Grades.View)]

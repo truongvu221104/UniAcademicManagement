@@ -78,7 +78,7 @@ public sealed class MainWindowViewModel : ObservableObject
     {
         CurrentUserDisplay = $"{snapshot.User?.DisplayName} ({snapshot.User?.Username})";
         IsAuthenticated = true;
-        BuildNavigation();
+        BuildNavigation(snapshot.User?.Username);
         _ = OpenFirstModuleAsync();
     }
 
@@ -91,10 +91,10 @@ public sealed class MainWindowViewModel : ObservableObject
         }
     }
 
-    private void BuildNavigation()
+    private void BuildNavigation(string? username)
     {
         Groups.Clear();
-        foreach (var group in _moduleCatalog.GetModules().GroupBy(x => x.Group))
+        foreach (var group in _moduleCatalog.GetModules(username).GroupBy(x => x.Group))
         {
             Groups.Add(new NavigationGroupViewModel(group.Key, group.Select(def => new NavigationItemViewModel(def, this)).ToList()));
         }

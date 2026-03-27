@@ -1,0 +1,184 @@
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+
+path = Path("seed-data/academic/demo-foundation.json")
+data = json.loads(path.read_text(encoding="utf-8"))
+
+student_names = {
+    "STU001": "Nguy\u1ec5n V\u0103n An",
+    "STU002": "Tr\u1ea7n Th\u1ecb B\u00edch",
+    "STU003": "L\u00ea Minh Ho\u00e0ng",
+    "STU004": "Ph\u1ea1m Thu H\u00e0",
+    "STU005": "V\u00f5 Qu\u1ed1c B\u1ea3o",
+    "STU006": "\u0110\u1eb7ng Ng\u1ecdc Mai",
+    "STU007": "B\u00f9i Gia Huy",
+    "STU008": "H\u1ed3 Kh\u00e1nh Linh",
+    "STU009": "Phan Tu\u1ea5n Ki\u1ec7t",
+    "STU010": "D\u01b0\u01a1ng M\u1ef9 Duy\u00ean",
+    "STU011": "Nguy\u1ec5n \u0110\u1ee9c Long",
+    "STU012": "Tr\u1ecbnh Thanh Th\u1ea3o",
+    "STU013": "\u0110\u1ed7 Nh\u1eadt Nam",
+    "STU014": "V\u0169 Ph\u01b0\u01a1ng Anh",
+    "STU015": "L\u00fd H\u1ea3i Y\u1ebfn",
+    "STU016": "Nguy\u1ec5n Gia B\u00ecnh",
+    "STU017": "Tr\u1ea7n Qu\u1ef3nh Nh\u01b0",
+    "STU018": "L\u00ea Tu\u1ea5n Ph\u00e1t",
+    "STU019": "Ph\u1ea1m Ng\u1ecdc Tr\u00e2m",
+    "STU020": "V\u00f5 Minh Khang",
+    "STU021": "\u0110\u1eb7ng Th\u1ea3o Nguy\u00ean",
+    "STU022": "B\u00f9i Anh Khoa",
+    "STU023": "H\u1ed3 Di\u1ec5m My",
+    "STU024": "Phan Ho\u00e0i Nam",
+    "STU025": "D\u01b0\u01a1ng Kh\u00e1nh Vy",
+    "STU026": "Nguy\u1ec5n Trung Hi\u1ebfu",
+    "STU027": "Tr\u1ecbnh B\u1ea3o Ch\u00e2u",
+    "STU028": "\u0110\u1ed7 Minh Qu\u00e2n",
+    "STU029": "V\u0169 Gia Linh",
+    "STU030": "L\u00e2m H\u00e0 Ph\u01b0\u01a1ng",
+    "STU031": "Nguy\u1ec5n Ho\u00e0ng Y\u1ebfn Nhi",
+    "STU032": "Tr\u1ea7n \u0110\u1ee9c M\u1ea1nh",
+    "STU033": "L\u00ea Th\u1ecb Th\u1ee7y",
+    "STU034": "Ph\u1ea1m Quang Vinh",
+    "STU035": "V\u00f5 Thanh T\u00e2m",
+    "STU036": "\u0110\u1eb7ng Kh\u00e1nh An",
+    "STU037": "B\u00f9i Ng\u1ecdc H\u00e2n",
+    "STU038": "H\u1ed3 Tu\u1ea5n Anh",
+    "STU039": "Phan B\u1ea3o Ng\u1ecdc",
+    "STU040": "D\u01b0\u01a1ng Minh Tri\u1ebft",
+    "STU041": "Nguy\u1ec5n C\u1ea9m Ti\u00ean",
+    "STU042": "Tr\u1ecbnh H\u1eefu \u0110\u1ea1t",
+    "STU043": "\u0110\u1ed7 H\u00e0 My",
+    "STU044": "V\u0169 B\u1ea3o H\u00e2n",
+    "STU045": "L\u00e2m Gia H\u00e2n",
+    "STU046": "Nguy\u1ec5n Tu\u1ea5n Minh",
+    "STU047": "Tr\u1ea7n M\u1ef9 Linh",
+    "STU048": "L\u00ea Qu\u1ed1c Th\u1ecbnh",
+    "STU049": "Ph\u1ea1m B\u00edch Ng\u00e2n",
+    "STU050": "V\u00f5 Nh\u1eadt H\u00e0o",
+    "STU051": "\u0110\u1eb7ng Gia H\u00e2n",
+    "STU052": "B\u00f9i Thanh T\u00f9ng",
+    "STU053": "H\u1ed3 Ng\u1ecdc Anh",
+    "STU054": "Phan Minh T\u00e2m",
+    "STU055": "D\u01b0\u01a1ng Th\u00f9y Dung",
+    "STU056": "Nguy\u1ec5n Ph\u00fac H\u01b0ng",
+    "STU057": "Tr\u1ecbnh Quang Huy",
+    "STU058": "\u0110\u1ed7 B\u1ea3o Minh",
+    "STU059": "V\u0169 Di\u1ec7u Anh",
+    "STU060": "L\u00e2m \u0110\u1ee9c Anh",
+}
+
+lecturer_names = {
+    "LEC001": "TS. Ph\u1ea1m Quang",
+    "LEC002": "ThS. V\u00f5 Thu",
+    "LEC003": "TS. Nguy\u1ec5n H\u1eefu Minh",
+    "LEC004": "GS. Tr\u1ea7n Ng\u1ecdc Lan",
+    "LEC005": "TS. L\u00ea Ho\u00e0ng Nam",
+    "LEC006": "ThS. Ph\u1ea1m B\u00edch H\u1ea1nh",
+}
+
+student_class_descriptions = {
+    "SE2022A": "L\u1edbp k\u1ef9 s\u01b0 ph\u1ea7n m\u1ec1m kh\u00f3a 2022A",
+    "SE2022B": "L\u1edbp k\u1ef9 s\u01b0 ph\u1ea7n m\u1ec1m kh\u00f3a 2022B",
+    "BA2022A": "L\u1edbp qu\u1ea3n tr\u1ecb kinh doanh kh\u00f3a 2022A",
+    "BA2022B": "L\u1edbp qu\u1ea3n tr\u1ecb kinh doanh kh\u00f3a 2022B",
+}
+
+course_data = {
+    "SE101": {
+        "name": "Nh\u1eadp m\u00f4n L\u1eadp tr\u00ecnh",
+        "description": "M\u00f4n h\u1ecdc n\u1ec1n t\u1ea3ng v\u1ec1 t\u01b0 duy l\u1eadp tr\u00ecnh v\u00e0 ng\u00f4n ng\u1eef C.",
+    },
+    "SE201": {
+        "name": "C\u1ea5u tr\u00fac D\u1eef li\u1ec7u",
+        "description": "M\u00f4n h\u1ecdc v\u1ec1 danh s\u00e1ch, ng\u0103n x\u1ebfp, h\u00e0ng \u0111\u1ee3i, c\u00e2y v\u00e0 gi\u1ea3i thu\u1eadt c\u01a1 b\u1ea3n.",
+    },
+    "DB201": {
+        "name": "C\u01a1 s\u1edf D\u1eef li\u1ec7u",
+        "description": "M\u00f4n h\u1ecdc v\u1ec1 m\u00f4 h\u00ecnh quan h\u1ec7, SQL v\u00e0 thi\u1ebft k\u1ebf c\u01a1 s\u1edf d\u1eef li\u1ec7u.",
+    },
+    "NET301": {
+        "name": "M\u1ea1ng M\u00e1y t\u00ednh",
+        "description": "M\u00f4n h\u1ecdc v\u1ec1 ki\u1ebfn tr\u00fac m\u1ea1ng, TCP/IP v\u00e0 c\u00e1c giao th\u1ee9c c\u01a1 b\u1ea3n.",
+    },
+    "SE301": {
+        "name": "K\u1ef9 thu\u1eadt Ph\u1ea7n m\u1ec1m",
+        "description": "M\u00f4n h\u1ecdc v\u1ec1 quy tr\u00ecnh ph\u00e1t tri\u1ec3n ph\u1ea7n m\u1ec1m v\u00e0 qu\u1ea3n l\u00fd y\u00eau c\u1ea7u.",
+    },
+    "BA101": {
+        "name": "Nguy\u00ean l\u00fd Qu\u1ea3n tr\u1ecb",
+        "description": "M\u00f4n h\u1ecdc c\u01a1 s\u1edf v\u1ec1 ch\u1ee9c n\u0103ng v\u00e0 nguy\u00ean t\u1eafc qu\u1ea3n tr\u1ecb.",
+    },
+    "MKT201": {
+        "name": "Marketing C\u0103n b\u1ea3n",
+        "description": "M\u00f4n h\u1ecdc gi\u1edbi thi\u1ec7u v\u1ec1 h\u00e0nh vi kh\u00e1ch h\u00e0ng v\u00e0 chi\u1ebfn l\u01b0\u1ee3c marketing.",
+    },
+    "ACC101": {
+        "name": "K\u1ebf to\u00e1n \u0110\u1ea1i c\u01b0\u01a1ng",
+        "description": "M\u00f4n h\u1ecdc c\u01a1 s\u1edf v\u1ec1 nguy\u00ean l\u00fd k\u1ebf to\u00e1n v\u00e0 l\u1eadp b\u00e1o c\u00e1o t\u00e0i ch\u00ednh.",
+    },
+}
+
+lecturer_notes = {
+    "LEC001": "Gi\u1ea3ng vi\u00ean chuy\u00ean ng\u00e0nh l\u1eadp tr\u00ecnh v\u00e0 k\u1ef9 thu\u1eadt ph\u1ea7n m\u1ec1m",
+    "LEC002": "Gi\u1ea3ng vi\u00ean chuy\u00ean ng\u00e0nh c\u01a1 s\u1edf d\u1eef li\u1ec7u",
+    "LEC003": "Gi\u1ea3ng vi\u00ean chuy\u00ean ng\u00e0nh m\u1ea1ng m\u00e1y t\u00ednh",
+    "LEC004": "Gi\u1ea3ng vi\u00ean cao c\u1ea5p ph\u1ee5 tr\u00e1ch h\u1ecdc ph\u1ea7n c\u1ed1t l\u00f5i",
+    "LEC005": "Gi\u1ea3ng vi\u00ean ng\u00e0nh qu\u1ea3n tr\u1ecb kinh doanh",
+    "LEC006": "Gi\u1ea3ng vi\u00ean ng\u00e0nh marketing v\u00e0 k\u1ebf to\u00e1n",
+}
+
+offering_descriptions = {
+    "SE101-2025T1-01": "L\u1edbp h\u1ecdc ph\u1ea7n ch\u00ednh cho m\u00f4n Nh\u1eadp m\u00f4n L\u1eadp tr\u00ecnh.",
+    "SE101-2025T1-02": "L\u1edbp h\u1ecdc ph\u1ea7n song song cho m\u00f4n Nh\u1eadp m\u00f4n L\u1eadp tr\u00ecnh.",
+    "SE201-2025T1-01": "L\u1edbp h\u1ecdc ph\u1ea7n m\u00f4n C\u1ea5u tr\u00fac D\u1eef li\u1ec7u.",
+    "DB201-2025T1-01": "L\u1edbp h\u1ecdc ph\u1ea7n ch\u00ednh cho m\u00f4n C\u01a1 s\u1edf D\u1eef li\u1ec7u.",
+    "DB201-2025T1-02": "L\u1edbp h\u1ecdc ph\u1ea7n song song cho m\u00f4n C\u01a1 s\u1edf D\u1eef li\u1ec7u.",
+    "NET301-2025T1-01": "L\u1edbp h\u1ecdc ph\u1ea7n m\u00f4n M\u1ea1ng M\u00e1y t\u00ednh.",
+    "SE301-2025T1-01": "L\u1edbp h\u1ecdc ph\u1ea7n m\u00f4n K\u1ef9 thu\u1eadt Ph\u1ea7n m\u1ec1m.",
+    "BA101-2025T1-01": "L\u1edbp h\u1ecdc ph\u1ea7n m\u00f4n Nguy\u00ean l\u00fd Qu\u1ea3n tr\u1ecb.",
+    "MKT201-2025T1-01": "L\u1edbp h\u1ecdc ph\u1ea7n m\u00f4n Marketing C\u0103n b\u1ea3n.",
+    "ACC101-2025T1-01": "L\u1edbp h\u1ecdc ph\u1ea7n m\u00f4n K\u1ebf to\u00e1n \u0110\u1ea1i c\u01b0\u01a1ng.",
+}
+
+for user in data["users"]:
+    student_code = user.get("studentCode")
+    lecturer_code = user.get("lecturerCode")
+    if student_code in student_names:
+        user["displayName"] = student_names[student_code]
+    if lecturer_code in lecturer_names:
+        user["displayName"] = lecturer_names[lecturer_code]
+
+for student_class in data["studentClasses"]:
+    if student_class["code"] in student_class_descriptions:
+        student_class["description"] = student_class_descriptions[student_class["code"]]
+
+for course in data["courses"]:
+    if course["code"] in course_data:
+        course["name"] = course_data[course["code"]]["name"]
+        course["description"] = course_data[course["code"]]["description"]
+
+for semester in data["semesters"]:
+    if semester["code"] == "2025T1":
+        semester["description"] = "H\u1ecdc k\u1ef3 1 n\u0103m h\u1ecdc 2025-2026"
+
+for student in data["studentProfiles"]:
+    if student["studentCode"] in student_names:
+        student["fullName"] = student_names[student["studentCode"]]
+        student["note"] = "Sinh vi\u00ean h\u1ec7 ch\u00ednh quy"
+
+for lecturer in data["lecturerProfiles"]:
+    if lecturer["code"] in lecturer_names:
+        lecturer["fullName"] = lecturer_names[lecturer["code"]]
+        lecturer["note"] = lecturer_notes[lecturer["code"]]
+
+for offering in data["courseOfferings"]:
+    if offering["courseCode"] in course_data:
+        section = offering["code"].split("-")[-1]
+        offering["displayName"] = f'{offering["courseCode"]} - {course_data[offering["courseCode"]]["name"]} - 2025T1 - {section}'
+    if offering["code"] in offering_descriptions:
+        offering["description"] = offering_descriptions[offering["code"]]
+
+path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")

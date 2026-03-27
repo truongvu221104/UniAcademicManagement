@@ -12,7 +12,7 @@ using UniAcademic.Web.Models.StudentProfiles;
 
 namespace UniAcademic.Web.Controllers;
 
-[Authorize]
+[Authorize(Roles = RoleConstants.AcademicManagement)]
 public sealed class StudentProfilesController : Controller
 {
     private readonly IStudentProfileService _studentProfileService;
@@ -26,7 +26,7 @@ public sealed class StudentProfilesController : Controller
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.StudentProfiles.View)]
     [HttpGet]
-    public async Task<IActionResult> Index(string? keyword, Guid? studentClassId, StudentGender? gender, StudentProfileStatus? status, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(string? keyword, Guid? studentClassId, StudentGender? gender, StudentProfileStatus? status, int? page, int? pageSize, CancellationToken cancellationToken)
     {
         var studentProfiles = await _studentProfileService.GetListAsync(new GetStudentProfilesQuery
         {
@@ -35,6 +35,7 @@ public sealed class StudentProfilesController : Controller
             Gender = gender,
             Status = status
         }, cancellationToken);
+        var pagedStudentProfiles = UniAcademic.Web.Helpers.PaginationHelper.Paginate(studentProfiles, page, pageSize);
 
         ViewBag.Keyword = keyword;
         ViewBag.StudentClassId = studentClassId;
@@ -42,7 +43,8 @@ public sealed class StudentProfilesController : Controller
         ViewBag.Status = status;
         ViewBag.StudentClassOptions = await BuildStudentClassOptionsAsync(cancellationToken, studentClassId, includeEmpty: true);
 
-        return View(studentProfiles);
+        ViewData["Pagination"] = pagedStudentProfiles.Pagination;
+        return View(pagedStudentProfiles.Items);
     }
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.StudentProfiles.View)]

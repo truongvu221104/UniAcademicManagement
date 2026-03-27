@@ -142,6 +142,126 @@ public sealed class CourseOfferingRosterServiceTests
         Assert.Equal("Course offering roster was already finalized.", exception.Message);
     }
 
+    [Fact]
+    public async Task ReopenAsync_ShouldReopenRoster_WhenNoDownstreamDataExistsAndHandoffDidNotSucceed()
+    {
+        await using var dbContext = CreateDbContext();
+        var studentProfile = await SeedStudentProfileAsync(dbContext, "SV001");
+        var courseOffering = await SeedCourseOfferingAsync(dbContext, "CS101-HK1-01", 2);
+        dbContext.EnrollmentsSet.Add(new Enrollment
+        {
+            StudentProfileId = studentProfile.Id,
+            CourseOfferingId = courseOffering.Id,
+            Status = EnrollmentStatus.Enrolled,
+            EnrolledAtUtc = new DateTime(2026, 3, 24, 0, 0, 0, DateTimeKind.Utc),
+            CreatedBy = "seed"
+        });
+        await dbContext.SaveChangesAsync();
+
+        var service = CreateRosterService(dbContext, username: "admin");
+        await service.FinalizeAsync(new FinalizeCourseOfferingRosterCommand
+        {
+            CourseOfferingId = courseOffering.Id
+        });
+        var snapshot = await dbContext.CourseOfferingRosterSnapshotsSet.SingleAsync();
+
+        dbContext.ExamHandoffLogsSet.Add(new ExamHandoffLog
+        {
+            CourseOfferingId = courseOffering.Id,
+            RosterSnapshotId = snapshot.Id,
+            Status = ExamHandoffStatus.Failed,
+            SentAtUtc = new DateTime(2026, 3, 24, 1, 0, 0, DateTimeKind.Utc),
+            ErrorMessage = "Timeout",
+            CreatedBy = "seed"
+        });
+        await dbContext.SaveChangesAsync();
+
+        var reopened = await service.ReopenAsync(new ReopenCourseOfferingRosterCommand
+        {
+            CourseOfferingId = courseOffering.Id,
+            Reason = "Fix mistaken finalize"
+        });
+
+        Assert.False(reopened.IsFinalized);
+        Assert.Equal(0, reopened.ItemCount);
+        Assert.Empty(reopened.Items);
+
+        var refreshedOffering = await dbContext.CourseOfferingsSet.SingleAsync(x => x.Id == courseOffering.Id);
+        Assert.False(refreshedOffering.IsRosterFinalized);
+        Assert.Null(refreshedOffering.RosterFinalizedAtUtc);
+        Assert.Empty(await dbContext.CourseOfferingRosterSnapshotsSet.ToListAsync());
+        Assert.Empty(await dbContext.ExamHandoffLogsSet.ToListAsync());
+
+        var audit = await dbContext.AuditLogs.SingleAsync(x => x.Action == "courseofferingroster.reopen");
+        Assert.Equal(nameof(CourseOfferingRosterSnapshot), audit.EntityType);
+    }
+
+    [Fact]
+    public async Task ReopenAsync_ShouldFail_WhenCurrentUserIsNotAdmin()
+    {
+        await using var dbContext = CreateDbContext();
+        var courseOffering = await SeedFinalizedRosterAsync(dbContext);
+        var service = CreateRosterService(dbContext, username: "staff.ops");
+
+        var exception = await Assert.ThrowsAsync<AuthException>(() => service.ReopenAsync(new ReopenCourseOfferingRosterCommand
+        {
+            CourseOfferingId = courseOffering.Id
+        }));
+
+        Assert.Equal("Only admin can reopen a finalized roster.", exception.Message);
+    }
+
+    [Fact]
+    public async Task ReopenAsync_ShouldFail_WhenAttendanceExists()
+    {
+        await using var dbContext = CreateDbContext();
+        var courseOffering = await SeedFinalizedRosterAsync(dbContext);
+        var snapshot = await dbContext.CourseOfferingRosterSnapshotsSet.SingleAsync();
+        dbContext.AttendanceSessionsSet.Add(new AttendanceSession
+        {
+            CourseOfferingId = courseOffering.Id,
+            CourseOfferingRosterSnapshotId = snapshot.Id,
+            SessionDate = new DateTime(2026, 3, 25, 0, 0, 0, DateTimeKind.Utc),
+            SessionNo = 1,
+            CreatedBy = "seed"
+        });
+        await dbContext.SaveChangesAsync();
+
+        var service = CreateRosterService(dbContext, username: "admin");
+        var exception = await Assert.ThrowsAsync<AuthException>(() => service.ReopenAsync(new ReopenCourseOfferingRosterCommand
+        {
+            CourseOfferingId = courseOffering.Id
+        }));
+
+        Assert.Equal("Roster cannot be reopened because attendance sessions already exist.", exception.Message);
+    }
+
+    [Fact]
+    public async Task ReopenAsync_ShouldFail_WhenExamHandoffAlreadySucceeded()
+    {
+        await using var dbContext = CreateDbContext();
+        var courseOffering = await SeedFinalizedRosterAsync(dbContext);
+        var snapshot = await dbContext.CourseOfferingRosterSnapshotsSet.SingleAsync();
+        dbContext.ExamHandoffLogsSet.Add(new ExamHandoffLog
+        {
+            CourseOfferingId = courseOffering.Id,
+            RosterSnapshotId = snapshot.Id,
+            Status = ExamHandoffStatus.Success,
+            SentAtUtc = new DateTime(2026, 3, 25, 0, 0, 0, DateTimeKind.Utc),
+            ResponseCode = 200,
+            CreatedBy = "seed"
+        });
+        await dbContext.SaveChangesAsync();
+
+        var service = CreateRosterService(dbContext, username: "admin");
+        var exception = await Assert.ThrowsAsync<AuthException>(() => service.ReopenAsync(new ReopenCourseOfferingRosterCommand
+        {
+            CourseOfferingId = courseOffering.Id
+        }));
+
+        Assert.Equal("Roster cannot be reopened because exam handoff already succeeded.", exception.Message);
+    }
+
     private static AppDbContext CreateDbContext()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
@@ -256,23 +376,52 @@ public sealed class CourseOfferingRosterServiceTests
         return offering;
     }
 
-    private static CourseOfferingRosterService CreateRosterService(AppDbContext dbContext)
+    private static async Task<CourseOffering> SeedFinalizedRosterAsync(AppDbContext dbContext)
+    {
+        var studentProfile = await SeedStudentProfileAsync(dbContext, "SV900");
+        var courseOffering = await SeedCourseOfferingAsync(dbContext, "CS999-HK1-01", 2);
+        dbContext.EnrollmentsSet.Add(new Enrollment
+        {
+            StudentProfileId = studentProfile.Id,
+            CourseOfferingId = courseOffering.Id,
+            Status = EnrollmentStatus.Enrolled,
+            EnrolledAtUtc = new DateTime(2026, 3, 24, 0, 0, 0, DateTimeKind.Utc),
+            CreatedBy = "seed"
+        });
+        await dbContext.SaveChangesAsync();
+
+        var service = CreateRosterService(dbContext, username: "admin");
+        await service.FinalizeAsync(new FinalizeCourseOfferingRosterCommand
+        {
+            CourseOfferingId = courseOffering.Id
+        });
+
+        return courseOffering;
+    }
+
+    private static CourseOfferingRosterService CreateRosterService(AppDbContext dbContext, string username = "roster-admin")
     {
         return new CourseOfferingRosterService(
             dbContext,
             new AuditService(dbContext, new FakeClientContextAccessor()),
-            new FakeCurrentUser(),
+            new FakeCurrentUser(username),
             new FakeDateTimeProvider(),
             new FakeExamHandoffService());
     }
 
     private sealed class FakeCurrentUser : ICurrentUser
     {
+        public FakeCurrentUser(string username)
+        {
+            UsernameValue = username;
+        }
+
         public Guid? UserId => Guid.Parse("99999999-9999-9999-9999-999999999999");
-        public string? Username => "roster-admin";
+        public string? Username => UsernameValue;
         public Guid? SessionId => null;
         public bool IsAuthenticated => true;
-        public IReadOnlyCollection<string> Permissions => [PermissionConstants.CourseOfferingRosters.View, PermissionConstants.CourseOfferingRosters.Finalize];
+        public IReadOnlyCollection<string> Permissions => [PermissionConstants.CourseOfferingRosters.View, PermissionConstants.CourseOfferingRosters.Finalize, PermissionConstants.CourseOfferingRosters.Reopen];
+        private string UsernameValue { get; }
     }
 
     private sealed class FakeDateTimeProvider : IDateTimeProvider

@@ -9,11 +9,12 @@ using UniAcademic.Application.Models.CourseOfferings;
 using UniAcademic.Application.Models.LecturerAssignments;
 using UniAcademic.Application.Models.LecturerProfiles;
 using UniAcademic.Application.Security;
+using UniAcademic.Web.Helpers;
 using UniAcademic.Web.Models.LecturerAssignments;
 
 namespace UniAcademic.Web.Controllers;
 
-[Authorize]
+[Authorize(Roles = RoleConstants.AcademicManagement)]
 public sealed class LecturerAssignmentsController : Controller
 {
     private readonly ILecturerAssignmentService _lecturerAssignmentService;
@@ -32,20 +33,21 @@ public sealed class LecturerAssignmentsController : Controller
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.LecturerAssignments.View)]
     [HttpGet]
-    public async Task<IActionResult> Index(Guid? courseOfferingId, Guid? lecturerProfileId, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(Guid? courseOfferingId, Guid? lecturerProfileId, int? page, int? pageSize, CancellationToken cancellationToken)
     {
         var assignments = await _lecturerAssignmentService.GetListAsync(new GetLecturerAssignmentsQuery
         {
             CourseOfferingId = courseOfferingId,
             LecturerProfileId = lecturerProfileId
         }, cancellationToken);
+        var pagedAssignments = PaginationHelper.Paginate(assignments, page, pageSize);
 
         ViewBag.CourseOfferingId = courseOfferingId;
         ViewBag.LecturerProfileId = lecturerProfileId;
         ViewBag.CourseOfferingOptions = await BuildCourseOfferingOptionsAsync(cancellationToken, courseOfferingId, includeEmpty: true);
         ViewBag.LecturerProfileOptions = await BuildLecturerOptionsAsync(cancellationToken, lecturerProfileId, includeEmpty: true);
-
-        return View(assignments);
+        ViewData["Pagination"] = pagedAssignments.Pagination;
+        return View(pagedAssignments.Items);
     }
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.LecturerAssignments.Assign)]

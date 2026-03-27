@@ -84,6 +84,7 @@ public static class PermissionConstants
     {
         public const string View = "academic.courseofferingrosters.view";
         public const string Finalize = "academic.courseofferingrosters.finalize";
+        public const string Reopen = "academic.courseofferingrosters.reopen";
         public const string RetryHandoff = "academic.courseofferingrosters.handoff.retry";
     }
 
@@ -175,6 +176,7 @@ public static class PermissionConstants
         Enrollments.Delete,
         CourseOfferingRosters.View,
         CourseOfferingRosters.Finalize,
+        CourseOfferingRosters.Reopen,
         CourseOfferingRosters.RetryHandoff,
         Attendance.View,
         Attendance.Create,

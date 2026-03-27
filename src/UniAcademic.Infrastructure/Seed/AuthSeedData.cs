@@ -27,7 +27,30 @@ public sealed class AuthSeedData
     public async Task SeedAsync(CancellationToken cancellationToken = default)
     {
         await SeedPermissionsAsync(cancellationToken);
-        var superAdminRole = await SeedSuperAdminRoleAsync(cancellationToken);
+        var superAdminRole = await SeedRoleAsync(
+            RoleConstants.SuperAdmin,
+            "Bootstrap system administrator role",
+            PermissionConstants.All,
+            cancellationToken);
+
+        await SeedRoleAsync(
+            RoleConstants.Staff,
+            "Academic operations role",
+            BuildStaffPermissions(),
+            cancellationToken);
+
+        await SeedRoleAsync(
+            RoleConstants.Student,
+            "Student portal role",
+            BuildStudentPermissions(),
+            cancellationToken);
+
+        await SeedRoleAsync(
+            RoleConstants.Lecturer,
+            "Lecturer portal role",
+            BuildLecturerPermissions(),
+            cancellationToken);
+
         await SeedAdminUserAsync(superAdminRole, cancellationToken);
     }
 
@@ -62,44 +85,64 @@ public sealed class AuthSeedData
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    private async Task<Role> SeedSuperAdminRoleAsync(CancellationToken cancellationToken)
+    private async Task<Role> SeedRoleAsync(
+        string roleName,
+        string description,
+        IReadOnlyCollection<string> permissions,
+        CancellationToken cancellationToken)
     {
-        var normalizedName = "SUPERADMIN";
+        var normalizedName = roleName.Trim().ToUpperInvariant();
         var existingRole = await _dbContext.Roles
             .Include(x => x.RolePermissions)
             .FirstOrDefaultAsync(x => x.NormalizedName == normalizedName, cancellationToken);
 
         if (existingRole is not null)
         {
-            await EnsureRolePermissionsAsync(existingRole, cancellationToken);
+            existingRole.Name = roleName;
+            existingRole.Description = description;
+            await EnsureRolePermissionsAsync(existingRole, permissions, cancellationToken);
             return existingRole;
         }
 
         var role = new Role
         {
-            Name = "SuperAdmin",
+            Name = roleName,
             NormalizedName = normalizedName,
-            Description = "Bootstrap system administrator role",
+            Description = description,
             CreatedBy = "seed"
         };
 
         await _dbContext.Roles.AddAsync(role, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        await EnsureRolePermissionsAsync(role, cancellationToken);
+        await EnsureRolePermissionsAsync(role, permissions, cancellationToken);
 
         return role;
     }
 
-    private async Task EnsureRolePermissionsAsync(Role role, CancellationToken cancellationToken)
+    private async Task EnsureRolePermissionsAsync(Role role, IReadOnlyCollection<string> permissionCodes, CancellationToken cancellationToken)
     {
-        var permissionIds = await _dbContext.Permissions.Select(x => x.Id).ToListAsync(cancellationToken);
-        var existingPermissionIds = await _dbContext.RolePermissions
+        var permissionsByCode = await _dbContext.Permissions
+            .Where(x => permissionCodes.Contains(x.Code))
+            .ToDictionaryAsync(x => x.Code, StringComparer.OrdinalIgnoreCase, cancellationToken);
+
+        var missingPermissionCodes = permissionCodes
+            .Where(x => !permissionsByCode.ContainsKey(x))
+            .ToList();
+
+        if (missingPermissionCodes.Count > 0)
+        {
+            throw new InvalidOperationException($"Permissions were not seeded for role '{role.Name}': {string.Join(", ", missingPermissionCodes)}");
+        }
+
+        var existingAssignments = await _dbContext.RolePermissions
             .Where(x => x.RoleId == role.Id)
-            .Select(x => x.PermissionId)
+            .Include(x => x.Permission)
             .ToListAsync(cancellationToken);
 
-        var missing = permissionIds
-            .Except(existingPermissionIds)
+        var desiredPermissionIds = permissionsByCode.Values.Select(x => x.Id).ToHashSet();
+
+        var missing = desiredPermissionIds
+            .Except(existingAssignments.Select(x => x.PermissionId))
             .Select(permissionId => new RolePermission
             {
                 RoleId = role.Id,
@@ -107,13 +150,109 @@ public sealed class AuthSeedData
             })
             .ToList();
 
-        if (missing.Count == 0)
+        var extra = existingAssignments
+            .Where(x => !desiredPermissionIds.Contains(x.PermissionId))
+            .ToList();
+
+        if (missing.Count == 0 && extra.Count == 0)
         {
             return;
         }
 
+        if (extra.Count > 0)
+        {
+            _dbContext.RolePermissions.RemoveRange(extra);
+        }
+
         await _dbContext.RolePermissions.AddRangeAsync(missing, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    private static IReadOnlyCollection<string> BuildStaffPermissions()
+    {
+        return
+        [
+            PermissionConstants.Auth.Login,
+            PermissionConstants.Auth.ManageSessions,
+            PermissionConstants.Auth.ChangePassword,
+            PermissionConstants.Faculties.View,
+            PermissionConstants.StudentClasses.View,
+            PermissionConstants.Courses.View,
+            PermissionConstants.Semesters.View,
+            PermissionConstants.CourseOfferings.View,
+            PermissionConstants.CourseOfferings.Create,
+            PermissionConstants.CourseOfferings.Edit,
+            PermissionConstants.StudentProfiles.View,
+            PermissionConstants.StudentProfiles.Create,
+            PermissionConstants.StudentProfiles.Edit,
+            PermissionConstants.Enrollments.View,
+            PermissionConstants.Enrollments.Create,
+            PermissionConstants.Enrollments.Delete,
+            PermissionConstants.CourseOfferingRosters.View,
+            PermissionConstants.CourseOfferingRosters.Finalize,
+            PermissionConstants.CourseOfferingRosters.RetryHandoff,
+            PermissionConstants.Attendance.View,
+            PermissionConstants.Attendance.Create,
+            PermissionConstants.Attendance.Edit,
+            PermissionConstants.Grades.View,
+            PermissionConstants.Grades.Create,
+            PermissionConstants.Grades.Edit,
+            PermissionConstants.CourseMaterials.View,
+            PermissionConstants.CourseMaterials.Create,
+            PermissionConstants.CourseMaterials.Edit,
+            PermissionConstants.CourseMaterials.Download,
+            PermissionConstants.GradeResults.View,
+            PermissionConstants.GradeResults.Calculate,
+            PermissionConstants.LecturerProfiles.View,
+            PermissionConstants.LecturerProfiles.Create,
+            PermissionConstants.LecturerProfiles.Edit,
+            PermissionConstants.LecturerAssignments.View,
+            PermissionConstants.LecturerAssignments.Assign,
+            PermissionConstants.LecturerAssignments.Unassign,
+            PermissionConstants.Transcripts.View
+        ];
+    }
+
+    private static IReadOnlyCollection<string> BuildStudentPermissions()
+    {
+        return
+        [
+            PermissionConstants.Auth.Login,
+            PermissionConstants.Auth.ManageSessions,
+            PermissionConstants.Auth.ChangePassword,
+            PermissionConstants.CourseOfferings.View,
+            PermissionConstants.Enrollments.View,
+            PermissionConstants.Enrollments.Create,
+            PermissionConstants.Enrollments.Delete,
+            PermissionConstants.Attendance.View,
+            PermissionConstants.Grades.View,
+            PermissionConstants.CourseMaterials.View,
+            PermissionConstants.CourseMaterials.Download,
+            PermissionConstants.GradeResults.View,
+            PermissionConstants.Transcripts.View
+        ];
+    }
+
+    private static IReadOnlyCollection<string> BuildLecturerPermissions()
+    {
+        return
+        [
+            PermissionConstants.Auth.Login,
+            PermissionConstants.Auth.ManageSessions,
+            PermissionConstants.Auth.ChangePassword,
+            PermissionConstants.CourseOfferings.View,
+            PermissionConstants.Attendance.View,
+            PermissionConstants.Attendance.Create,
+            PermissionConstants.Attendance.Edit,
+            PermissionConstants.Grades.View,
+            PermissionConstants.Grades.Create,
+            PermissionConstants.Grades.Edit,
+            PermissionConstants.CourseMaterials.View,
+            PermissionConstants.CourseMaterials.Create,
+            PermissionConstants.CourseMaterials.Edit,
+            PermissionConstants.CourseMaterials.Download,
+            PermissionConstants.GradeResults.View
+        ];
     }
 
     private async Task SeedAdminUserAsync(Role superAdminRole, CancellationToken cancellationToken)

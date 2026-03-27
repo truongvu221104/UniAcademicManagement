@@ -66,6 +66,7 @@ public static class DependencyInjection
         services.AddSingleton<DatasetHashService>();
         services.AddScoped<FacultyDatasetSynchronizer>();
         services.AddScoped<DemoFoundationDatasetSynchronizer>();
+        services.AddScoped<DemoLiveDatasetSynchronizer>();
         services.AddScoped<SeedDataBootstrapService>();
 
         return services;

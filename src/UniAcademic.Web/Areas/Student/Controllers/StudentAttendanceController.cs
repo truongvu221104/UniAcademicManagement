@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using UniAcademic.Application.Abstractions.StudentPortal;
 using UniAcademic.Application.Models.StudentPortal;
 using UniAcademic.Application.Security;
+using UniAcademic.Web.Helpers;
 
 namespace UniAcademic.Web.Areas.Student.Controllers;
 
@@ -20,13 +21,14 @@ public sealed class StudentAttendanceController : Controller
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.Attendance.View)]
     [HttpGet]
-    public async Task<IActionResult> Index(Guid? courseOfferingId, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(Guid? courseOfferingId, int? page, int? pageSize, CancellationToken cancellationToken)
     {
         var offerings = await _studentPortalService.GetMyCourseOfferingsAsync(new GetMyCourseOfferingsQuery(), cancellationToken);
         var attendance = await _studentPortalService.GetMyAttendanceAsync(new GetMyAttendanceQuery
         {
             CourseOfferingId = courseOfferingId
         }, cancellationToken);
+        var pagedAttendance = PaginationHelper.Paginate(attendance, page, pageSize);
 
         ViewBag.CourseOfferingId = courseOfferingId;
         ViewBag.CourseOfferingOptions = offerings
@@ -44,6 +46,7 @@ public sealed class StudentAttendanceController : Controller
             })
             .ToList();
 
-        return View(attendance);
+        ViewData["Pagination"] = pagedAttendance.Pagination;
+        return View(pagedAttendance.Items);
     }
 }

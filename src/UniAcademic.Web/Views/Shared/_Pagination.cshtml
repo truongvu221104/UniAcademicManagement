@@ -1,0 +1,75 @@
+@model UniAcademic.Web.Models.Common.PaginationViewModel
+@using Microsoft.AspNetCore.WebUtilities
+@using System.Globalization
+@{
+    if (Model is null || Model.TotalItems == 0)
+    {
+        return;
+    }
+
+    var baseQuery = Context.Request.Query
+        .Where(x => !string.Equals(x.Key, "page", StringComparison.OrdinalIgnoreCase)
+                 && !string.Equals(x.Key, "pageSize", StringComparison.OrdinalIgnoreCase))
+        .ToDictionary(x => x.Key, x => (string?)x.Value.ToString(), StringComparer.OrdinalIgnoreCase);
+
+    string BuildPageUrl(int page)
+    {
+        var query = new Dictionary<string, string?>(baseQuery, StringComparer.OrdinalIgnoreCase)
+        {
+            ["page"] = page.ToString(CultureInfo.InvariantCulture),
+            ["pageSize"] = Model.PageSize.ToString(CultureInfo.InvariantCulture)
+        };
+
+        return QueryHelpers.AddQueryString(Context.Request.Path, query);
+    }
+}
+
+<div class="portal-pagination-shell">
+    <div class="portal-pagination-summary">
+        <strong>@Model.StartItem-@Model.EndItem</strong> of <strong>@Model.TotalItems</strong> records
+    </div>
+
+    <form method="get" class="portal-page-size-form">
+        @foreach (var item in baseQuery)
+        {
+            <input type="hidden" name="@item.Key" value="@item.Value" />
+        }
+        <input type="hidden" name="page" value="1" />
+        <label for="pageSize" class="portal-page-size-label">Rows per page</label>
+        <select id="pageSize" name="pageSize" class="form-select portal-page-size-select" onchange="this.form.submit()">
+            @foreach (var size in Model.PageSizeOptions)
+            {
+                <option value="@size" selected="@(size == Model.PageSize)">@size</option>
+            }
+        </select>
+    </form>
+</div>
+
+@if (Model.TotalPages > 1)
+{
+    <nav aria-label="Pagination">
+        <ul class="pagination portal-pagination">
+            <li class="page-item @(Model.Page <= 1 ? "disabled" : string.Empty)">
+                <a class="page-link" href="@(Model.Page <= 1 ? "#" : BuildPageUrl(Model.Page - 1))" aria-label="Previous">Previous</a>
+            </li>
+
+            @foreach (var pageNumber in Model.VisiblePages)
+            {
+                if (pageNumber is null)
+                {
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                }
+                else
+                {
+                    <li class="page-item @(pageNumber.Value == Model.Page ? "active" : string.Empty)">
+                        <a class="page-link" href="@BuildPageUrl(pageNumber.Value)">@pageNumber.Value</a>
+                    </li>
+                }
+            }
+
+            <li class="page-item @(Model.Page >= Model.TotalPages ? "disabled" : string.Empty)">
+                <a class="page-link" href="@(Model.Page >= Model.TotalPages ? "#" : BuildPageUrl(Model.Page + 1))" aria-label="Next">Next</a>
+            </li>
+        </ul>
+    </nav>
+}

@@ -14,7 +14,7 @@ using UniAcademic.Web.Models.Enrollments;
 
 namespace UniAcademic.Web.Controllers;
 
-[Authorize]
+[Authorize(Roles = RoleConstants.AcademicManagement)]
 public sealed class EnrollmentsController : Controller
 {
     private readonly IEnrollmentService _enrollmentService;
@@ -33,7 +33,7 @@ public sealed class EnrollmentsController : Controller
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.Enrollments.View)]
     [HttpGet]
-    public async Task<IActionResult> Index(string? keyword, Guid? studentProfileId, Guid? courseOfferingId, EnrollmentStatus? status, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(string? keyword, Guid? studentProfileId, Guid? courseOfferingId, EnrollmentStatus? status, int? page, int? pageSize, CancellationToken cancellationToken)
     {
         var enrollments = await _enrollmentService.GetListAsync(new GetEnrollmentsQuery
         {
@@ -42,6 +42,7 @@ public sealed class EnrollmentsController : Controller
             CourseOfferingId = courseOfferingId,
             Status = status
         }, cancellationToken);
+        var pagedEnrollments = UniAcademic.Web.Helpers.PaginationHelper.Paginate(enrollments, page, pageSize);
 
         ViewBag.Keyword = keyword;
         ViewBag.StudentProfileId = studentProfileId;
@@ -50,7 +51,8 @@ public sealed class EnrollmentsController : Controller
         ViewBag.StudentProfileOptions = await BuildStudentProfileOptionsAsync(cancellationToken, studentProfileId, includeEmpty: true);
         ViewBag.CourseOfferingOptions = await BuildCourseOfferingOptionsAsync(cancellationToken, courseOfferingId, includeEmpty: true);
 
-        return View(enrollments);
+        ViewData["Pagination"] = pagedEnrollments.Pagination;
+        return View(pagedEnrollments.Items);
     }
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.Enrollments.View)]

@@ -11,7 +11,7 @@ using UniAcademic.Web.Models.LecturerProfiles;
 
 namespace UniAcademic.Web.Controllers;
 
-[Authorize]
+[Authorize(Roles = RoleConstants.AcademicManagement)]
 public sealed class LecturerProfilesController : Controller
 {
     private readonly ILecturerProfileService _lecturerProfileService;
@@ -25,7 +25,7 @@ public sealed class LecturerProfilesController : Controller
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.LecturerProfiles.View)]
     [HttpGet]
-    public async Task<IActionResult> Index(string? keyword, Guid? facultyId, bool? isActive, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(string? keyword, Guid? facultyId, bool? isActive, int? page, int? pageSize, CancellationToken cancellationToken)
     {
         var lecturerProfiles = await _lecturerProfileService.GetListAsync(new GetLecturerProfilesQuery
         {
@@ -33,13 +33,15 @@ public sealed class LecturerProfilesController : Controller
             FacultyId = facultyId,
             IsActive = isActive
         }, cancellationToken);
+        var pagedLecturerProfiles = UniAcademic.Web.Helpers.PaginationHelper.Paginate(lecturerProfiles, page, pageSize);
 
         ViewBag.Keyword = keyword;
         ViewBag.FacultyId = facultyId;
         ViewBag.IsActive = isActive;
         ViewBag.FacultyOptions = await BuildFacultyOptionsAsync(cancellationToken, facultyId, includeEmpty: true);
 
-        return View(lecturerProfiles);
+        ViewData["Pagination"] = pagedLecturerProfiles.Pagination;
+        return View(pagedLecturerProfiles.Items);
     }
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.LecturerProfiles.View)]

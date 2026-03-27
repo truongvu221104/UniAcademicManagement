@@ -12,7 +12,7 @@ using UniAcademic.Web.Models.Courses;
 
 namespace UniAcademic.Web.Controllers;
 
-[Authorize]
+[Authorize(Roles = RoleConstants.AcademicManagement)]
 public sealed class CoursesController : Controller
 {
     private readonly ICourseService _courseService;
@@ -26,7 +26,7 @@ public sealed class CoursesController : Controller
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.Courses.View)]
     [HttpGet]
-    public async Task<IActionResult> Index(string? keyword, Guid? facultyId, CourseStatus? status, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(string? keyword, Guid? facultyId, CourseStatus? status, int? page, int? pageSize, CancellationToken cancellationToken)
     {
         var courses = await _courseService.GetListAsync(new GetCoursesQuery
         {
@@ -34,13 +34,15 @@ public sealed class CoursesController : Controller
             FacultyId = facultyId,
             Status = status
         }, cancellationToken);
+        var pagedCourses = UniAcademic.Web.Helpers.PaginationHelper.Paginate(courses, page, pageSize);
 
         ViewBag.Keyword = keyword;
         ViewBag.FacultyId = facultyId;
         ViewBag.Status = status;
         ViewBag.FacultyOptions = await BuildFacultyOptionsAsync(cancellationToken, facultyId, includeEmpty: true);
 
-        return View(courses);
+        ViewData["Pagination"] = pagedCourses.Pagination;
+        return View(pagedCourses.Items);
     }
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.Courses.View)]

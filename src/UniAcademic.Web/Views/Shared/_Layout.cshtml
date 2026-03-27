@@ -1,6 +1,48 @@
 ﻿<!DOCTYPE html>
 @inject UniAcademic.Application.Abstractions.Auth.ICurrentStudentContext CurrentStudentContext
 @inject UniAcademic.Application.Abstractions.Auth.ICurrentLecturerContext CurrentLecturerContext
+@{
+    var isAuthenticated = User.Identity?.IsAuthenticated == true;
+    var username = User.Identity?.Name ?? "Guest";
+    Guid? studentProfileId = null;
+    Guid? lecturerProfileId = null;
+
+    if (isAuthenticated)
+    {
+        studentProfileId = await CurrentStudentContext.GetStudentProfileIdAsync();
+        lecturerProfileId = await CurrentLecturerContext.GetLecturerProfileIdAsync();
+    }
+
+    var hasStudentPortal = studentProfileId is not null;
+    var hasLecturerPortal = lecturerProfileId is not null;
+    var routeArea = ViewContext.RouteData.Values["area"]?.ToString() ?? string.Empty;
+    var routeController = ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
+    var requestPath = Context.Request.Path.Value ?? string.Empty;
+
+    var isStudentArea = string.Equals(routeArea, "Student", StringComparison.OrdinalIgnoreCase)
+        || requestPath.StartsWith("/Student", StringComparison.OrdinalIgnoreCase);
+    var isLecturerArea = string.Equals(routeArea, "Lecturer", StringComparison.OrdinalIgnoreCase)
+        || requestPath.StartsWith("/Lecturer", StringComparison.OrdinalIgnoreCase);
+
+    var shellLabel = isStudentArea
+        ? "Student Portal"
+        : isLecturerArea
+            ? "Lecturer Portal"
+            : "Academic Workspace";
+
+    var sectionLabel = isStudentArea
+        ? "Student Services"
+        : isLecturerArea
+            ? "Teaching Services"
+            : "Academic Operations";
+
+    var pageTitle = (ViewData["Title"]?.ToString() ?? "UniAcademic Portal").Trim();
+    var currentYear = DateTime.UtcNow.Year;
+    bool HasPermission(string permission) => User.HasClaim(UniAcademic.Application.Security.AppClaimTypes.Permission, permission);
+    var isSuperAdmin = User.IsInRole(UniAcademic.Application.Security.RoleConstants.SuperAdmin);
+    var isStaff = User.IsInRole(UniAcademic.Application.Security.RoleConstants.Staff);
+    var isAcademicManager = isSuperAdmin || isStaff;
+}
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -10,164 +52,235 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/UniAcademic.Web.styles.css" asp-append-version="true" />
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">UniAcademic.Web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    @{
-                        var hasStudentPortal = User.Identity?.IsAuthenticated == true
-                            && await CurrentStudentContext.GetStudentProfileIdAsync() is not null;
-                        var hasLecturerPortal = User.Identity?.IsAuthenticated == true
-                            && await CurrentLecturerContext.GetLecturerProfileIdAsync() is not null;
-                    }
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        @if (User.Identity?.IsAuthenticated == true)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Faculties" asp-action="Index">Faculties</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="StudentClasses" asp-action="Index">Student Classes</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Courses" asp-action="Index">Courses</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Semesters" asp-action="Index">Semesters</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="CourseOfferings" asp-action="Index">Course Offerings</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="StudentProfiles" asp-action="Index">Student Profiles</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Enrollments" asp-action="Index">Enrollments</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Attendance" asp-action="Index">Attendance</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Grades" asp-action="Index">Grades</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="GradeResults" asp-action="Index">Grade Results</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="LecturerProfiles" asp-action="Index">Lecturer Profiles</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="LecturerAssignments" asp-action="Index">Lecturer Assignments</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="CourseMaterials" asp-action="Index">Course Materials</a>
-                            </li>
-                            @if (hasStudentPortal)
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-page="/Student/Courses/Index">Browse Courses</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-page="/Student/Enrollments/Index">My Enrollments</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Student" asp-controller="StudentCourseOfferings" asp-action="Index">My Courses</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Student" asp-controller="StudentAttendance" asp-action="Index">My Attendance</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Student" asp-controller="StudentGrades" asp-action="Index">My Grades</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Student" asp-controller="StudentGradeResults" asp-action="Index">My Results</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-page="/Student/Transcript/Index">My Transcript</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Student" asp-controller="StudentMaterials" asp-action="Index">My Materials</a>
-                                </li>
-                            }
-                            @if (hasLecturerPortal)
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Lecturer" asp-controller="LecturerOfferings" asp-action="Index">My Teaching</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Lecturer" asp-controller="LecturerAttendance" asp-action="Index">Teaching Attendance</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Lecturer" asp-controller="LecturerGrades" asp-action="Index">Teaching Grades</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Lecturer" asp-controller="LecturerMaterials" asp-action="Index">Teaching Materials</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Lecturer" asp-controller="LecturerGradeResults" asp-action="Index">Teaching Results</a>
-                                </li>
-                            }
-                        }
-                    </ul>
-                    <ul class="navbar-nav">
-                        @if (User.Identity?.IsAuthenticated == true)
-                        {
-                            <li class="nav-item">
-                                <span class="nav-link text-dark">Hello, @User.Identity.Name</span>
-                            </li>
-                            <li class="nav-item">
-                                <form asp-controller="Account" asp-action="Logout" method="post">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-link nav-link text-dark">Logout</button>
-                                </form>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Login</a>
-                            </li>
-                        }
-                    </ul>
-                </div>
+<body class="portal-body">
+    <div class="portal-shell">
+        <header class="portal-topbar">
+            <div class="portal-brand">
+                <a class="portal-brand-link" asp-area="" asp-controller="Home" asp-action="Index">
+                    <span class="portal-brand-mark">UA</span>
+                    <span class="portal-brand-copy">
+                        <strong>UniAcademic</strong>
+                        <span>@shellLabel</span>
+                    </span>
+                </a>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @if (TempData["SuccessMessage"] is string successMessage)
-            {
-                <div class="alert alert-success" role="alert">
-                    @successMessage
-                </div>
-            }
-            @if (TempData["ErrorMessage"] is string errorMessage)
-            {
-                <div class="alert alert-danger" role="alert">
-                    @errorMessage
-                </div>
-            }
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - UniAcademic.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <div class="portal-topbar-meta">
+                @if (isAuthenticated)
+                {
+                    <span class="portal-chip">Signed In</span>
+                    @if (isSuperAdmin)
+                    {
+                        <span class="portal-chip portal-chip-soft">Admin</span>
+                    }
+                    @if (isStaff)
+                    {
+                        <span class="portal-chip portal-chip-soft">Staff</span>
+                    }
+                    @if (hasStudentPortal)
+                    {
+                        <span class="portal-chip portal-chip-soft">Student</span>
+                    }
+                    @if (hasLecturerPortal)
+                    {
+                        <span class="portal-chip portal-chip-soft">Lecturer</span>
+                    }
+                    <div class="portal-user-panel">
+                        <span class="portal-user-label">Current User</span>
+                        <strong>@username</strong>
+                    </div>
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-outline-secondary portal-topbar-button">Logout</button>
+                    </form>
+                }
+                else
+                {
+                    <span class="portal-chip portal-chip-soft">Guest</span>
+                    <a class="btn btn-primary portal-topbar-button" asp-controller="Account" asp-action="Login">Login</a>
+                }
+            </div>
+        </header>
+
+        <div class="portal-main">
+            <aside class="portal-sidebar">
+                <section class="portal-nav-group">
+                    <div class="portal-nav-title">General</div>
+                    <nav class="portal-nav-list">
+                        <a class="@(requestPath == "/" ? "portal-nav-link active" : "portal-nav-link")" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        <a class="@(string.Equals(routeController, "Home", StringComparison.OrdinalIgnoreCase) && requestPath.Contains("/Home/Privacy", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                    </nav>
+                </section>
+
+                @if (isAcademicManager)
+                {
+                    <section class="portal-nav-group">
+                        <div class="portal-nav-title">Academic Management</div>
+                        <nav class="portal-nav-list">
+                            @if (HasPermission(UniAcademic.Application.Security.PermissionConstants.Faculties.View))
+                            {
+                                <a class="@(string.Equals(routeController, "Faculties", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-controller="Faculties" asp-action="Index">Faculties</a>
+                            }
+                            @if (HasPermission(UniAcademic.Application.Security.PermissionConstants.StudentClasses.View))
+                            {
+                                <a class="@(string.Equals(routeController, "StudentClasses", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-controller="StudentClasses" asp-action="Index">Student Classes</a>
+                            }
+                            @if (HasPermission(UniAcademic.Application.Security.PermissionConstants.Courses.View))
+                            {
+                                <a class="@(string.Equals(routeController, "Courses", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-controller="Courses" asp-action="Index">Courses</a>
+                            }
+                            @if (HasPermission(UniAcademic.Application.Security.PermissionConstants.Semesters.View))
+                            {
+                                <a class="@(string.Equals(routeController, "Semesters", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-controller="Semesters" asp-action="Index">Semesters</a>
+                            }
+                            @if (HasPermission(UniAcademic.Application.Security.PermissionConstants.CourseOfferings.View))
+                            {
+                                <a class="@(string.Equals(routeController, "CourseOfferings", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-controller="CourseOfferings" asp-action="Index">Course Offerings</a>
+                            }
+                            @if (HasPermission(UniAcademic.Application.Security.PermissionConstants.CourseOfferingRosters.View))
+                            {
+                                <a class="@((string.Equals(routeController, "CourseOfferingRosters", StringComparison.OrdinalIgnoreCase) || string.Equals(routeController, "CourseOfferings", StringComparison.OrdinalIgnoreCase)) ? "portal-nav-link active" : "portal-nav-link")" asp-controller="CourseOfferings" asp-action="Index">Rosters</a>
+                            }
+                            @if (HasPermission(UniAcademic.Application.Security.PermissionConstants.StudentProfiles.View))
+                            {
+                                <a class="@(string.Equals(routeController, "StudentProfiles", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-controller="StudentProfiles" asp-action="Index">Student Profiles</a>
+                            }
+                            @if (HasPermission(UniAcademic.Application.Security.PermissionConstants.Enrollments.View))
+                            {
+                                <a class="@(string.Equals(routeController, "Enrollments", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-controller="Enrollments" asp-action="Index">Enrollments</a>
+                            }
+                            @if (HasPermission(UniAcademic.Application.Security.PermissionConstants.Attendance.View))
+                            {
+                                <a class="@(string.Equals(routeController, "Attendance", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-controller="Attendance" asp-action="Index">Attendance</a>
+                            }
+                            @if (HasPermission(UniAcademic.Application.Security.PermissionConstants.Grades.View))
+                            {
+                                <a class="@(string.Equals(routeController, "Grades", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-controller="Grades" asp-action="Index">Grades</a>
+                            }
+                            @if (HasPermission(UniAcademic.Application.Security.PermissionConstants.GradeResults.View))
+                            {
+                                <a class="@(string.Equals(routeController, "GradeResults", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-controller="GradeResults" asp-action="Index">Grade Results</a>
+                            }
+                            @if (HasPermission(UniAcademic.Application.Security.PermissionConstants.LecturerProfiles.View))
+                            {
+                                <a class="@(string.Equals(routeController, "LecturerProfiles", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-controller="LecturerProfiles" asp-action="Index">Lecturer Profiles</a>
+                            }
+                            @if (HasPermission(UniAcademic.Application.Security.PermissionConstants.LecturerAssignments.View))
+                            {
+                                <a class="@(string.Equals(routeController, "LecturerAssignments", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-controller="LecturerAssignments" asp-action="Index">Lecturer Assignments</a>
+                            }
+                            @if (HasPermission(UniAcademic.Application.Security.PermissionConstants.CourseMaterials.View))
+                            {
+                                <a class="@(string.Equals(routeController, "CourseMaterials", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-controller="CourseMaterials" asp-action="Index">Course Materials</a>
+                            }
+                        </nav>
+                    </section>
+                }
+
+                @if (hasStudentPortal && HasPermission(UniAcademic.Application.Security.PermissionConstants.CourseOfferings.View))
+                {
+                    <section class="portal-nav-group">
+                        <div class="portal-nav-title">Student Portal</div>
+                        <nav class="portal-nav-list">
+                            <a class="@(requestPath.StartsWith("/Student/Courses", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-page="/Student/Courses/Index">Browse Courses</a>
+                            @if (HasPermission(UniAcademic.Application.Security.PermissionConstants.Enrollments.View))
+                            {
+                                <a class="@(requestPath.StartsWith("/Student/Enrollments", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-page="/Student/Enrollments/Index">My Enrollments</a>
+                            }
+                            <a class="@(string.Equals(routeArea, "Student", StringComparison.OrdinalIgnoreCase) && string.Equals(routeController, "StudentCourseOfferings", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-area="Student" asp-controller="StudentCourseOfferings" asp-action="Index">My Course Offerings</a>
+                            @if (HasPermission(UniAcademic.Application.Security.PermissionConstants.Attendance.View))
+                            {
+                                <a class="@(string.Equals(routeArea, "Student", StringComparison.OrdinalIgnoreCase) && string.Equals(routeController, "StudentAttendance", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-area="Student" asp-controller="StudentAttendance" asp-action="Index">My Attendance</a>
+                            }
+                            @if (HasPermission(UniAcademic.Application.Security.PermissionConstants.Grades.View))
+                            {
+                                <a class="@(string.Equals(routeArea, "Student", StringComparison.OrdinalIgnoreCase) && string.Equals(routeController, "StudentGrades", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-area="Student" asp-controller="StudentGrades" asp-action="Index">My Grades</a>
+                            }
+                            @if (HasPermission(UniAcademic.Application.Security.PermissionConstants.GradeResults.View))
+                            {
+                                <a class="@(string.Equals(routeArea, "Student", StringComparison.OrdinalIgnoreCase) && string.Equals(routeController, "StudentGradeResults", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-area="Student" asp-controller="StudentGradeResults" asp-action="Index">My Grade Results</a>
+                            }
+                            @if (HasPermission(UniAcademic.Application.Security.PermissionConstants.Transcripts.View))
+                            {
+                                <a class="@(requestPath.StartsWith("/Student/Transcript", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-page="/Student/Transcript/Index">My Transcript</a>
+                            }
+                            @if (HasPermission(UniAcademic.Application.Security.PermissionConstants.CourseMaterials.View))
+                            {
+                                <a class="@(string.Equals(routeArea, "Student", StringComparison.OrdinalIgnoreCase) && string.Equals(routeController, "StudentMaterials", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-area="Student" asp-controller="StudentMaterials" asp-action="Index">My Materials</a>
+                            }
+                        </nav>
+                    </section>
+                }
+
+                @if (hasLecturerPortal && HasPermission(UniAcademic.Application.Security.PermissionConstants.CourseOfferings.View))
+                {
+                    <section class="portal-nav-group">
+                        <div class="portal-nav-title">Lecturer Portal</div>
+                        <nav class="portal-nav-list">
+                            <a class="@(string.Equals(routeArea, "Lecturer", StringComparison.OrdinalIgnoreCase) && string.Equals(routeController, "LecturerOfferings", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-area="Lecturer" asp-controller="LecturerOfferings" asp-action="Index">My Teaching Offerings</a>
+                            @if (HasPermission(UniAcademic.Application.Security.PermissionConstants.Attendance.View))
+                            {
+                                <a class="@(string.Equals(routeArea, "Lecturer", StringComparison.OrdinalIgnoreCase) && string.Equals(routeController, "LecturerAttendance", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-area="Lecturer" asp-controller="LecturerAttendance" asp-action="Index">Attendance</a>
+                            }
+                            @if (HasPermission(UniAcademic.Application.Security.PermissionConstants.Grades.View))
+                            {
+                                <a class="@(string.Equals(routeArea, "Lecturer", StringComparison.OrdinalIgnoreCase) && string.Equals(routeController, "LecturerGrades", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-area="Lecturer" asp-controller="LecturerGrades" asp-action="Index">Grades</a>
+                            }
+                            @if (HasPermission(UniAcademic.Application.Security.PermissionConstants.GradeResults.View))
+                            {
+                                <a class="@(string.Equals(routeArea, "Lecturer", StringComparison.OrdinalIgnoreCase) && string.Equals(routeController, "LecturerGradeResults", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-area="Lecturer" asp-controller="LecturerGradeResults" asp-action="Index">Grade Results</a>
+                            }
+                            @if (HasPermission(UniAcademic.Application.Security.PermissionConstants.CourseMaterials.View))
+                            {
+                                <a class="@(string.Equals(routeArea, "Lecturer", StringComparison.OrdinalIgnoreCase) && string.Equals(routeController, "LecturerMaterials", StringComparison.OrdinalIgnoreCase) ? "portal-nav-link active" : "portal-nav-link")" asp-area="Lecturer" asp-controller="LecturerMaterials" asp-action="Index">Course Materials</a>
+                            }
+                        </nav>
+                    </section>
+                }
+            </aside>
+
+            <div class="portal-content-wrap">
+                <section class="portal-page-header">
+                    <div>
+                        <span class="portal-page-section">@sectionLabel</span>
+                        <h1 class="portal-page-title">@pageTitle</h1>
+                    </div>
+                    <div class="portal-page-meta">
+                        <span>Workspace: @shellLabel</span>
+                        @if (isAuthenticated)
+                        {
+                            <span>User: @username</span>
+                        }
+                    </div>
+                </section>
+
+                <main role="main" class="portal-content">
+                    @if (TempData["SuccessMessage"] is string successMessage)
+                    {
+                        <div class="portal-alert portal-alert-success" role="alert">
+                            @successMessage
+                        </div>
+                    }
+                    @if (TempData["ErrorMessage"] is string errorMessage)
+                    {
+                        <div class="portal-alert portal-alert-error" role="alert">
+                            @errorMessage
+                        </div>
+                    }
+                    @RenderBody()
+                    @if (ViewData["Pagination"] is UniAcademic.Web.Models.Common.PaginationViewModel pagination)
+                    {
+                        @await Html.PartialAsync("_Pagination", pagination)
+                    }
+                </main>
+            </div>
         </div>
-    </footer>
+
+        <footer class="portal-footer">
+            <span>&copy; @currentYear UniAcademic</span>
+            <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </footer>
+    </div>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

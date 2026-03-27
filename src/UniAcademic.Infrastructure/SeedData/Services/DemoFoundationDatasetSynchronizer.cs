@@ -6,12 +6,14 @@ using UniAcademic.Domain.Enums;
 using UniAcademic.Infrastructure.Persistence;
 using UniAcademic.Infrastructure.Persistence.SeedData;
 using UniAcademic.Infrastructure.SeedData.Models;
+using UniAcademic.Application.Security;
 
 namespace UniAcademic.Infrastructure.SeedData.Services;
 
 public sealed class DemoFoundationDatasetSynchronizer
 {
     public const string DatasetName = "academic.demo-foundation";
+    private const string SynchronizerVersion = "v2-role-sync";
 
     private readonly AppDbContext _dbContext;
     private readonly IPasswordHasher _passwordHasher;
@@ -30,10 +32,11 @@ public sealed class DemoFoundationDatasetSynchronizer
         DemoFoundationSeedData data,
         CancellationToken cancellationToken = default)
     {
+        var effectiveFileHash = $"{SynchronizerVersion}:{fileHash}";
         var datasetState = await _dbContext.SeedDatasetStates
             .FirstOrDefaultAsync(x => x.DatasetName == DatasetName, cancellationToken);
 
-        if (datasetState is not null && string.Equals(datasetState.FileHash, fileHash, StringComparison.Ordinal))
+        if (datasetState is not null && string.Equals(datasetState.FileHash, effectiveFileHash, StringComparison.Ordinal))
         {
             return false;
         }
@@ -63,7 +66,7 @@ public sealed class DemoFoundationDatasetSynchronizer
         }
 
         datasetState.FilePath = filePath;
-        datasetState.FileHash = fileHash;
+        datasetState.FileHash = effectiveFileHash;
         datasetState.AppliedAtUtc = DateTime.UtcNow;
         datasetState.Status = "Applied";
 
@@ -405,9 +408,32 @@ public sealed class DemoFoundationDatasetSynchronizer
             .Where(x => usernames.Contains(x.NormalizedUsername))
             .ToDictionaryAsync(x => x.NormalizedUsername, StringComparer.OrdinalIgnoreCase, cancellationToken);
 
-        var superAdminRole = await _dbContext.Roles
-            .FirstOrDefaultAsync(x => x.NormalizedName == "SUPERADMIN", cancellationToken)
-            ?? throw new InvalidOperationException("Demo seed requires the SUPERADMIN role to exist.");
+        var desiredRoleNames = items
+            .SelectMany(GetDesiredRoleNames)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        var normalizedDesiredRoleNames = desiredRoleNames
+            .Select(x => x.ToUpperInvariant())
+            .ToList();
+
+        var rolesByNormalizedName = await _dbContext.Roles
+            .Where(x => normalizedDesiredRoleNames.Contains(x.NormalizedName))
+            .ToDictionaryAsync(x => x.NormalizedName, StringComparer.OrdinalIgnoreCase, cancellationToken);
+
+        foreach (var roleName in desiredRoleNames)
+        {
+            if (!rolesByNormalizedName.ContainsKey(roleName.ToUpperInvariant()))
+            {
+                throw new InvalidOperationException($"Demo seed requires role '{roleName}' to exist.");
+            }
+        }
+
+        var userIds = usersByUsername.Values.Select(x => x.Id).ToList();
+        var existingUserRoles = await _dbContext.UserRoles
+            .Include(x => x.Role)
+            .Where(x => userIds.Contains(x.UserId))
+            .ToListAsync(cancellationToken);
 
         foreach (var item in items)
         {
@@ -443,19 +469,67 @@ public sealed class DemoFoundationDatasetSynchronizer
             entity.LockoutEndUtc = null;
             entity.ModifiedBy = "seed-data";
 
-            var hasRole = await _dbContext.UserRoles.AnyAsync(
-                x => x.UserId == entity.Id && x.RoleId == superAdminRole.Id,
-                cancellationToken);
+            var desiredRolesForUser = GetDesiredRoleNames(item)
+                .Select(x => x.ToUpperInvariant())
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-            if (!hasRole)
+            var currentUserRoles = existingUserRoles
+                .Where(x => x.UserId == entity.Id)
+                .ToList();
+
+            foreach (var userRole in currentUserRoles.Where(x => !desiredRolesForUser.Contains(x.Role.NormalizedName)).ToList())
             {
-                await _dbContext.UserRoles.AddAsync(new UserRole
+                _dbContext.UserRoles.Remove(userRole);
+                existingUserRoles.Remove(userRole);
+            }
+
+            foreach (var desiredRoleName in desiredRolesForUser)
+            {
+                var desiredRole = rolesByNormalizedName[desiredRoleName];
+                var hasRole = currentUserRoles.Any(x => x.RoleId == desiredRole.Id);
+                if (hasRole)
+                {
+                    continue;
+                }
+
+                var userRole = new UserRole
                 {
                     UserId = entity.Id,
-                    RoleId = superAdminRole.Id
-                }, cancellationToken);
+                    RoleId = desiredRole.Id
+                };
+
+                await _dbContext.UserRoles.AddAsync(userRole, cancellationToken);
+                existingUserRoles.Add(userRole);
             }
         }
+    }
+
+    private static IReadOnlyCollection<string> GetDesiredRoleNames(DemoUserSeedItem item)
+    {
+        var roleNames = new List<string>();
+
+        if (string.Equals(item.Username, "admin", StringComparison.OrdinalIgnoreCase))
+        {
+            roleNames.Add(RoleConstants.SuperAdmin);
+            return roleNames;
+        }
+
+        if (string.Equals(item.Username, "staff.ops", StringComparison.OrdinalIgnoreCase))
+        {
+            roleNames.Add(RoleConstants.Staff);
+        }
+
+        if (!string.IsNullOrWhiteSpace(item.StudentCode))
+        {
+            roleNames.Add(RoleConstants.Student);
+        }
+
+        if (!string.IsNullOrWhiteSpace(item.LecturerCode))
+        {
+            roleNames.Add(RoleConstants.Lecturer);
+        }
+
+        return roleNames;
     }
 
     private static void ValidateDuplicates(DemoFoundationSeedData data)

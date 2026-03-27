@@ -6,6 +6,7 @@ using UniAcademic.Application.Common;
 using UniAcademic.Application.Models.LecturerPortal;
 using UniAcademic.Application.Models.Materials;
 using UniAcademic.Application.Security;
+using UniAcademic.Web.Helpers;
 using UniAcademic.Web.Models.Materials;
 
 namespace UniAcademic.Web.Areas.Lecturer.Controllers;
@@ -23,14 +24,16 @@ public sealed class LecturerMaterialsController : Controller
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.CourseMaterials.View)]
     [HttpGet]
-    public async Task<IActionResult> Index(Guid? courseOfferingId, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(Guid? courseOfferingId, int? page, int? pageSize, CancellationToken cancellationToken)
     {
         await LoadOfferingOptionsAsync(cancellationToken, courseOfferingId, includeEmpty: true);
         var materials = await _lecturerPortalService.GetCourseMaterialsAsync(new GetLecturerCourseMaterialsQuery
         {
             CourseOfferingId = courseOfferingId
         }, cancellationToken);
-        return View(materials);
+        var pagedMaterials = PaginationHelper.Paginate(materials, page, pageSize);
+        ViewData["Pagination"] = pagedMaterials.Pagination;
+        return View(pagedMaterials.Items);
     }
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.CourseMaterials.View)]

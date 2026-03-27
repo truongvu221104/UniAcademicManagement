@@ -1,198 +1,1570 @@
 {
-  "users": [
-    {
-      "username": "admin",
-      "email": "admin@uniacademic.local",
-      "displayName": "System Administrator",
-      "password": "Admin@123456",
-      "isActive": true
-    },
-    {
-      "username": "staff.ops",
-      "email": "staff.ops@uniacademic.local",
-      "displayName": "Operations Staff",
-      "password": "Demo@123456",
-      "isActive": true
-    },
-    {
-      "username": "student.an",
-      "email": "student.an@uniacademic.local",
-      "displayName": "Nguyen Van An",
-      "password": "Demo@123456",
-      "studentCode": "STU001",
-      "isActive": true
-    },
-    {
-      "username": "student.binh",
-      "email": "student.binh@uniacademic.local",
-      "displayName": "Tran Thi Binh",
-      "password": "Demo@123456",
-      "studentCode": "STU002",
-      "isActive": true
-    },
-    {
-      "username": "lecturer.quang",
-      "email": "lecturer.quang@uniacademic.local",
-      "displayName": "Dr. Pham Quang",
-      "password": "Demo@123456",
-      "lecturerCode": "LEC001",
-      "isActive": true
-    },
-    {
-      "username": "lecturer.thu",
-      "email": "lecturer.thu@uniacademic.local",
-      "displayName": "Ms. Vo Thu",
-      "password": "Demo@123456",
-      "lecturerCode": "LEC002",
-      "isActive": true
-    }
-  ],
-  "studentClasses": [
-    {
-      "code": "SE2022A",
-      "name": "Software Engineering 2022A",
-      "facultyCode": "FIT",
-      "intakeYear": 2022,
-      "status": "Active",
-      "description": "Software Engineering cohort 2022A"
-    },
-    {
-      "code": "BA2022A",
-      "name": "Business Administration 2022A",
-      "facultyCode": "FBA",
-      "intakeYear": 2022,
-      "status": "Active",
-      "description": "Business Administration cohort 2022A"
-    }
-  ],
-  "courses": [
-    {
-      "code": "SE101",
-      "name": "Introduction to Software Engineering",
-      "credits": 3,
-      "facultyCode": "FIT",
-      "status": "Active",
-      "description": "Foundation course for software engineering."
-    },
-    {
-      "code": "DB201",
-      "name": "Database Systems",
-      "credits": 3,
-      "facultyCode": "FIT",
-      "status": "Active",
-      "description": "Relational database design and querying."
-    },
-    {
-      "code": "BA101",
-      "name": "Principles of Management",
-      "credits": 3,
-      "facultyCode": "FBA",
-      "status": "Active",
-      "description": "Management fundamentals for business students."
-    }
-  ],
-  "semesters": [
-    {
-      "code": "2025T1",
-      "name": "2025-2026 / Term 1",
-      "academicYear": "2025-2026",
-      "termNo": 1,
-      "startDate": "2025-09-01T00:00:00Z",
-      "endDate": "2025-12-31T00:00:00Z",
-      "status": "Active",
-      "description": "Primary semester for demo flows."
-    }
-  ],
-  "studentProfiles": [
-    {
-      "studentCode": "STU001",
-      "fullName": "Nguyen Van An",
-      "studentClassCode": "SE2022A",
-      "email": "an.student@uniacademic.local",
-      "phone": "0900000001",
-      "gender": "Male",
-      "status": "Active",
-      "note": "Demo student for self-service flows."
-    },
-    {
-      "studentCode": "STU002",
-      "fullName": "Tran Thi Binh",
-      "studentClassCode": "SE2022A",
-      "email": "binh.student@uniacademic.local",
-      "phone": "0900000002",
-      "gender": "Female",
-      "status": "Active",
-      "note": "Demo student for isolation checks."
-    },
-    {
-      "studentCode": "STU003",
-      "fullName": "Le Minh Chau",
-      "studentClassCode": "BA2022A",
-      "email": "chau.student@uniacademic.local",
-      "phone": "0900000003",
-      "gender": "Female",
-      "status": "Active",
-      "note": "Demo student kept unassigned for negative flows."
-    }
-  ],
-  "lecturerProfiles": [
-    {
-      "code": "LEC001",
-      "fullName": "Dr. Pham Quang",
-      "email": "quang.lecturer@uniacademic.local",
-      "phoneNumber": "0910000001",
-      "facultyCode": "FIT",
-      "isActive": true,
-      "note": "Primary lecturer for SE101 demo offering."
-    },
-    {
-      "code": "LEC002",
-      "fullName": "Ms. Vo Thu",
-      "email": "thu.lecturer@uniacademic.local",
-      "phoneNumber": "0910000002",
-      "facultyCode": "FIT",
-      "isActive": true,
-      "note": "Secondary SE101 lecturer and primary DB201 lecturer."
-    }
-  ],
-  "courseOfferings": [
-    {
-      "code": "SE101-2025T1-01",
-      "courseCode": "SE101",
-      "semesterCode": "2025T1",
-      "displayName": "SE101 - Introduction to Software Engineering - 2025T1 - 01",
-      "capacity": 40,
-      "status": "Active",
-      "description": "Demo software engineering offering."
-    },
-    {
-      "code": "DB201-2025T1-01",
-      "courseCode": "DB201",
-      "semesterCode": "2025T1",
-      "displayName": "DB201 - Database Systems - 2025T1 - 01",
-      "capacity": 35,
-      "status": "Active",
-      "description": "Demo database offering."
-    }
-  ],
-  "lecturerAssignments": [
-    {
-      "courseOfferingCode": "SE101-2025T1-01",
-      "lecturerCode": "LEC001",
-      "isPrimary": true,
-      "assignedAtUtc": "2025-08-25T08:00:00Z"
-    },
-    {
-      "courseOfferingCode": "SE101-2025T1-01",
-      "lecturerCode": "LEC002",
-      "isPrimary": false,
-      "assignedAtUtc": "2025-08-25T08:15:00Z"
-    },
-    {
-      "courseOfferingCode": "DB201-2025T1-01",
-      "lecturerCode": "LEC002",
-      "isPrimary": true,
-      "assignedAtUtc": "2025-08-25T08:30:00Z"
-    }
-  ]
+    "users":  [
+                  {
+                      "username":  "admin",
+                      "email":  "admin@uniacademic.local",
+                      "displayName":  "System Administrator",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  null,
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "staff.ops",
+                      "email":  "staff.ops@uniacademic.local",
+                      "displayName":  "Operations Staff",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  null,
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.an",
+                      "email":  "an.stu001@student.uniacademic.local",
+                      "displayName":  "Nguyễn Văn An",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU001",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.bich",
+                      "email":  "bich.stu002@student.uniacademic.local",
+                      "displayName":  "Trần Thị Bích",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU002",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.hoang",
+                      "email":  "hoang.stu003@student.uniacademic.local",
+                      "displayName":  "Lê Minh Hoàng",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU003",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.ha",
+                      "email":  "ha.stu004@student.uniacademic.local",
+                      "displayName":  "Phạm Thu Hà",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU004",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.bao",
+                      "email":  "bao.stu005@student.uniacademic.local",
+                      "displayName":  "Võ Quốc Bảo",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU005",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.mai",
+                      "email":  "mai.stu006@student.uniacademic.local",
+                      "displayName":  "Đặng Ngọc Mai",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU006",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.huy",
+                      "email":  "huy.stu007@student.uniacademic.local",
+                      "displayName":  "Bùi Gia Huy",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU007",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.linh",
+                      "email":  "linh.stu008@student.uniacademic.local",
+                      "displayName":  "Hồ Khánh Linh",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU008",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.kiet",
+                      "email":  "kiet.stu009@student.uniacademic.local",
+                      "displayName":  "Phan Tuấn Kiệt",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU009",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.duyen",
+                      "email":  "duyen.stu010@student.uniacademic.local",
+                      "displayName":  "Dương Mỹ Duyên",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU010",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.long",
+                      "email":  "long.stu011@student.uniacademic.local",
+                      "displayName":  "Nguyễn Đức Long",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU011",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.thao",
+                      "email":  "thao.stu012@student.uniacademic.local",
+                      "displayName":  "Trịnh Thanh Thảo",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU012",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.nam",
+                      "email":  "nam.stu013@student.uniacademic.local",
+                      "displayName":  "Đỗ Nhật Nam",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU013",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.anh",
+                      "email":  "anh.stu014@student.uniacademic.local",
+                      "displayName":  "Vũ Phương Anh",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU014",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.yen",
+                      "email":  "yen.stu015@student.uniacademic.local",
+                      "displayName":  "Lý Hải Yến",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU015",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.binh",
+                      "email":  "binh.stu016@student.uniacademic.local",
+                      "displayName":  "Nguyễn Gia Bình",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU016",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.nhu",
+                      "email":  "nhu.stu017@student.uniacademic.local",
+                      "displayName":  "Trần Quỳnh Như",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU017",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.phat",
+                      "email":  "phat.stu018@student.uniacademic.local",
+                      "displayName":  "Lê Tuấn Phát",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU018",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.tram",
+                      "email":  "tram.stu019@student.uniacademic.local",
+                      "displayName":  "Phạm Ngọc Trâm",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU019",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.khang",
+                      "email":  "khang.stu020@student.uniacademic.local",
+                      "displayName":  "Võ Minh Khang",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU020",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.nguyen",
+                      "email":  "nguyen.stu021@student.uniacademic.local",
+                      "displayName":  "Đặng Thảo Nguyên",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU021",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.khoa",
+                      "email":  "khoa.stu022@student.uniacademic.local",
+                      "displayName":  "Bùi Anh Khoa",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU022",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.my",
+                      "email":  "my.stu023@student.uniacademic.local",
+                      "displayName":  "Hồ Diễm My",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU023",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.nam1",
+                      "email":  "nam1.stu024@student.uniacademic.local",
+                      "displayName":  "Phan Hoài Nam",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU024",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.vy",
+                      "email":  "vy.stu025@student.uniacademic.local",
+                      "displayName":  "Dương Khánh Vy",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU025",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.hieu",
+                      "email":  "hieu.stu026@student.uniacademic.local",
+                      "displayName":  "Nguyễn Trung Hiếu",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU026",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.chau",
+                      "email":  "chau.stu027@student.uniacademic.local",
+                      "displayName":  "Trịnh Bảo Châu",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU027",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.quan",
+                      "email":  "quan.stu028@student.uniacademic.local",
+                      "displayName":  "Đỗ Minh Quân",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU028",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.linh1",
+                      "email":  "linh1.stu029@student.uniacademic.local",
+                      "displayName":  "Vũ Gia Linh",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU029",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.phuong",
+                      "email":  "phuong.stu030@student.uniacademic.local",
+                      "displayName":  "Lâm Hà Phương",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU030",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.nhi",
+                      "email":  "nhi.stu031@student.uniacademic.local",
+                      "displayName":  "Nguyễn Hoàng Yến Nhi",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU031",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.manh",
+                      "email":  "manh.stu032@student.uniacademic.local",
+                      "displayName":  "Trần Đức Mạnh",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU032",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.thuy",
+                      "email":  "thuy.stu033@student.uniacademic.local",
+                      "displayName":  "Lê Thị Thủy",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU033",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.vinh",
+                      "email":  "vinh.stu034@student.uniacademic.local",
+                      "displayName":  "Phạm Quang Vinh",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU034",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.tam",
+                      "email":  "tam.stu035@student.uniacademic.local",
+                      "displayName":  "Võ Thanh Tâm",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU035",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.an1",
+                      "email":  "an1.stu036@student.uniacademic.local",
+                      "displayName":  "Đặng Khánh An",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU036",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.han",
+                      "email":  "han.stu037@student.uniacademic.local",
+                      "displayName":  "Bùi Ngọc Hân",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU037",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.anh1",
+                      "email":  "anh1.stu038@student.uniacademic.local",
+                      "displayName":  "Hồ Tuấn Anh",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU038",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.ngoc",
+                      "email":  "ngoc.stu039@student.uniacademic.local",
+                      "displayName":  "Phan Bảo Ngọc",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU039",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.triet",
+                      "email":  "triet.stu040@student.uniacademic.local",
+                      "displayName":  "Dương Minh Triết",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU040",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.tien",
+                      "email":  "tien.stu041@student.uniacademic.local",
+                      "displayName":  "Nguyễn Cẩm Tiên",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU041",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.dat",
+                      "email":  "dat.stu042@student.uniacademic.local",
+                      "displayName":  "Trịnh Hữu Đạt",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU042",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.my1",
+                      "email":  "my1.stu043@student.uniacademic.local",
+                      "displayName":  "Đỗ Hà My",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU043",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.han1",
+                      "email":  "han1.stu044@student.uniacademic.local",
+                      "displayName":  "Vũ Bảo Hân",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU044",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.han2",
+                      "email":  "han2.stu045@student.uniacademic.local",
+                      "displayName":  "Lâm Gia Hân",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU045",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.minh",
+                      "email":  "minh.stu046@student.uniacademic.local",
+                      "displayName":  "Nguyễn Tuấn Minh",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU046",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.linh2",
+                      "email":  "linh2.stu047@student.uniacademic.local",
+                      "displayName":  "Trần Mỹ Linh",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU047",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.thinh",
+                      "email":  "thinh.stu048@student.uniacademic.local",
+                      "displayName":  "Lê Quốc Thịnh",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU048",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.ngan",
+                      "email":  "ngan.stu049@student.uniacademic.local",
+                      "displayName":  "Phạm Bích Ngân",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU049",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.hao",
+                      "email":  "hao.stu050@student.uniacademic.local",
+                      "displayName":  "Võ Nhật Hào",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU050",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.han3",
+                      "email":  "han3.stu051@student.uniacademic.local",
+                      "displayName":  "Đặng Gia Hân",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU051",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.tung",
+                      "email":  "tung.stu052@student.uniacademic.local",
+                      "displayName":  "Bùi Thanh Tùng",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU052",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.anh2",
+                      "email":  "anh2.stu053@student.uniacademic.local",
+                      "displayName":  "Hồ Ngọc Anh",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU053",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.tam1",
+                      "email":  "tam1.stu054@student.uniacademic.local",
+                      "displayName":  "Phan Minh Tâm",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU054",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.dung",
+                      "email":  "dung.stu055@student.uniacademic.local",
+                      "displayName":  "Dương Thùy Dung",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU055",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.hung",
+                      "email":  "hung.stu056@student.uniacademic.local",
+                      "displayName":  "Nguyễn Phúc Hưng",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU056",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.huy1",
+                      "email":  "huy1.stu057@student.uniacademic.local",
+                      "displayName":  "Trịnh Quang Huy",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU057",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.minh1",
+                      "email":  "minh1.stu058@student.uniacademic.local",
+                      "displayName":  "Đỗ Bảo Minh",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU058",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.anh3",
+                      "email":  "anh3.stu059@student.uniacademic.local",
+                      "displayName":  "Vũ Diệu Anh",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU059",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "student.anh4",
+                      "email":  "anh4.stu060@student.uniacademic.local",
+                      "displayName":  "Lâm Đức Anh",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  "STU060",
+                      "lecturerCode":  null
+                  },
+                  {
+                      "username":  "lecturer.quang",
+                      "email":  "lecturer.quang@uniacademic.local",
+                      "displayName":  "TS. Phạm Quang",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  null,
+                      "lecturerCode":  "LEC001"
+                  },
+                  {
+                      "username":  "lecturer.thu",
+                      "email":  "lecturer.thu@uniacademic.local",
+                      "displayName":  "ThS. Võ Thu",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  null,
+                      "lecturerCode":  "LEC002"
+                  },
+                  {
+                      "username":  "lecturer.minh",
+                      "email":  "lecturer.minh@uniacademic.local",
+                      "displayName":  "TS. Nguyễn Hữu Minh",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  null,
+                      "lecturerCode":  "LEC003"
+                  },
+                  {
+                      "username":  "lecturer.lan",
+                      "email":  "lecturer.lan@uniacademic.local",
+                      "displayName":  "GS. Trần Ngọc Lan",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  null,
+                      "lecturerCode":  "LEC004"
+                  },
+                  {
+                      "username":  "lecturer.nam",
+                      "email":  "lecturer.nam@uniacademic.local",
+                      "displayName":  "TS. Lê Hoàng Nam",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  null,
+                      "lecturerCode":  "LEC005"
+                  },
+                  {
+                      "username":  "lecturer.hanh",
+                      "email":  "lecturer.hanh@uniacademic.local",
+                      "displayName":  "ThS. Phạm Bích Hạnh",
+                      "password":  "Demo@123456",
+                      "isActive":  true,
+                      "studentCode":  null,
+                      "lecturerCode":  "LEC006"
+                  }
+              ],
+    "studentClasses":  [
+                           {
+                               "code":  "SE2022A",
+                               "name":  "Software Engineering 2022A",
+                               "facultyCode":  "FIT",
+                               "intakeYear":  2022,
+                               "status":  "Active",
+                               "description":  "Lớp kỹ sư phần mềm khóa 2022A"
+                           },
+                           {
+                               "code":  "SE2022B",
+                               "name":  "Software Engineering 2022B",
+                               "facultyCode":  "FIT",
+                               "intakeYear":  2022,
+                               "status":  "Active",
+                               "description":  "Lớp kỹ sư phần mềm khóa 2022B"
+                           },
+                           {
+                               "code":  "BA2022A",
+                               "name":  "Business Administration 2022A",
+                               "facultyCode":  "FBA",
+                               "intakeYear":  2022,
+                               "status":  "Active",
+                               "description":  "Lớp quản trị kinh doanh khóa 2022A"
+                           },
+                           {
+                               "code":  "BA2022B",
+                               "name":  "Business Administration 2022B",
+                               "facultyCode":  "FBA",
+                               "intakeYear":  2022,
+                               "status":  "Active",
+                               "description":  "Lớp quản trị kinh doanh khóa 2022B"
+                           }
+                       ],
+    "courses":  [
+                    {
+                        "code":  "SE101",
+                        "name":  "Nhập môn Lập trình",
+                        "credits":  3,
+                        "facultyCode":  "FIT",
+                        "status":  "Active",
+                        "description":  "Môn học nền tảng về tư duy lập trình và ngôn ngữ C."
+                    },
+                    {
+                        "code":  "SE201",
+                        "name":  "Cấu trúc Dữ liệu",
+                        "credits":  3,
+                        "facultyCode":  "FIT",
+                        "status":  "Active",
+                        "description":  "Môn học về danh sách, ngăn xếp, hàng đợi, cây và giải thuật cơ bản."
+                    },
+                    {
+                        "code":  "DB201",
+                        "name":  "Cơ sở Dữ liệu",
+                        "credits":  3,
+                        "facultyCode":  "FIT",
+                        "status":  "Active",
+                        "description":  "Môn học về mô hình quan hệ, SQL và thiết kế cơ sở dữ liệu."
+                    },
+                    {
+                        "code":  "NET301",
+                        "name":  "Mạng Máy tính",
+                        "credits":  3,
+                        "facultyCode":  "FIT",
+                        "status":  "Active",
+                        "description":  "Môn học về kiến trúc mạng, TCP/IP và các giao thức cơ bản."
+                    },
+                    {
+                        "code":  "SE301",
+                        "name":  "Kỹ thuật Phần mềm",
+                        "credits":  3,
+                        "facultyCode":  "FIT",
+                        "status":  "Active",
+                        "description":  "Môn học về quy trình phát triển phần mềm và quản lý yêu cầu."
+                    },
+                    {
+                        "code":  "BA101",
+                        "name":  "Nguyên lý Quản trị",
+                        "credits":  3,
+                        "facultyCode":  "FBA",
+                        "status":  "Active",
+                        "description":  "Môn học cơ sở về chức năng và nguyên tắc quản trị."
+                    },
+                    {
+                        "code":  "MKT201",
+                        "name":  "Marketing Căn bản",
+                        "credits":  3,
+                        "facultyCode":  "FBA",
+                        "status":  "Active",
+                        "description":  "Môn học giới thiệu về hành vi khách hàng và chiến lược marketing."
+                    },
+                    {
+                        "code":  "ACC101",
+                        "name":  "Kế toán Đại cương",
+                        "credits":  3,
+                        "facultyCode":  "FBA",
+                        "status":  "Active",
+                        "description":  "Môn học cơ sở về nguyên lý kế toán và lập báo cáo tài chính."
+                    }
+                ],
+    "semesters":  [
+                      {
+                          "code":  "2025T1",
+                          "name":  "2025-2026 / Term 1",
+                          "academicYear":  "2025-2026",
+                          "termNo":  1,
+                          "startDate":  "2025-09-01T00:00:00Z",
+                          "endDate":  "2026-01-15T00:00:00Z",
+                          "status":  "Active",
+                          "description":  "Há»c ká»³ 1 nÄƒm há»c 2025-2026"
+                      }
+                  ],
+    "studentProfiles":  [
+                            {
+                                "studentCode":  "STU001",
+                                "fullName":  "Nguyễn Văn An",
+                                "studentClassCode":  "SE2022A",
+                                "email":  "an.stu001@student.uniacademic.local",
+                                "phone":  "0900000001",
+                                "gender":  "Male",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU002",
+                                "fullName":  "Trần Thị Bích",
+                                "studentClassCode":  "SE2022A",
+                                "email":  "bich.stu002@student.uniacademic.local",
+                                "phone":  "0900000002",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU003",
+                                "fullName":  "Lê Minh Hoàng",
+                                "studentClassCode":  "SE2022A",
+                                "email":  "hoang.stu003@student.uniacademic.local",
+                                "phone":  "0900000003",
+                                "gender":  "Male",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU004",
+                                "fullName":  "Phạm Thu Hà",
+                                "studentClassCode":  "SE2022A",
+                                "email":  "ha.stu004@student.uniacademic.local",
+                                "phone":  "0900000004",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU005",
+                                "fullName":  "Võ Quốc Bảo",
+                                "studentClassCode":  "SE2022A",
+                                "email":  "bao.stu005@student.uniacademic.local",
+                                "phone":  "0900000005",
+                                "gender":  "Male",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU006",
+                                "fullName":  "Đặng Ngọc Mai",
+                                "studentClassCode":  "SE2022A",
+                                "email":  "mai.stu006@student.uniacademic.local",
+                                "phone":  "0900000006",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU007",
+                                "fullName":  "Bùi Gia Huy",
+                                "studentClassCode":  "SE2022A",
+                                "email":  "huy.stu007@student.uniacademic.local",
+                                "phone":  "0900000007",
+                                "gender":  "Male",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU008",
+                                "fullName":  "Hồ Khánh Linh",
+                                "studentClassCode":  "SE2022A",
+                                "email":  "linh.stu008@student.uniacademic.local",
+                                "phone":  "0900000008",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU009",
+                                "fullName":  "Phan Tuấn Kiệt",
+                                "studentClassCode":  "SE2022A",
+                                "email":  "kiet.stu009@student.uniacademic.local",
+                                "phone":  "0900000009",
+                                "gender":  "Male",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU010",
+                                "fullName":  "Dương Mỹ Duyên",
+                                "studentClassCode":  "SE2022A",
+                                "email":  "duyen.stu010@student.uniacademic.local",
+                                "phone":  "0900000010",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU011",
+                                "fullName":  "Nguyễn Đức Long",
+                                "studentClassCode":  "SE2022A",
+                                "email":  "long.stu011@student.uniacademic.local",
+                                "phone":  "0900000011",
+                                "gender":  "Male",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU012",
+                                "fullName":  "Trịnh Thanh Thảo",
+                                "studentClassCode":  "SE2022A",
+                                "email":  "thao.stu012@student.uniacademic.local",
+                                "phone":  "0900000012",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU013",
+                                "fullName":  "Đỗ Nhật Nam",
+                                "studentClassCode":  "SE2022A",
+                                "email":  "nam.stu013@student.uniacademic.local",
+                                "phone":  "0900000013",
+                                "gender":  "Male",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU014",
+                                "fullName":  "Vũ Phương Anh",
+                                "studentClassCode":  "SE2022A",
+                                "email":  "anh.stu014@student.uniacademic.local",
+                                "phone":  "0900000014",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU015",
+                                "fullName":  "Lý Hải Yến",
+                                "studentClassCode":  "SE2022A",
+                                "email":  "yen.stu015@student.uniacademic.local",
+                                "phone":  "0900000015",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU016",
+                                "fullName":  "Nguyễn Gia Bình",
+                                "studentClassCode":  "SE2022B",
+                                "email":  "binh.stu016@student.uniacademic.local",
+                                "phone":  "0900000016",
+                                "gender":  "Male",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU017",
+                                "fullName":  "Trần Quỳnh Như",
+                                "studentClassCode":  "SE2022B",
+                                "email":  "nhu.stu017@student.uniacademic.local",
+                                "phone":  "0900000017",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU018",
+                                "fullName":  "Lê Tuấn Phát",
+                                "studentClassCode":  "SE2022B",
+                                "email":  "phat.stu018@student.uniacademic.local",
+                                "phone":  "0900000018",
+                                "gender":  "Male",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU019",
+                                "fullName":  "Phạm Ngọc Trâm",
+                                "studentClassCode":  "SE2022B",
+                                "email":  "tram.stu019@student.uniacademic.local",
+                                "phone":  "0900000019",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU020",
+                                "fullName":  "Võ Minh Khang",
+                                "studentClassCode":  "SE2022B",
+                                "email":  "khang.stu020@student.uniacademic.local",
+                                "phone":  "0900000020",
+                                "gender":  "Male",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU021",
+                                "fullName":  "Đặng Thảo Nguyên",
+                                "studentClassCode":  "SE2022B",
+                                "email":  "nguyen.stu021@student.uniacademic.local",
+                                "phone":  "0900000021",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU022",
+                                "fullName":  "Bùi Anh Khoa",
+                                "studentClassCode":  "SE2022B",
+                                "email":  "khoa.stu022@student.uniacademic.local",
+                                "phone":  "0900000022",
+                                "gender":  "Male",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU023",
+                                "fullName":  "Hồ Diễm My",
+                                "studentClassCode":  "SE2022B",
+                                "email":  "my.stu023@student.uniacademic.local",
+                                "phone":  "0900000023",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU024",
+                                "fullName":  "Phan Hoài Nam",
+                                "studentClassCode":  "SE2022B",
+                                "email":  "nam1.stu024@student.uniacademic.local",
+                                "phone":  "0900000024",
+                                "gender":  "Male",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU025",
+                                "fullName":  "Dương Khánh Vy",
+                                "studentClassCode":  "SE2022B",
+                                "email":  "vy.stu025@student.uniacademic.local",
+                                "phone":  "0900000025",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU026",
+                                "fullName":  "Nguyễn Trung Hiếu",
+                                "studentClassCode":  "SE2022B",
+                                "email":  "hieu.stu026@student.uniacademic.local",
+                                "phone":  "0900000026",
+                                "gender":  "Male",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU027",
+                                "fullName":  "Trịnh Bảo Châu",
+                                "studentClassCode":  "SE2022B",
+                                "email":  "chau.stu027@student.uniacademic.local",
+                                "phone":  "0900000027",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU028",
+                                "fullName":  "Đỗ Minh Quân",
+                                "studentClassCode":  "SE2022B",
+                                "email":  "quan.stu028@student.uniacademic.local",
+                                "phone":  "0900000028",
+                                "gender":  "Male",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU029",
+                                "fullName":  "Vũ Gia Linh",
+                                "studentClassCode":  "SE2022B",
+                                "email":  "linh1.stu029@student.uniacademic.local",
+                                "phone":  "0900000029",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU030",
+                                "fullName":  "Lâm Hà Phương",
+                                "studentClassCode":  "SE2022B",
+                                "email":  "phuong.stu030@student.uniacademic.local",
+                                "phone":  "0900000030",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU031",
+                                "fullName":  "Nguyễn Hoàng Yến Nhi",
+                                "studentClassCode":  "BA2022A",
+                                "email":  "nhi.stu031@student.uniacademic.local",
+                                "phone":  "0900000031",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU032",
+                                "fullName":  "Trần Đức Mạnh",
+                                "studentClassCode":  "BA2022A",
+                                "email":  "manh.stu032@student.uniacademic.local",
+                                "phone":  "0900000032",
+                                "gender":  "Male",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU033",
+                                "fullName":  "Lê Thị Thủy",
+                                "studentClassCode":  "BA2022A",
+                                "email":  "thuy.stu033@student.uniacademic.local",
+                                "phone":  "0900000033",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU034",
+                                "fullName":  "Phạm Quang Vinh",
+                                "studentClassCode":  "BA2022A",
+                                "email":  "vinh.stu034@student.uniacademic.local",
+                                "phone":  "0900000034",
+                                "gender":  "Male",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU035",
+                                "fullName":  "Võ Thanh Tâm",
+                                "studentClassCode":  "BA2022A",
+                                "email":  "tam.stu035@student.uniacademic.local",
+                                "phone":  "0900000035",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU036",
+                                "fullName":  "Đặng Khánh An",
+                                "studentClassCode":  "BA2022A",
+                                "email":  "an1.stu036@student.uniacademic.local",
+                                "phone":  "0900000036",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU037",
+                                "fullName":  "Bùi Ngọc Hân",
+                                "studentClassCode":  "BA2022A",
+                                "email":  "han.stu037@student.uniacademic.local",
+                                "phone":  "0900000037",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU038",
+                                "fullName":  "Hồ Tuấn Anh",
+                                "studentClassCode":  "BA2022A",
+                                "email":  "anh1.stu038@student.uniacademic.local",
+                                "phone":  "0900000038",
+                                "gender":  "Male",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU039",
+                                "fullName":  "Phan Bảo Ngọc",
+                                "studentClassCode":  "BA2022A",
+                                "email":  "ngoc.stu039@student.uniacademic.local",
+                                "phone":  "0900000039",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU040",
+                                "fullName":  "Dương Minh Triết",
+                                "studentClassCode":  "BA2022A",
+                                "email":  "triet.stu040@student.uniacademic.local",
+                                "phone":  "0900000040",
+                                "gender":  "Male",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU041",
+                                "fullName":  "Nguyễn Cẩm Tiên",
+                                "studentClassCode":  "BA2022A",
+                                "email":  "tien.stu041@student.uniacademic.local",
+                                "phone":  "0900000041",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU042",
+                                "fullName":  "Trịnh Hữu Đạt",
+                                "studentClassCode":  "BA2022A",
+                                "email":  "dat.stu042@student.uniacademic.local",
+                                "phone":  "0900000042",
+                                "gender":  "Male",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU043",
+                                "fullName":  "Đỗ Hà My",
+                                "studentClassCode":  "BA2022A",
+                                "email":  "my1.stu043@student.uniacademic.local",
+                                "phone":  "0900000043",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU044",
+                                "fullName":  "Vũ Bảo Hân",
+                                "studentClassCode":  "BA2022A",
+                                "email":  "han1.stu044@student.uniacademic.local",
+                                "phone":  "0900000044",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU045",
+                                "fullName":  "Lâm Gia Hân",
+                                "studentClassCode":  "BA2022A",
+                                "email":  "han2.stu045@student.uniacademic.local",
+                                "phone":  "0900000045",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU046",
+                                "fullName":  "Nguyễn Tuấn Minh",
+                                "studentClassCode":  "BA2022B",
+                                "email":  "minh.stu046@student.uniacademic.local",
+                                "phone":  "0900000046",
+                                "gender":  "Male",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU047",
+                                "fullName":  "Trần Mỹ Linh",
+                                "studentClassCode":  "BA2022B",
+                                "email":  "linh2.stu047@student.uniacademic.local",
+                                "phone":  "0900000047",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU048",
+                                "fullName":  "Lê Quốc Thịnh",
+                                "studentClassCode":  "BA2022B",
+                                "email":  "thinh.stu048@student.uniacademic.local",
+                                "phone":  "0900000048",
+                                "gender":  "Male",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU049",
+                                "fullName":  "Phạm Bích Ngân",
+                                "studentClassCode":  "BA2022B",
+                                "email":  "ngan.stu049@student.uniacademic.local",
+                                "phone":  "0900000049",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU050",
+                                "fullName":  "Võ Nhật Hào",
+                                "studentClassCode":  "BA2022B",
+                                "email":  "hao.stu050@student.uniacademic.local",
+                                "phone":  "0900000050",
+                                "gender":  "Male",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU051",
+                                "fullName":  "Đặng Gia Hân",
+                                "studentClassCode":  "BA2022B",
+                                "email":  "han3.stu051@student.uniacademic.local",
+                                "phone":  "0900000051",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU052",
+                                "fullName":  "Bùi Thanh Tùng",
+                                "studentClassCode":  "BA2022B",
+                                "email":  "tung.stu052@student.uniacademic.local",
+                                "phone":  "0900000052",
+                                "gender":  "Male",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU053",
+                                "fullName":  "Hồ Ngọc Anh",
+                                "studentClassCode":  "BA2022B",
+                                "email":  "anh2.stu053@student.uniacademic.local",
+                                "phone":  "0900000053",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU054",
+                                "fullName":  "Phan Minh Tâm",
+                                "studentClassCode":  "BA2022B",
+                                "email":  "tam1.stu054@student.uniacademic.local",
+                                "phone":  "0900000054",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU055",
+                                "fullName":  "Dương Thùy Dung",
+                                "studentClassCode":  "BA2022B",
+                                "email":  "dung.stu055@student.uniacademic.local",
+                                "phone":  "0900000055",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU056",
+                                "fullName":  "Nguyễn Phúc Hưng",
+                                "studentClassCode":  "BA2022B",
+                                "email":  "hung.stu056@student.uniacademic.local",
+                                "phone":  "0900000056",
+                                "gender":  "Male",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU057",
+                                "fullName":  "Trịnh Quang Huy",
+                                "studentClassCode":  "BA2022B",
+                                "email":  "huy1.stu057@student.uniacademic.local",
+                                "phone":  "0900000057",
+                                "gender":  "Male",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU058",
+                                "fullName":  "Đỗ Bảo Minh",
+                                "studentClassCode":  "BA2022B",
+                                "email":  "minh1.stu058@student.uniacademic.local",
+                                "phone":  "0900000058",
+                                "gender":  "Male",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU059",
+                                "fullName":  "Vũ Diệu Anh",
+                                "studentClassCode":  "BA2022B",
+                                "email":  "anh3.stu059@student.uniacademic.local",
+                                "phone":  "0900000059",
+                                "gender":  "Female",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            },
+                            {
+                                "studentCode":  "STU060",
+                                "fullName":  "Lâm Đức Anh",
+                                "studentClassCode":  "BA2022B",
+                                "email":  "anh4.stu060@student.uniacademic.local",
+                                "phone":  "0900000060",
+                                "gender":  "Male",
+                                "status":  "Active",
+                                "note":  "Sinh viĂªn há»‡ chĂ­nh quy"
+                            }
+                        ],
+    "lecturerProfiles":  [
+                             {
+                                 "code":  "LEC001",
+                                 "fullName":  "TS. Phạm Quang",
+                                 "email":  "quang.lecturer@uniacademic.local",
+                                 "phoneNumber":  "0910000001",
+                                 "facultyCode":  "FIT",
+                                 "isActive":  true,
+                                 "note":  "Giảng viên chuyên ngành lập trình và kỹ thuật phần mềm"
+                             },
+                             {
+                                 "code":  "LEC002",
+                                 "fullName":  "ThS. Võ Thu",
+                                 "email":  "thu.lecturer@uniacademic.local",
+                                 "phoneNumber":  "0910000002",
+                                 "facultyCode":  "FIT",
+                                 "isActive":  true,
+                                 "note":  "Giảng viên chuyên ngành cơ sở dữ liệu"
+                             },
+                             {
+                                 "code":  "LEC003",
+                                 "fullName":  "TS. Nguyễn Hữu Minh",
+                                 "email":  "minh.lecturer@uniacademic.local",
+                                 "phoneNumber":  "0910000003",
+                                 "facultyCode":  "FIT",
+                                 "isActive":  true,
+                                 "note":  "Giảng viên chuyên ngành mạng máy tính"
+                             },
+                             {
+                                 "code":  "LEC004",
+                                 "fullName":  "GS. Trần Ngọc Lan",
+                                 "email":  "lan.lecturer@uniacademic.local",
+                                 "phoneNumber":  "0910000004",
+                                 "facultyCode":  "FIT",
+                                 "isActive":  true,
+                                 "note":  "Giảng viên cao cấp phụ trách học phần cốt lõi"
+                             },
+                             {
+                                 "code":  "LEC005",
+                                 "fullName":  "TS. Lê Hoàng Nam",
+                                 "email":  "nam.lecturer@uniacademic.local",
+                                 "phoneNumber":  "0910000005",
+                                 "facultyCode":  "FBA",
+                                 "isActive":  true,
+                                 "note":  "Giảng viên ngành quản trị kinh doanh"
+                             },
+                             {
+                                 "code":  "LEC006",
+                                 "fullName":  "ThS. Phạm Bích Hạnh",
+                                 "email":  "hanh.lecturer@uniacademic.local",
+                                 "phoneNumber":  "0910000006",
+                                 "facultyCode":  "FBA",
+                                 "isActive":  true,
+                                 "note":  "Giảng viên ngành marketing và kế toán"
+                             }
+                         ],
+    "courseOfferings":  [
+                            {
+                                "code":  "SE101-2025T1-01",
+                                "courseCode":  "SE101",
+                                "semesterCode":  "2025T1",
+                                "displayName":  "SE101 - Nhập môn Lập trình - 2025T1 - 01",
+                                "capacity":  40,
+                                "status":  "Active",
+                                "description":  "Lớp học phần chính cho môn Nhập môn Lập trình."
+                            },
+                            {
+                                "code":  "SE101-2025T1-02",
+                                "courseCode":  "SE101",
+                                "semesterCode":  "2025T1",
+                                "displayName":  "SE101 - Nhập môn Lập trình - 2025T1 - 02",
+                                "capacity":  40,
+                                "status":  "Active",
+                                "description":  "Lớp học phần song song cho môn Nhập môn Lập trình."
+                            },
+                            {
+                                "code":  "SE201-2025T1-01",
+                                "courseCode":  "SE201",
+                                "semesterCode":  "2025T1",
+                                "displayName":  "SE201 - Cấu trúc Dữ liệu - 2025T1 - 01",
+                                "capacity":  40,
+                                "status":  "Active",
+                                "description":  "Lớp học phần môn Cấu trúc Dữ liệu."
+                            },
+                            {
+                                "code":  "DB201-2025T1-01",
+                                "courseCode":  "DB201",
+                                "semesterCode":  "2025T1",
+                                "displayName":  "DB201 - Cơ sở Dữ liệu - 2025T1 - 01",
+                                "capacity":  40,
+                                "status":  "Active",
+                                "description":  "Lớp học phần chính cho môn Cơ sở Dữ liệu."
+                            },
+                            {
+                                "code":  "DB201-2025T1-02",
+                                "courseCode":  "DB201",
+                                "semesterCode":  "2025T1",
+                                "displayName":  "DB201 - Cơ sở Dữ liệu - 2025T1 - 02",
+                                "capacity":  40,
+                                "status":  "Active",
+                                "description":  "Lớp học phần song song cho môn Cơ sở Dữ liệu."
+                            },
+                            {
+                                "code":  "NET301-2025T1-01",
+                                "courseCode":  "NET301",
+                                "semesterCode":  "2025T1",
+                                "displayName":  "NET301 - Mạng Máy tính - 2025T1 - 01",
+                                "capacity":  40,
+                                "status":  "Active",
+                                "description":  "Lớp học phần môn Mạng Máy tính."
+                            },
+                            {
+                                "code":  "SE301-2025T1-01",
+                                "courseCode":  "SE301",
+                                "semesterCode":  "2025T1",
+                                "displayName":  "SE301 - Kỹ thuật Phần mềm - 2025T1 - 01",
+                                "capacity":  40,
+                                "status":  "Active",
+                                "description":  "Lớp học phần môn Kỹ thuật Phần mềm."
+                            },
+                            {
+                                "code":  "BA101-2025T1-01",
+                                "courseCode":  "BA101",
+                                "semesterCode":  "2025T1",
+                                "displayName":  "BA101 - Nguyên lý Quản trị - 2025T1 - 01",
+                                "capacity":  35,
+                                "status":  "Active",
+                                "description":  "Lớp học phần môn Nguyên lý Quản trị."
+                            },
+                            {
+                                "code":  "MKT201-2025T1-01",
+                                "courseCode":  "MKT201",
+                                "semesterCode":  "2025T1",
+                                "displayName":  "MKT201 - Marketing Căn bản - 2025T1 - 01",
+                                "capacity":  35,
+                                "status":  "Active",
+                                "description":  "Lớp học phần môn Marketing Căn bản."
+                            },
+                            {
+                                "code":  "ACC101-2025T1-01",
+                                "courseCode":  "ACC101",
+                                "semesterCode":  "2025T1",
+                                "displayName":  "ACC101 - Kế toán Đại cương - 2025T1 - 01",
+                                "capacity":  35,
+                                "status":  "Active",
+                                "description":  "Lớp học phần môn Kế toán Đại cương."
+                            }
+                        ],
+    "lecturerAssignments":  [
+                                {
+                                    "courseOfferingCode":  "SE101-2025T1-01",
+                                    "lecturerCode":  "LEC001",
+                                    "isPrimary":  true,
+                                    "assignedAtUtc":  "2025-08-20T08:00:00Z"
+                                },
+                                {
+                                    "courseOfferingCode":  "SE101-2025T1-01",
+                                    "lecturerCode":  "LEC002",
+                                    "isPrimary":  false,
+                                    "assignedAtUtc":  "2025-08-20T08:10:00Z"
+                                },
+                                {
+                                    "courseOfferingCode":  "SE101-2025T1-02",
+                                    "lecturerCode":  "LEC003",
+                                    "isPrimary":  true,
+                                    "assignedAtUtc":  "2025-08-20T08:20:00Z"
+                                },
+                                {
+                                    "courseOfferingCode":  "SE201-2025T1-01",
+                                    "lecturerCode":  "LEC004",
+                                    "isPrimary":  true,
+                                    "assignedAtUtc":  "2025-08-20T08:30:00Z"
+                                },
+                                {
+                                    "courseOfferingCode":  "SE201-2025T1-01",
+                                    "lecturerCode":  "LEC001",
+                                    "isPrimary":  false,
+                                    "assignedAtUtc":  "2025-08-20T08:40:00Z"
+                                },
+                                {
+                                    "courseOfferingCode":  "DB201-2025T1-01",
+                                    "lecturerCode":  "LEC002",
+                                    "isPrimary":  true,
+                                    "assignedAtUtc":  "2025-08-20T08:50:00Z"
+                                },
+                                {
+                                    "courseOfferingCode":  "DB201-2025T1-01",
+                                    "lecturerCode":  "LEC003",
+                                    "isPrimary":  false,
+                                    "assignedAtUtc":  "2025-08-20T09:00:00Z"
+                                },
+                                {
+                                    "courseOfferingCode":  "DB201-2025T1-02",
+                                    "lecturerCode":  "LEC001",
+                                    "isPrimary":  true,
+                                    "assignedAtUtc":  "2025-08-20T09:10:00Z"
+                                },
+                                {
+                                    "courseOfferingCode":  "NET301-2025T1-01",
+                                    "lecturerCode":  "LEC003",
+                                    "isPrimary":  true,
+                                    "assignedAtUtc":  "2025-08-20T09:20:00Z"
+                                },
+                                {
+                                    "courseOfferingCode":  "NET301-2025T1-01",
+                                    "lecturerCode":  "LEC004",
+                                    "isPrimary":  false,
+                                    "assignedAtUtc":  "2025-08-20T09:30:00Z"
+                                },
+                                {
+                                    "courseOfferingCode":  "SE301-2025T1-01",
+                                    "lecturerCode":  "LEC004",
+                                    "isPrimary":  true,
+                                    "assignedAtUtc":  "2025-08-20T09:40:00Z"
+                                },
+                                {
+                                    "courseOfferingCode":  "BA101-2025T1-01",
+                                    "lecturerCode":  "LEC005",
+                                    "isPrimary":  true,
+                                    "assignedAtUtc":  "2025-08-20T09:50:00Z"
+                                },
+                                {
+                                    "courseOfferingCode":  "BA101-2025T1-01",
+                                    "lecturerCode":  "LEC006",
+                                    "isPrimary":  false,
+                                    "assignedAtUtc":  "2025-08-20T10:00:00Z"
+                                },
+                                {
+                                    "courseOfferingCode":  "MKT201-2025T1-01",
+                                    "lecturerCode":  "LEC006",
+                                    "isPrimary":  true,
+                                    "assignedAtUtc":  "2025-08-20T10:10:00Z"
+                                },
+                                {
+                                    "courseOfferingCode":  "ACC101-2025T1-01",
+                                    "lecturerCode":  "LEC005",
+                                    "isPrimary":  true,
+                                    "assignedAtUtc":  "2025-08-20T10:20:00Z"
+                                }
+                            ]
 }

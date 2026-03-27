@@ -121,6 +121,79 @@ public sealed class CourseOfferingRosterService : ICourseOfferingRosterService
         return Map(courseOffering, snapshot);
     }
 
+    public async Task<CourseOfferingRosterModel> ReopenAsync(ReopenCourseOfferingRosterCommand command, CancellationToken cancellationToken = default)
+    {
+        EnsureAdminCanReopen();
+
+        var courseOffering = await RequireCourseOfferingAsync(command.CourseOfferingId, cancellationToken);
+        if (!courseOffering.IsRosterFinalized)
+        {
+            throw new AuthException("Course offering roster has not been finalized.");
+        }
+
+        var snapshot = await _dbContext.CourseOfferingRosterSnapshots
+            .Include(x => x.Items)
+            .FirstOrDefaultAsync(x => x.CourseOfferingId == courseOffering.Id, cancellationToken);
+
+        if (snapshot is null)
+        {
+            throw new AuthException("Course offering roster snapshot was not found.");
+        }
+
+        if (await _dbContext.AttendanceSessions.AnyAsync(x => x.CourseOfferingId == courseOffering.Id, cancellationToken))
+        {
+            throw new AuthException("Roster cannot be reopened because attendance sessions already exist.");
+        }
+
+        var hasGradeCategories = await _dbContext.GradeCategories
+            .AnyAsync(x => x.CourseOfferingId == courseOffering.Id, cancellationToken);
+
+        var hasGradeEntries = await _dbContext.GradeEntries
+            .AnyAsync(x => x.GradeCategory!.CourseOfferingId == courseOffering.Id, cancellationToken);
+
+        if (hasGradeCategories || hasGradeEntries)
+        {
+            throw new AuthException("Roster cannot be reopened because grades already exist.");
+        }
+
+        if (await _dbContext.GradeResults.AnyAsync(x => x.CourseOfferingId == courseOffering.Id, cancellationToken))
+        {
+            throw new AuthException("Roster cannot be reopened because grade results already exist.");
+        }
+
+        var handoffLogs = await _dbContext.ExamHandoffLogs
+            .Where(x => x.CourseOfferingId == courseOffering.Id)
+            .ToListAsync(cancellationToken);
+
+        if (handoffLogs.Any(x => x.Status == ExamHandoffStatus.Success))
+        {
+            throw new AuthException("Roster cannot be reopened because exam handoff already succeeded.");
+        }
+
+        foreach (var handoffLog in handoffLogs)
+        {
+            _dbContext.Remove(handoffLog);
+        }
+
+        var reopenedBy = _currentUser.Username ?? "system";
+        var reason = NormalizeNote(command.Reason);
+
+        _dbContext.Remove(snapshot);
+        courseOffering.IsRosterFinalized = false;
+        courseOffering.RosterFinalizedAtUtc = null;
+        courseOffering.ModifiedBy = reopenedBy;
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+        await _auditService.WriteAsync("courseofferingroster.reopen", nameof(CourseOfferingRosterSnapshot), snapshot.Id.ToString(), new
+        {
+            snapshot.CourseOfferingId,
+            snapshot.ItemCount,
+            Reason = reason
+        }, _currentUser.UserId, cancellationToken);
+
+        return Map(courseOffering, null);
+    }
+
     private async Task<CourseOffering> RequireCourseOfferingAsync(Guid courseOfferingId, CancellationToken cancellationToken)
     {
         if (courseOfferingId == Guid.Empty)
@@ -140,6 +213,14 @@ public sealed class CourseOfferingRosterService : ICourseOfferingRosterService
         }
 
         return courseOffering;
+    }
+
+    private void EnsureAdminCanReopen()
+    {
+        if (!string.Equals(_currentUser.Username, "admin", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new AuthException("Only admin can reopen a finalized roster.");
+        }
     }
 
     private static string? NormalizeNote(string? note)

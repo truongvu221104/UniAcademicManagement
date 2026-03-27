@@ -9,6 +9,7 @@ using UniAcademic.Application.Common;
 using UniAcademic.Application.Models.Enrollments;
 using UniAcademic.Application.Models.StudentPortal;
 using UniAcademic.Application.Security;
+using UniAcademic.Web.Helpers;
 
 namespace UniAcademic.Web.Pages.Student.Enrollments;
 
@@ -35,12 +36,15 @@ public sealed class IndexModel : PageModel
 
     public IReadOnlyCollection<StudentCurrentEnrollmentItemModel> Enrollments { get; private set; } = [];
 
-    public async Task<IActionResult> OnGetAsync(CancellationToken cancellationToken)
+    public async Task<IActionResult> OnGetAsync(int? page, int? pageSize, CancellationToken cancellationToken)
     {
         try
         {
             await _currentStudentContext.GetRequiredStudentProfileIdAsync(cancellationToken);
-            Enrollments = await _studentPortalService.GetMyCurrentEnrollmentsAsync(cancellationToken);
+            var enrollments = await _studentPortalService.GetMyCurrentEnrollmentsAsync(cancellationToken);
+            var pagedEnrollments = PaginationHelper.Paginate(enrollments, page, pageSize);
+            Enrollments = pagedEnrollments.Items;
+            ViewData["Pagination"] = pagedEnrollments.Pagination;
             return Page();
         }
         catch (AuthException ex) when (IsStudentContextFailure(ex))

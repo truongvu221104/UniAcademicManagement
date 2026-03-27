@@ -9,7 +9,7 @@ using UniAcademic.Web.Models.Semesters;
 
 namespace UniAcademic.Web.Controllers;
 
-[Authorize]
+[Authorize(Roles = RoleConstants.AcademicManagement)]
 public sealed class SemestersController : Controller
 {
     private readonly ISemesterService _semesterService;
@@ -21,7 +21,7 @@ public sealed class SemestersController : Controller
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.Semesters.View)]
     [HttpGet]
-    public async Task<IActionResult> Index(string? keyword, string? academicYear, int? termNo, SemesterStatus? status, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(string? keyword, string? academicYear, int? termNo, SemesterStatus? status, int? page, int? pageSize, CancellationToken cancellationToken)
     {
         var semesters = await _semesterService.GetListAsync(new GetSemestersQuery
         {
@@ -30,13 +30,15 @@ public sealed class SemestersController : Controller
             TermNo = termNo,
             Status = status
         }, cancellationToken);
+        var pagedSemesters = UniAcademic.Web.Helpers.PaginationHelper.Paginate(semesters, page, pageSize);
 
         ViewBag.Keyword = keyword;
         ViewBag.AcademicYear = academicYear;
         ViewBag.TermNo = termNo;
         ViewBag.Status = status;
 
-        return View(semesters);
+        ViewData["Pagination"] = pagedSemesters.Pagination;
+        return View(pagedSemesters.Items);
     }
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.Semesters.View)]

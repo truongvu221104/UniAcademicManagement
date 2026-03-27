@@ -7,11 +7,12 @@ using UniAcademic.Application.Common;
 using UniAcademic.Application.Models.CourseOfferings;
 using UniAcademic.Application.Models.Grades;
 using UniAcademic.Application.Security;
+using UniAcademic.Web.Helpers;
 using UniAcademic.Web.Models.Grades;
 
 namespace UniAcademic.Web.Controllers;
 
-[Authorize]
+[Authorize(Roles = RoleConstants.AcademicManagement)]
 public sealed class GradesController : Controller
 {
     private readonly IGradeService _gradeService;
@@ -27,16 +28,18 @@ public sealed class GradesController : Controller
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.Grades.View)]
     [HttpGet]
-    public async Task<IActionResult> Index(Guid? courseOfferingId, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(Guid? courseOfferingId, int? page, int? pageSize, CancellationToken cancellationToken)
     {
         var categories = await _gradeService.GetListAsync(new GetGradeCategoriesQuery
         {
             CourseOfferingId = courseOfferingId
         }, cancellationToken);
+        var pagedCategories = PaginationHelper.Paginate(categories, page, pageSize);
 
         ViewBag.CourseOfferingId = courseOfferingId;
         ViewBag.CourseOfferingOptions = await BuildCourseOfferingOptionsAsync(cancellationToken, courseOfferingId, includeEmpty: true);
-        return View(categories);
+        ViewData["Pagination"] = pagedCategories.Pagination;
+        return View(pagedCategories.Items);
     }
 
     [Authorize(Policy = PermissionConstants.PolicyPrefix + PermissionConstants.Grades.View)]

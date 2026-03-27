@@ -24,25 +24,29 @@
 
         <StackPanel Grid.Row="1"
                     Grid.ColumnSpan="3"
-                    Orientation="Horizontal"
                     Margin="0,12,0,12">
-            <Button Content="Refresh"
-                    Margin="0,0,8,0"
-                    Click="RefreshButton_OnClick" />
-            <ItemsControl ItemsSource="{Binding Actions}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Button Content="{Binding Label}"
-                                Margin="0,0,8,0"
-                                Command="{Binding Command}" />
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+            <TextBox Width="280"
+                     Margin="0,0,0,8"
+                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Refresh"
+                        Margin="0,0,8,0"
+                        Click="RefreshButton_OnClick" />
+                <ItemsControl ItemsSource="{Binding Actions}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Content="{Binding Label}"
+                                    Margin="0,0,8,0"
+                                    Command="{Binding Command}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
         </StackPanel>
 
         <DockPanel Grid.Row="2"
@@ -51,7 +55,7 @@
                        Text="{Binding StatusMessage}"
                        Margin="0,0,0,8"
                        Foreground="#57606A" />
-            <DataGrid ItemsSource="{Binding Items}"
+            <DataGrid ItemsSource="{Binding FilteredItems}"
                       SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                       AutoGenerateColumns="True"
                       IsReadOnly="True" />

@@ -7,6 +7,7 @@ using UniAcademic.Application.Abstractions.StudentPortal;
 using UniAcademic.Application.Common;
 using UniAcademic.Application.Models.StudentPortal;
 using UniAcademic.Application.Security;
+using UniAcademic.Web.Helpers;
 
 namespace UniAcademic.Web.Pages.Student.Courses;
 
@@ -30,15 +31,18 @@ public sealed class IndexModel : PageModel
     [BindProperty(SupportsGet = true)]
     public string? Keyword { get; set; }
 
-    public async Task<IActionResult> OnGetAsync(CancellationToken cancellationToken)
+    public async Task<IActionResult> OnGetAsync(int? page, int? pageSize, CancellationToken cancellationToken)
     {
         try
         {
             await _currentStudentContext.GetRequiredStudentProfileIdAsync(cancellationToken);
-            Offerings = await _studentPortalService.GetSelfEnrollCourseOfferingsAsync(new GetSelfEnrollCourseOfferingsQuery
+            var offerings = await _studentPortalService.GetSelfEnrollCourseOfferingsAsync(new GetSelfEnrollCourseOfferingsQuery
             {
                 Keyword = Keyword
             }, cancellationToken);
+            var pagedOfferings = PaginationHelper.Paginate(offerings, page, pageSize);
+            Offerings = pagedOfferings.Items;
+            ViewData["Pagination"] = pagedOfferings.Pagination;
 
             return Page();
         }
